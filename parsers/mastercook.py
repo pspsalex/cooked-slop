@@ -108,7 +108,9 @@ class MasterCookParser(BaseRecipeParser):
             
             if in_ingredients:
                 is_indented = line.startswith(' ') or line.startswith('\t')
-                looks_like_instruction = (not is_indented) and len(line_stripped) > 20 and not line_stripped[0].isdigit()
+                has_leading_hyphen = line_stripped.startswith('-')
+                
+                looks_like_instruction = (not is_indented) and len(line_stripped) > 20 and not line_stripped[0].isdigit() and not has_leading_hyphen
                 
                 if looks_like_instruction:
                     in_ingredients = False
@@ -117,23 +119,24 @@ class MasterCookParser(BaseRecipeParser):
                     continue
 
                 if line_stripped and not line_stripped.startswith('---'):
-                    line_stripped = line_stripped.lstrip('-').strip()
-                    if not line_stripped:
+                    # Strip leading hyphen for processing, but remember it for continuation logic
+                    processed_line = line_stripped.lstrip('-').strip()
+                    if not processed_line:
                         continue
                         
                     # Tabular extraction based on two or more spaces separating the columns
-                    parts = re.split(r'\s{2,}', line_stripped)
-                    if len(parts) >= 2 and (parts[0][0].isdigit() or parts[0].startswith('/')):
+                    parts = re.split(r'\s{2,}', processed_line)
+                    if len(parts) >= 2 and (parts[0][:1].isdigit() or parts[0].startswith('/')):
                         if len(parts) == 2:
                             ing = Ingredient(
-                                raw=line_stripped,
+                                raw=processed_line,
                                 quantity=parts[0].strip(),
                                 unit=None,
                                 name=parts[1].strip()
                             )
                         else:
                             ing = Ingredient(
-                                raw=line_stripped,
+                                raw=processed_line,
                                 quantity=parts[0].strip(),
                                 unit=normalize_unit(parts[1].strip()),
                                 name=' '.join(parts[2:]).strip()
@@ -142,16 +145,21 @@ class MasterCookParser(BaseRecipeParser):
                     elif recipe.ingredients:
                         # Multi-factor Heuristic for continuations vs new unmeasured ingredients
                         is_continuation = False
-                        line_lower = line_stripped.lower()
+                        line_lower = processed_line.lower()
                         
                         # Rule 1: Explicit prefixes
-                        if line_lower.startswith(('-', '--', 'and ', 'or ', 'with ', 'plus ')):
+                        if has_leading_hyphen or line_lower.startswith(('and ', 'or ', 'with ', 'plus ')):
                             is_continuation = True
                             
                         # Rule 2: Hanging words from previous line
                         prev_ing = recipe.ingredients[-1]
                         prev_raw_lower = prev_ing.raw.lower()
-                        hanging_words = ('with', 'and', 'or', 'in', 'black', 'red', 'of', ',')
+                        # Expanded hanging words to include more prepositions and common adjective endings
+                        hanging_words = (
+                            'with', 'and', 'or', 'in', 'black', 'red', 'of', ',', 'into', 'to', 'from',
+                            'vegetable', 'fresh', 'dried', 'chopped', 'sliced', 'minced', 'granulated',
+                            'powdered', 'all-purpose', 'low-fat', 'non-fat', 'reduced-fat', 'sodium'
+                        )
                         if prev_raw_lower.endswith(hanging_words):
                             is_continuation = True
                             
@@ -171,7 +179,7 @@ class MasterCookParser(BaseRecipeParser):
                             
                         if is_continuation:
                             # Append to the previous ingredient as a continuation
-                            addon = line.strip()
+                            addon = processed_line
                             prev_ing.raw += f" {addon}"
                             if prev_ing.name:
                                 prev_ing.name += f" {addon}"
@@ -180,9 +188,9 @@ class MasterCookParser(BaseRecipeParser):
                         else:
                             # Treat as a brand new ingredient without an amount
                             # Bypass NLP parser since we know there is no amount/unit from tabular layout
-                            recipe.ingredients.append(Ingredient(raw=line_stripped, name=line_stripped))
+                            recipe.ingredients.append(Ingredient(raw=processed_line, name=processed_line))
                     else:
-                        recipe.ingredients.append(Ingredient(raw=line_stripped, name=line_stripped))
+                        recipe.ingredients.append(Ingredient(raw=processed_line, name=processed_line))
             elif in_instructions:
                 if not any(line_stripped.startswith(x) for x in ['Source:', 'Yield:', 'T(', 'S(', 'Per Serving', 'Nutr.', '"']):
                     current_instruction_paragraph.append(line_stripped)
