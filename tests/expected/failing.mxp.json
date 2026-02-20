@@ -1,0 +1,73 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Apple Rice Pudding",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "converted rice",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "evaporated milk",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "canned sliced apples -- or one can",
+      "value": 16,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "maple syrup",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    "whipped cream"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "1) Cook rice according to package directions, using evaporated milk and butter in place of water.  (PANTRY: Uncle Ben's Original Converted Rice)"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "2) Once rice is finished cooking, add sliced apples and maple syrup. Stir."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "3) Top with whipped cream."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "4) Serve warm or cold."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Posted to FareShare  by kitpath@earthlink.net 4/99"
+    }
+  ],
+  "recipeYield": "6",
+  "recipeCategory": "Desserts",
+  "keywords": "Desserts, Apples, Rice, Volume 2-4, Apr.'99",
+  "comment": "Imported from tests/samples/failing.mxp",
+  "datePublished": "2026-02-21T00:19:13.718807",
+  "description": "Recipe converted from MasterCook format"
+}
+]

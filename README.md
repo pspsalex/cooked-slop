@@ -8,14 +8,15 @@ A modular, high-performance toolkit for converting recipes from various formats 
 ## ✨ Features
 
 - **High Performance Streaming**: Uses a custom `JSONStreamWriter` to handle thousands of recipes with minimal memory usage and no disk thrashing.
+- **Mixed-Format Support**: Automatically detects and parses files containing multiple recipe types (e.g., a `.txt` file with both MasterCook and MealMaster recipes).
 - **Modular Parser Architecture**:
-  - **MealMaster (.mmf, .mm)**
-  - **MasterCook (.mxp, .mx2, .ccf)**
-  - **CompuChef (.ccf)**
+  - **MealMaster (.mmf, .mm)**: Robust parsing with improved continuation handling.
+  - **MasterCook (.mxp, .mx2)**: Enhanced support for versioned headers, multi-word categories, and multi-line ingredients.
+  - **CompuChef (.ccf)**: Native support for legacy CompuChef exports.
   - **Generic Text & PDF Fallback**
   - **Web Scraping** (via `recipe-scrapers`)
-- **NLP Ingredient Parsing**: Intelligent extraction of quantities, units, and ingredient names.
-- **Dynamic Chunking**: Automatically split large recipe collections into manageable JSON parts.
+- **NLP Ingredient Parsing**: Intelligent extraction of quantities, units, and ingredient names using `ingredient-parser-nlp`.
+- **Dynamic Chunking**: Automatically split large recipe collections into manageable JSON parts based on file size or recipe count.
 
 ## 🚀 Installation
 
@@ -56,11 +57,21 @@ Split a large collection into part-files (e.g., 50MB chunks):
 ./convert.py path/to/large_collection/ -o large_export.json --chunk
 ```
 
-### Help
-For all available options:
+### Mixed-Format Detection
+The converter intelligently identifies formats within a single file. For ambiguous files (like `.txt`), use:
 ```bash
-./convert.py --help
+./convert.py mixed_recipes.txt -o output.json
 ```
+
+## 🧪 Testing
+
+The project includes a regression testing suite to ensure parsing accuracy.
+
+1. **Run all tests**:
+   ```bash
+   source venv/bin/activate
+   pytest tests/test_conversion.py -v
+   ```
 
 ## 📄 License
 

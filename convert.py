@@ -363,9 +363,9 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
     args = parse_arguments()
     
-    print(f"\n{Colors.BOLD}{Colors.HEADER}╔═══════════════════════════════════╗{Colors.ENDC}")
-    print(f"{Colors.BOLD}{Colors.HEADER}║   🍳 Recipe Format Converter 🍳   ║{Colors.ENDC}")
-    print(f"{Colors.BOLD}{Colors.HEADER}╚═══════════════════════════════════╝{Colors.ENDC}\n")
+    print(f"\n{Colors.BOLD}{Colors.HEADER}╔══════════════════════════════════════╗{Colors.ENDC}")
+    print(f"{Colors.BOLD}{Colors.HEADER}║   🍳 Recipe Format Converter 🍳      ║{Colors.ENDC}")
+    print(f"{Colors.BOLD}{Colors.HEADER}╚══════════════════════════════════════╝{Colors.ENDC}\n")
     
     parse_ingredients = not args.no_parse_ingredients
     ingredient_parser = get_ingredient_parser(use_nlp=(not args.no_nlp))

@@ -1,0 +1,69 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "MasterCook Recipe 1",
+  "recipeIngredient": [],
+  "recipeInstructions": [],
+  "recipeYield": "4",
+  "recipeCategory": "Test Mixed",
+  "keywords": "Test Mixed",
+  "comment": "Imported from tests/samples/mixed_test.txt",
+  "datePublished": "2026-02-21T00:19:14.068797",
+  "description": "Recipe converted from MasterCook format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "MealMaster Recipe 2",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Yeast",
+      "value": 1,
+      "unitText": "pk"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Flour",
+      "value": 3,
+      "unitText": "c"
+    }
+  ],
+  "recipeInstructions": [],
+  "recipeYield": "6 Servings",
+  "recipeCategory": "Test Mixed",
+  "keywords": "Test Mixed",
+  "comment": "Imported from tests/samples/mixed_test.txt",
+  "datePublished": "2026-02-21T00:19:14.069083",
+  "description": "Recipe converted from MealMaster format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "CompuChef Recipe 3",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Beef",
+      "value": 1,
+      "unitText": "pound"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Water",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    "Cook it."
+  ],
+  "recipeYield": "2",
+  "recipeCategory": "Test",
+  "keywords": "Test, Mixed",
+  "comment": "Imported from tests/samples/mixed_test.txt",
+  "datePublished": "2026-02-21T00:19:14.069160",
+  "description": "Recipe converted from CompuChef format"
+}
+]

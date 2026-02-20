@@ -1,0 +1,60 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Yogurt with Cumcumber and Mint (Kheere Ka Rait",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Plain yogurt",
+      "value": "2 2/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cucumber peeled and grated",
+      "value": 1,
+      "unitText": "each"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Finely chopped fresh mint",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Roasted cumin seeds",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cayenne pepper",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Black pepper",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    }
+  ],
+  "recipeInstructions": [
+    "Put  the  yogurt  in a bowl.   Beat lightly with a fork or whisk until smooth and creamy.   Add all the other ingredients and mix. Cover and refrigerate until ready to eat."
+  ],
+  "recipeYield": "6",
+  "recipeCategory": "Indian",
+  "keywords": "Indian, Side Dish, Ethnic, Spicy",
+  "comment": "Imported from tests/samples/failing4.mxp",
+  "datePublished": "2026-02-21T00:19:13.931952",
+  "description": "Recipe converted from MasterCook format"
+}
+]
