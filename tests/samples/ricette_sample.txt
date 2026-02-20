@@ -1,0 +1,41 @@
+:Ricette
+-Nome
+A Chi Piace
+-Tipo_Piatto
+Bevande
+-Ing_Principale
+Aperol
+-Persone
+1
+-Note
+ -
+-Ingredienti
+6/10 ==== Aperol
+3/10 ==== Vodka Glaciale Keglevich Alla Pesca
+1/10 ==== Sciroppo Di Fragola Toschi
+ ==== Succo Di Frutta Passion Fruit
+ ==== Per Guarnire:
+ ==== Frutta Tropicale A Piacere
+-Preparazione
+Si prepara nello shaker ('boston') con ghiaccio versando i primi tre ingredienti. Agitare e servire nel bicchiere tumbler alto con ghiaccio completando con succo di frutta. Guarnizioni fantasia con frutta tropicale.
+:Ricette
+-Nome
+Acciughe Con Salsa Verde
+-Tipo_Piatto
+Antipasto
+-Ing_Principale
+Acciughe
+-Persone
+4
+-Note
+Preparazione: 40 minuti. Calorie: 309.
+-Ingredienti
+8 ==== Acciughe Sotto Sale
+1 ==== Tuorlo D'uovo Sodo
+1 Spicchio ==== Aglio
+1 Cucchiaio ==== Aceto Di Vino
+ ==== Peperoncino
+ ==== Olio D'oliva
+ ==== Sale
+-Preparazione
+Pulite e diliscate le acciughe e disponetele su un piatto da portata. Tritate finemente l'aglio insieme con il prezzemolo e il tuorlo; versate il composto in una terrina, unite l'olio, l'aceto, il peperoncino e il sale, mescolate bene e ricoprite le acciughe completamente con la salsa preparata e lasciate insaporire per molte ore prima di servire.

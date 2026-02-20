@@ -7,6 +7,7 @@ from .base import BaseRecipeParser, BaseIngredientParser
 from .mealmaster import MealMasterParser
 from .mastercook import MasterCookParser
 from .compuchef import CompuChefParser
+from .ricette import RicetteParser
 from .html_parser import HtmlParser
 from .generic import GenericTextParser
 from .stubs import PdfParser, ImageParser, SqliteParser, CsvParser
@@ -35,12 +36,16 @@ def sniff_format(sample: str) -> Optional[str]:
     m = re.search(r'Recipe Via Compu-Chef', sample, re.IGNORECASE)
     if m: matches.append((m.start(), 'compuchef'))
     
+    # Ricette
+    m = re.search(r'^:Ricette', sample, re.MULTILINE)
+    if m: matches.append((m.start(), 'ricette'))
+    
     if not matches:
         return None
     
     # Return the format of the earliest match
     # If same position, prioritize more specific formats
-    priority = {'mastercook': 0, 'mealmaster': 1, 'compuchef': 2}
+    priority = {'mastercook': 0, 'mealmaster': 1, 'compuchef': 2, 'ricette': 3}
     matches.sort(key=lambda x: (x[0], priority.get(x[1], 99)))
     return matches[0][1]
 
@@ -63,7 +68,8 @@ class MixedFormatParser(BaseRecipeParser):
             r'\*\s*Exported\s+from\s+MasterCook[^*]*\*',
             r'^(?:MMMMM|-----)\s*[-A-Z0-9]+',
             r'^\*+\s*[^*]+\s*\*+$', # CompuChef title
-            r'Recipe Via Compu-Chef' # CompuChef footer
+            r'Recipe Via Compu-Chef', # CompuChef footer
+            r'^:Ricette'
         ]
         
         # Find all start positions
@@ -93,6 +99,8 @@ class MixedFormatParser(BaseRecipeParser):
                 parser = MealMasterParser(self.ingredient_parser)
             elif fmt == 'compuchef':
                 parser = CompuChefParser(self.ingredient_parser)
+            elif fmt == 'ricette':
+                parser = RicetteParser(self.ingredient_parser)
             
             if parser:
                 # We use parse_content to avoid reading the file again

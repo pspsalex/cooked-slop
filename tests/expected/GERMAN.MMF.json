@@ -1,0 +1,189 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Altdeutxche Brotchen (Old German Muffins)",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Butter (Or Margarine)",
+      "value": "3/4",
+      "unitText": "c"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": "1/2",
+      "unitText": "c"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Eggs,Large",
+      "value": 2
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Rum",
+      "value": 1,
+      "unitText": "T"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vanilla Extract",
+      "value": 1,
+      "unitText": "t"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Milk",
+      "value": 3,
+      "unitText": "T"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cinnamon",
+      "value": "1/2",
+      "unitText": "t"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Baking Powder",
+      "value": 2,
+      "unitText": "t"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Flour,Unbleached",
+      "value": "2 1/4",
+      "unitText": "c"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Almonds,Ground",
+      "value": "1/4",
+      "unitText": "c"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Orange Rind,Grated",
+      "value": 1,
+      "unitText": "T"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Raisins,If Desired",
+      "value": "1/4",
+      "unitText": "c"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Cream butter and sugar.  Beat in eggs, rum, vanilla, and milk.  Mix cinnamon, baking powder, and flour.  Add flour mixture to butter mixture. Gently mix in almonds, orange rind, and raisins.  Pour batter into greased muffin tins, filling half full.  Bake at 375 degrees F. for 25 to 30 minutes, or until browned."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Makes 18 muffins."
+    }
+  ],
+  "recipeYield": "4 Servings",
+  "recipeCategory": "German Breads D",
+  "keywords": "German Breads D",
+  "comment": "Imported from tests/samples/GERMAN.MMF",
+  "datePublished": "2026-02-21T00:48:29.460702",
+  "description": "Recipe converted from MealMaster format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Apfelpfannkuchen (Apple Pancakes)",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Flour,Unbleached, Unsifted",
+      "value": "2/3",
+      "unitText": "c"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": 2,
+      "unitText": "t"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": "1/4",
+      "unitText": "t"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Eggs,Large, Beaten",
+      "value": 4
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Milk",
+      "value": "1/2",
+      "unitText": "c"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Apple,Slices",
+      "value": 2,
+      "unitText": "c"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Butter (Or Margarine)",
+      "value": "3/4",
+      "unitText": "c"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": 2,
+      "unitText": "T"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cinnamon",
+      "value": "1/4",
+      "unitText": "t"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Sift together the flour, 2 t sugar, and the salt.  Beat eggs and milk together.  Gradually add flour mixture; beat until smooth.  Saute apples in 1/4 c of butter until tender.  Mixt 2 T sugar and the cinnamon together;"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "toss with apples.  Melt 2 T butter in a 6-inch diameter, deep frypan. Pour in the batter to a depth of about 1/4-inch.  When set, place 1/4 of the apples on top; cover with more batter.  Fry pancake until lightly browned on both sides.  Keep warm.  Repeat the procedure 3 times, until all batter and apples are used.  Serve immediately."
+    }
+  ],
+  "recipeYield": "4 Servings",
+  "recipeCategory": "German Fruits P",
+  "keywords": "German Fruits P",
+  "comment": "Imported from tests/samples/GERMAN.MMF",
+  "datePublished": "2026-02-21T00:48:29.460886",
+  "description": "Recipe converted from MealMaster format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Apfelquarkkuchen (Apple And Cream Kuchen)",
+  "recipeIngredient": [],
+  "recipeInstructions": [],
+  "recipeYield": "4 Servings",
+  "recipeCategory": "German Cakes De",
+  "keywords": "German Cakes De",
+  "comment": "Imported from tests/samples/GERMAN.MMF",
+  "datePublished": "2026-02-21T00:48:29.460937",
+  "description": "Recipe converted from MealMaster format"
+}
+]

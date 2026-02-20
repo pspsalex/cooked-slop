@@ -1,0 +1,77 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "A Chi Piace",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Aperol",
+      "value": "6/10"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vodka Glaciale Keglevich Alla Pesca",
+      "value": "3/10"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sciroppo Di Fragola Toschi",
+      "value": "1/10"
+    },
+    "Succo Di Frutta Passion Fruit",
+    "Per Guarnire:",
+    "Frutta Tropicale A Piacere"
+  ],
+  "recipeInstructions": [
+    "Si prepara nello shaker ('boston') con ghiaccio versando i primi tre ingredienti. Agitare e servire nel bicchiere tumbler alto con ghiaccio completando con succo di frutta. Guarnizioni fantasia con frutta tropicale."
+  ],
+  "recipeYield": "1",
+  "recipeCategory": "Bevande",
+  "keywords": "Bevande, Aperol",
+  "comment": "Imported from tests/samples/ricette_sample.txt",
+  "datePublished": "2026-02-21T00:40:50.283893",
+  "description": "Recipe converted from Ricette format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Acciughe Con Salsa Verde",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Acciughe Sotto Sale",
+      "value": 8
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Tuorlo D'uovo Sodo",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Aglio",
+      "value": 1,
+      "unitText": "Spicchio"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Aceto Di Vino",
+      "value": 1,
+      "unitText": "Cucchiaio"
+    },
+    "Peperoncino",
+    "Olio D'oliva",
+    "Sale"
+  ],
+  "recipeInstructions": [
+    "Pulite e diliscate le acciughe e disponetele su un piatto da portata. Tritate finemente l'aglio insieme con il prezzemolo e il tuorlo; versate il composto in una terrina, unite l'olio, l'aceto, il peperoncino e il sale, mescolate bene e ricoprite le acciughe completamente con la salsa preparata e lasciate insaporire per molte ore prima di servire."
+  ],
+  "recipeYield": "4",
+  "recipeCategory": "Antipasto",
+  "keywords": "Antipasto, Acciughe",
+  "comment": "Imported from tests/samples/ricette_sample.txt",
+  "datePublished": "2026-02-21T00:40:50.284025",
+  "description": "Recipe converted from Ricette format"
+}
+]

@@ -13,6 +13,7 @@ A modular, high-performance toolkit for converting recipes from various formats 
   - **MealMaster (.mmf, .mm)**: Robust parsing with improved continuation handling.
   - **MasterCook (.mxp, .mx2)**: Enhanced support for versioned headers, multi-word categories, and multi-line ingredients.
   - **CompuChef (.ccf)**: Native support for legacy CompuChef exports.
+  - **Ricette (Italian)**: Support for `:Ricette` separators and `-Field` markers.
   - **Generic Text & PDF Fallback**
   - **Web Scraping** (via `recipe-scrapers`)
 - **NLP Ingredient Parsing**: Intelligent extraction of quantities, units, and ingredient names using `ingredient-parser-nlp`.

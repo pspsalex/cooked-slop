@@ -1,0 +1,183 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Brownie Cookies",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Semisweet chocolate",
+      "value": 4,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Unsweetened chocolate",
+      "value": 1,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sifted all-purpose flour",
+      "value": "2 1/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Baking soda",
+      "value": "1 1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Baking powder",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Unsalted butter",
+      "value": "1/4",
+      "unitText": "pound"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Granulated sugar",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vanilla extract",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Eggs",
+      "value": 2,
+      "unitText": "ea"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Milk",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Finely chopped walnuts",
+      "value": "3/4",
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "1.  Melt the chocolate over hot water. 2.  Sift the flour, baking soda, and baking powder together. Set aside. 3.  In the bowl of a mixer, cream the butter. Add the sugar slowly and continue to beat. Add the vanilla, then the eggs 1 at a time. Add the chocolate and stir to blend. 4.  Stir in the dry ingredients and the milk by hand. When just blended, mix in the walnuts. Cover and refrigerate dough for 30 minutes before rolling. 5.  Preheat oven to 375 degres. Lightly grease a cookie sheet. 6.  To form the cookies, scoop out a portion of dough and roll out on a well-floured surface. When dough is 1/4 inch thick, cut it into rounds or other desired shapes. Re-roll scraps and cut again. 7.  Place on cookie sheet (leave room for expansion) and bake for 6 to 8 minutes. Watch for any hot spots in the oven and don't let these cookies overbrown. VARIATION:  For the Brownie Cookie Crust, make 1 recipe of Brownie Cookies and chill the dough briefly. Lightly grease the back side of a large baking sheet. Roll the dough out onto the baking sheet as thinly as possible so that the baked product will crumble easily. Bake crust at 375 degrees for 5 to 7 minutes. Let crust harden, then slide the cookie from the sheet and cool completely. Roll over the cookie with a rolling pin until it is crushed to a fine crumb. (There should be about 2 1/4 cups of crumbs.)"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Melt 1 stick plus 1 tablespoon of unsalted butter. Mix it into the crumbs and pack the mixture over the bottom and up the sides of a 10-inch springform pan. Freeze for 30 minutes before filling in order to set the crust. Note: When I made this, I made individual cookie crumb crusts for the \"Kit's Chocolate Mousse\" recipe by using a large muffin pan.  Line each cup with waxed paper for easy removal."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "***"
+    }
+  ],
+  "recipeYield": "48",
+  "recipeCategory": "Desserts",
+  "keywords": "Desserts, Cookies, Chocolate",
+  "comment": "Imported from tests/samples/NEWEST.CCF",
+  "datePublished": "2026-02-21T00:48:41.644552",
+  "description": "Recipe converted from CompuChef format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Champagne Chicken",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Chicken breast/boned/skinned",
+      "value": 3,
+      "unitText": "ea"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Olive oil",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Butter",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Champagne - dry",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Heavy cream",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Tarragon - fresh (1 T dry)",
+      "value": 3,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt & freshly ground pepper",
+      "value": 1,
+      "unitText": "x"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Prosciutto slices/paper thin",
+      "value": 6,
+      "unitText": "ea"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Shallots - finely chopped",
+      "value": 3,
+      "unitText": "ea"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Butter or margarine",
+      "value": 1,
+      "unitText": "tablespoon"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "*** See instructions at end if using the optional ingredients. Cut chicken into 1/4\" wide slices. Melt the butter and olive oil in a large heavy skillet. Saute the chicken for 4 to 5 minutes. Remove the chicken and keep warm. Deglaze the pan with the champagne. Add the cream to the pan. Add the tarragon and reduce the sauce for two minutes. Put the chicken back into the pan and bring just to a simmer. Remove to serving platter. Serve hot with fresh vegetables or over rice or pasta. (I serve this over fettucini, or with a side dish of Fettucini Alfredo). *** Cut chicken breasts in half only. Place each half between sheets of waxed paper and pound with a meat tenderizer until about 1/8\" thick. Saute shallots in butter until tender. Divide shallots equally between the breast halves, spreading evenly over each. Place one slice of prosciutto on each breast half, fold in half, and secure with toothpicks. Saute about 4 to 5 minutes on each side in the butter and olive oil listed in the original ingredients. Chicken is done when it springs back when lightly pressed with finger. Follow the balance of the instructions listed above for the sauce. Source: The original recipe came from \"The Martha Culbertson Cook Booklet\" published by Culbertson Winery. The \"additional ingredients\" modification is my own."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "***"
+    }
+  ],
+  "recipeYield": "6",
+  "recipeCategory": "Poultry",
+  "keywords": "Poultry, Main, dish",
+  "comment": "Imported from tests/samples/NEWEST.CCF",
+  "datePublished": "2026-02-21T00:48:41.644742",
+  "description": "Recipe converted from CompuChef format"
+}
+]
