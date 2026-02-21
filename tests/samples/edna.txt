@@ -1,0 +1,88 @@
+------------
+         id: 02690 
+   category: Pizza
+subcategory: Meat
+     source: 
+      title: Detroit Deep Dish Pizza
+Ingredients:
+  - CRUST:
+  - 1 pkg instant dry yeast
+  - 2 cup divided water
+  - 1 tablespoon sugar
+  - 1/4 cup mayonnaise
+  - 2 tablespoon melted butter
+  - 2 1/2 cup white flour
+  - 1 cup cornmeal flour
+  - 1 teaspoon salt
+  - 1 teaspoon dill weed
+  - 1/4 teaspoon garlic powder
+  - 1 teaspoon ground oregano
+  - TOPPING:
+  - 1/2 lb bacon cut into small 
+  -   pieces fried and drained
+  - 1 large green pepper chopped
+  - 1/4 cup velveeta cheese sliced
+  - 6 oz sliced pepperoni
+  - 2 medium sliced tomatoes
+  - 2 medium sliced onions
+  - 8 oz grated colby cheese
+  - 8 oz grated monterey jack cheese
+  - 1 can (15-oz) pizza sauce
+  - 
+Instructions:
+    CRUST: Combine yeast, 1 cup of the water and sugar. Add the 
+  mayonnaise, butter, the remaining water and mix thoroughly. Mix 
+  together the white flour and cornmeal, salt, dill, garlic powder and 
+  oregano. Add to yeast mixture and combine well. Set aside. covered 
+  with a clean cloth, and let rise for 60 minutes. Wet hands with cold 
+  water and spread dough into greased deep rectangular pan. Bake in an 
+  oven preheated to 325 degrees for 10-15 minutes. Remove and add 
+  toppings in this order: bacon, green peppers, velveeta, pepperoni, 
+  tomatoes, onions, colby cheese, monterey jack cheese and pizza sauce. 
+  Return to oven for 20-25 minutes. Cool slightly and cut.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+------------
+         id: 01890 
+   category: Pizza
+subcategory: Meat
+     source: 
+      title: Ham Pizza
+Ingredients:
+  - CRUST:
+  - 1/2 cup warm water
+  - Robin hood pizza crust mix
+  - TOPPING:
+  - 1 can (4-oz) mushrooms stem & all
+  - 1 pkg (2.5-oz) chipped ham cut 
+  -   into small pieces with scissors
+  - 10 green olives cut up
+  - 1 pkg (12-oz) shredded mozzarella
+  -   cheese
+  - Half of a 14-oz jar of ragu pizza
+  -   quick
+Instructions:
+    Mix together crust mix and water until moist. Put in oven and let 
+  rise for 10 minutes. Butter a 12 x 17 inch cookie sheet with sides. 
+  Put the dough in the cookie sheet. Spread the sauce over all the 
+  dough. Put on the ham and cheese. Bake in a preheated oven at 450 
+  degrees approximately 10 minutes or until crust is brown.
+  
+  
+  
+  
+  
+  
+  

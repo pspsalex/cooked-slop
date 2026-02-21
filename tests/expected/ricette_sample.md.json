@@ -1,0 +1,86 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Alette Di Pollo Ripiene Fritte (2)",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "di pollo",
+      "value": 8,
+      "unitText": "alette"
+    },
+    "100g di macinato misto",
+    "200g di pangrattato",
+    "50g di latte",
+    {
+      "@type": "PropertyValue",
+      "name": "uovo",
+      "value": 1
+    },
+    "formaggio grana grattugiato",
+    "rosmarino",
+    "olio per friggere",
+    "sale"
+  ],
+  "recipeInstructions": [
+    "**Scalzare** la parte finale più grossa dell'aletta. **Rigirare** la parte di carne staccata dall'osso verso la fine dell'osso, aromatizzare e farcire nella parte rovesciata della carne. **Battere** l'uovo con il latte (non salare). **Pannare** l'ala con l'uovo e il pangrattato. **Friggere** in olio a 160 gradi per 10 minuti, scolare, salare e servire."
+  ],
+  "recipeYield": "4",
+  "comment": "Imported from tests/samples/ricette_sample.md",
+  "datePublished": "2026-02-21T02:28:25.446104",
+  "description": "Recipe converted from RicetteMD format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Ali Di Pollo Alla Cinese",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "ali di pollo",
+      "value": 12,
+      "unitText": "di"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "di miele",
+      "value": 2,
+      "unitText": "cucchiai"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "di sherry",
+      "value": 2,
+      "unitText": "cucchiai"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "di aglio",
+      "value": 1,
+      "unitText": "spicchio"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "di zenzero in polvere",
+      "value": "1/2",
+      "unitText": "cucchiaio"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "di salsa di soia",
+      "value": 1,
+      "unitText": "tazzina"
+    },
+    "sale",
+    "olio d'arachidi"
+  ],
+  "recipeInstructions": [
+    "**Lavare** accuratamente le ali di pollo e passarle alla fiamma per strizzarle. **Fare** soffriggere dell'aglio tritato finemente in un wok ben oliato. Appena sarà ben rosolato (non bruciato) aggiungere (in sequenza) lo zenzero, la salsa di soia e continuando a mescolare il miele lo sherry e le ali di pollo. **Aggiustare** di sale e lasciare cuocere a fiamma bassissima per circa 25 minuti. **Suddividere** sui piatti di portata le ali di pollo, ricoprirle del loro sughetto, e portarle in tavola caldissime, con delle ciotoline di riso bollito."
+  ],
+  "recipeYield": "4",
+  "comment": "Imported from tests/samples/ricette_sample.md",
+  "datePublished": "2026-02-21T02:28:25.446221",
+  "description": "Recipe converted from RicetteMD format"
+}
+]

@@ -1,0 +1,120 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Betty William's Brownies",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 4
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 1,
+      "unitText": "stick"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "flour",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "hersher chocolate syrup --",
+      "value": 1,
+      "unitText": "can"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "#",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "nuts chopped",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    "Mix eggs, sugar and butter well in large bowl of electric mixer. Add remaining ingredients and mix well. Bake 30 minutes at 350 F in greased 9 x 13 pan. Cool and frost with: 1 Cup sugar, 6 Tablespoons butter, 6 Tablespoons milk.  Mix and bring to boil. Boil 1 minute. Remove from heat and add 1 cup chocolate chips . Beat with a spoon until thickened. Spread and cut in bars"
+  ],
+  "recipeYield": "8 servings",
+  "recipeCategory": "cookies",
+  "keywords": "cookies",
+  "comment": "Imported from tests/samples/nyc.txt",
+  "datePublished": "2026-02-21T02:39:20.939221",
+  "description": "Recipe converted from NYC format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Christmas Cookie Slices",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "margarine or butter,",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "softened",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 2
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "vanilla",
+      "value": "1 1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "all-purpose flour",
+      "value": 3,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "baking soda",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    }
+  ],
+  "recipeInstructions": [
+    "Mix sugar, margarine, eggs, and vanilla.  Stir in remaining ingredients. Divide into 3 equal parts. Shape each part into a roll, about 1 1/2 inches in diameter. Wrap and refrigerate at least 4 hrs. Heat oven to 400 degrees. Cut rolls into 1/8 inch slices. Place about 1 inch apart on ungreased cookie shoot. /bake 8 to 10 min. Immediately remove from cookie sheet."
+  ],
+  "recipeYield": "84 servings",
+  "recipeCategory": "cookies",
+  "keywords": "cookies, deserts",
+  "comment": "Imported from tests/samples/nyc.txt",
+  "datePublished": "2026-02-21T02:39:20.939350",
+  "description": "Recipe converted from NYC format"
+}
+]

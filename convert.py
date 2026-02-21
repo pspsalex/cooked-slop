@@ -216,6 +216,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--no-nlp', action='store_true', help='Disable NLP ingredient parsing even if installed')
     parser.add_argument('--chunk', action='store_true', help='Split output into chunks')
     parser.add_argument('-v', '--verbose', action='store_true', help='Show verbose output')
+    parser.add_argument('-f', '--format', type=str, choices=['mealmaster', 'mastercook', 'compuchef', 'edna', 'ricette', 'ricette_md', 'nyc'],
+                        help='Override auto-detection and specify input format')
     return parser.parse_args()
 
 
@@ -226,9 +228,10 @@ def convert_recipe_file(
     verbose: bool,
     parse_ingredients: bool,
     ingredient_parser: BaseIngredientParser,
+    format_name: Optional[str] = None,
     stream_writer: Optional[JSONStreamWriter] = None
 ) -> int:
-    parser = ParserFactory.get_parser(input_path, ingredient_parser)
+    parser = ParserFactory.get_parser(input_path, ingredient_parser, format_name)
     if not parser:
         if verbose: print(f"{Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}")
         return 0
@@ -241,7 +244,7 @@ def convert_recipe_file(
         if verbose: traceback.print_exc()
         return 0
         
-    if not recipes and input_path.suffix.lower() == '.txt':
+    if not recipes and input_path.suffix.lower() == '.txt' and not format_name:
         # Fallback to generic text parser
         fallback_parser = GenericTextParser(ingredient_parser)
         recipes = fallback_parser.parse_file(str(input_path))
@@ -289,12 +292,13 @@ def process_directory(
     recursive: bool,
     parse_ingredients: bool,
     ingredient_parser: BaseIngredientParser,
+    format_name: Optional[str] = None,
     stream_writer: Optional[JSONStreamWriter] = None
 ) -> None:
     global shutdown_requested
     
     # Updated extensions to include stubs explicitly supported by ParserFactory.
-    extensions = {'.mmf', '.mm', '.mxp', '.mx2', '.mz2', '.txt', '.html', '.htm', '.pdf', '.jpg', '.png', '.sqlite', '.db', '.csv', '.ccf'}
+    extensions = {'.mmf', '.mm', '.mxp', '.mx2', '.mz2', '.txt', '.html', '.htm', '.pdf', '.jpg', '.png', '.sqlite', '.db', '.csv', '.ccf', '.md'}
     extensions.update([e.upper() for e in extensions])
     
     recipe_files = []
@@ -322,7 +326,7 @@ def process_directory(
             rel_path = recipe_file.relative_to(input_dir) if input_dir in recipe_file.parents else recipe_file
             print(f"\n{Colors.BOLD}[{file_idx}/{len(recipe_files)}]{Colors.ENDC} {Colors.CYAN}{rel_path}{Colors.ENDC}")
             
-        bytes_processed = convert_recipe_file(recipe_file, output_dir, one_file_per_recipe, verbose, parse_ingredients, ingredient_parser, stream_writer)
+        bytes_processed = convert_recipe_file(recipe_file, output_dir, one_file_per_recipe, verbose, parse_ingredients, ingredient_parser, format_name, stream_writer)
         processed_bytes += recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
         
         if not verbose:
@@ -387,7 +391,7 @@ def main():
             
             convert_recipe_file(args.input, args.output.parent if output_is_file else args.output, 
                                not args.multiple_per_file, args.verbose, parse_ingredients, 
-                               ingredient_parser, stream_writer)
+                               ingredient_parser, args.format, stream_writer)
                 
             if not args.verbose:
                 print_progress_bar(args.input.stat().st_size, args.input.stat().st_size, prefix='Processing', suffix='Complete!')
@@ -395,7 +399,7 @@ def main():
         elif args.input.is_dir():
             process_directory(args.input, args.output.parent if output_is_file else args.output, 
                              not args.multiple_per_file, args.verbose, args.recursive, 
-                             parse_ingredients, ingredient_parser, stream_writer)
+                             parse_ingredients, ingredient_parser, args.format, stream_writer)
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
             return 1

@@ -9,34 +9,8 @@
   "recipeCategory": "Test Mixed",
   "keywords": "Test Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
-  "datePublished": "2026-02-21T02:55:11.098095",
+  "datePublished": "2026-02-21T03:08:02.314662",
   "description": "Recipe converted from MasterCook format"
-},
-{
-  "@context": "https://schema.org",
-  "@type": "Recipe",
-  "name": "MealMaster Recipe 2",
-  "recipeIngredient": [
-    {
-      "@type": "PropertyValue",
-      "name": "Yeast",
-      "value": 1,
-      "unitText": "pk"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Flour",
-      "value": 3,
-      "unitText": "c"
-    }
-  ],
-  "recipeInstructions": [],
-  "recipeYield": "6 Servings",
-  "recipeCategory": "Test Mixed",
-  "keywords": "Test Mixed",
-  "comment": "Imported from tests/samples/mixed_test.txt",
-  "datePublished": "2026-02-21T02:55:11.098190",
-  "description": "Recipe converted from MealMaster format"
 },
 {
   "@context": "https://schema.org",
@@ -63,7 +37,7 @@
   "recipeCategory": "Test",
   "keywords": "Test, Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
-  "datePublished": "2026-02-21T02:55:11.098215",
+  "datePublished": "2026-02-21T03:08:02.314779",
   "description": "Recipe converted from CompuChef format"
 }
 ]
