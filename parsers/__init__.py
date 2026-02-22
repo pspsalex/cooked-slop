@@ -5,6 +5,9 @@ from .ingredients import get_ingredient_parser
 from .factory import ParserFactory, sniff_format
 from .generic import GenericTextParser
 from .compuchef import CompuChefParser
+from .recipeml import RecipeMLParser
+from .twentykrecipes import TwentyKRecipesParser
+from .ricette_json import RicetteJsonParser
 
 __all__ = [
     'Recipe',
@@ -16,4 +19,7 @@ __all__ = [
     'sniff_format',
     'GenericTextParser',
     'CompuChefParser',
+    'RecipeMLParser',
+    'TwentyKRecipesParser',
+    'RicetteJsonParser',
 ]

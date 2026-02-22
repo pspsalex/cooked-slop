@@ -28,7 +28,8 @@
   ],
   "recipeYield": "4",
   "comment": "Imported from tests/samples/ricette_sample.md",
-  "datePublished": "2026-02-21T02:28:25.446104",
+  "url": "file://tests/samples/ricette_sample.md",
+  "datePublished": "2026-02-22T17:32:15.713608",
   "description": "Recipe converted from RicetteMD format"
 },
 {
@@ -80,7 +81,8 @@
   ],
   "recipeYield": "4",
   "comment": "Imported from tests/samples/ricette_sample.md",
-  "datePublished": "2026-02-21T02:28:25.446221",
+  "url": "file://tests/samples/ricette_sample.md",
+  "datePublished": "2026-02-22T17:32:15.713768",
   "description": "Recipe converted from RicetteMD format"
 }
 ]

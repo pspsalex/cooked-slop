@@ -1,0 +1,46 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "100% Whole Wheat Bread #1",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Flour",
+      "value": "2 1/2",
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "powder",
+      "value": 1,
+      "unitText": "Milk"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Oil",
+      "value": "1/2"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Egg",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Yeast",
+      "value": "3/4"
+    }
+  ],
+  "recipeInstructions": [
+    "Stir yeast and sugar into water; let stand until foamy, about 5 minutes. For food processor fitted with metal blade or mixer with dough hook, put flour, milk powder, oil and egg into bowl. Turn machine on and combine mixture. With machine running, slowly add yeast mixture. Mix until dough cleans sides of bowl. Once desired consistency is reached, mix dough until well kneaded."
+  ],
+  "recipeYield": "2",
+  "recipeCategory": "Bread",
+  "keywords": "Bread",
+  "comment": "Imported from tests/samples/sample_20krecipes.csv",
+  "url": "file://tests/samples/sample_20krecipes.csv",
+  "datePublished": "2026-02-22T17:32:22.733223",
+  "description": "Recipe converted from 20krecipes CSV format"
+}
+]

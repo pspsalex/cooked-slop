@@ -9,7 +9,8 @@
   "recipeCategory": "Test Mixed",
   "keywords": "Test Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
-  "datePublished": "2026-02-21T02:55:11.098095",
+  "url": "file://tests/samples/mixed_test.txt",
+  "datePublished": "2026-02-22T17:32:07.100640",
   "description": "Recipe converted from MasterCook format"
 },
 {
@@ -35,7 +36,8 @@
   "recipeCategory": "Test Mixed",
   "keywords": "Test Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
-  "datePublished": "2026-02-21T02:55:11.098190",
+  "url": "file://tests/samples/mixed_test.txt",
+  "datePublished": "2026-02-22T17:32:07.100798",
   "description": "Recipe converted from MealMaster format"
 },
 {
@@ -63,7 +65,8 @@
   "recipeCategory": "Test",
   "keywords": "Test, Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
-  "datePublished": "2026-02-21T02:55:11.098215",
+  "url": "file://tests/samples/mixed_test.txt",
+  "datePublished": "2026-02-22T17:32:07.100843",
   "description": "Recipe converted from CompuChef format"
 }
 ]

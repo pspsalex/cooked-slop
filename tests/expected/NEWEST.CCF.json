@@ -61,7 +61,8 @@
   "recipeCategory": "Chicken",
   "keywords": "Chicken",
   "comment": "Imported from tests/samples/NEWEST.CCF",
-  "datePublished": "2026-02-21T02:55:22.952976",
+  "url": "file://tests/samples/NEWEST.CCF",
+  "datePublished": "2026-02-22T17:32:12.270910",
   "description": "Recipe converted from CompuChef format"
 },
 {
@@ -152,7 +153,8 @@
   "recipeCategory": "Desserts",
   "keywords": "Desserts, Cookies, Chocolate",
   "comment": "Imported from tests/samples/NEWEST.CCF",
-  "datePublished": "2026-02-21T02:55:22.953098",
+  "url": "file://tests/samples/NEWEST.CCF",
+  "datePublished": "2026-02-22T17:32:12.271084",
   "description": "Recipe converted from CompuChef format"
 },
 {
@@ -228,7 +230,8 @@
   "recipeCategory": "Poultry",
   "keywords": "Poultry, Main, dish",
   "comment": "Imported from tests/samples/NEWEST.CCF",
-  "datePublished": "2026-02-21T02:55:22.953145",
+  "url": "file://tests/samples/NEWEST.CCF",
+  "datePublished": "2026-02-22T17:32:12.271171",
   "description": "Recipe converted from CompuChef format"
 }
 ]

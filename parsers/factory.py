@@ -14,6 +14,9 @@ from .nyc import NYCParser
 from .html_parser import HtmlParser
 from .generic import GenericTextParser
 from .stubs import PdfParser, ImageParser, SqliteParser, CsvParser
+from .recipeml import RecipeMLParser
+from .twentykrecipes import TwentyKRecipesParser
+from .ricette_json import RicetteJsonParser
 
 
 # --- Format signature detectors ---
@@ -52,12 +55,24 @@ def sniff_format(sample: str) -> Optional[str]:
     # NYC
     m = re.search(r'^@{5}\s+Now You\'re Cooking!', sample, re.MULTILINE)
     if m: matches.append((m.start(), 'nyc'))
+
+    # RecipeML (XML)
+    m = re.search(r'<recipeml|<recipe[^a-zA-Z]', sample, re.IGNORECASE)
+    if m: matches.append((m.start(), 'recipeml'))
+
+    # Ricette JSON (starts with { or [ for JSON)
+    m = re.search(r'^\s*[\{\[]', sample, re.MULTILINE)
+    if m:
+        # Try to detect if it's Ricette JSON by looking for specific fields
+        json_match = re.search(r'["\']Nome["\']|["\']Ingredienti["\']', sample)
+        if json_match:
+            matches.append((m.start(), 'ricette_json'))
     
     if not matches:
         return None
     
     # Return the format of the earliest match
-    priority = {'mastercook': 0, 'edna': 1, 'nyc': 2, 'mealmaster': 3, 'compuchef': 4, 'ricette': 5, 'ricette_md': 6}
+    priority = {'mastercook': 0, 'edna': 1, 'nyc': 2, 'mealmaster': 3, 'compuchef': 4, 'ricette': 5, 'ricette_md': 6, 'recipeml': 7, 'ricette_json': 8}
     matches.sort(key=lambda x: (x[0], priority.get(x[1], 99)))
     return matches[0][1]
 
@@ -91,7 +106,7 @@ class MixedFormatParser(BaseRecipeParser):
             'nyc': r'\*\* Exported from Now You.re Cooking!.* \*\*'
         }
         
-        priority = {'mastercook': 0, 'edna': 1, 'nyc': 2, 'mealmaster': 3, 'compuchef': 4, 'ricette': 5, 'ricette_md': 6}
+        priority = {'mastercook': 0, 'edna': 1, 'nyc': 2, 'mealmaster': 3, 'compuchef': 4, 'ricette': 5, 'ricette_md': 6, 'recipeml': 7, 'ricette_json': 8}
         
         # Find all candidate starts
         all_matches = []
@@ -172,6 +187,10 @@ class MixedFormatParser(BaseRecipeParser):
                 parser = RicetteMdParser(self.ingredient_parser)
             elif fmt == 'nyc':
                 parser = NYCParser(self.ingredient_parser)
+            elif fmt == 'recipeml':
+                parser = RecipeMLParser(self.ingredient_parser)
+            elif fmt == 'ricette_json':
+                parser = RicetteJsonParser(self.ingredient_parser)
             else:
                 parser = None
                 
@@ -204,6 +223,12 @@ class ParserFactory:
                 return RicetteMdParser(ingredient_parser)
             elif fmt == 'nyc':
                 return NYCParser(ingredient_parser)
+            elif fmt == 'recipeml':
+                return RecipeMLParser(ingredient_parser)
+            elif fmt == 'ricette_json':
+                return RicetteJsonParser(ingredient_parser)
+            elif fmt == '20krecipes':
+                return TwentyKRecipesParser(ingredient_parser)
             # Add more overrides as needed
 
         ext = filepath.suffix.lower()
@@ -215,6 +240,12 @@ class ParserFactory:
             return MealMasterParser(ingredient_parser)
         elif ext in {'.mxp', '.mx2', '.mz2'}:
             return MasterCookParser(ingredient_parser)
+        elif ext in {'.xml', '.recipeml'}:
+            return RecipeMLParser(ingredient_parser)
+        elif ext == '.csv':
+            return TwentyKRecipesParser(ingredient_parser)
+        elif ext == '.json':
+            return RicetteJsonParser(ingredient_parser)
         elif ext in {'.html', '.htm'}:
             return HtmlParser(ingredient_parser)
         elif ext == '.pdf':
@@ -223,7 +254,5 @@ class ParserFactory:
             return ImageParser(ingredient_parser)
         elif ext in {'.sqlite', '.db'}:
             return SqliteParser(ingredient_parser)
-        elif ext == '.csv':
-            return CsvParser(ingredient_parser)
 
         return None

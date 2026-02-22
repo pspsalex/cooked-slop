@@ -73,7 +73,8 @@
   "recipeCategory": "Onions",
   "keywords": "Onions, Peppers, Side Dishes, Spinach, Tomatoes, Volume 2-4, Apr.'99",
   "comment": "Imported from tests/samples/failing2.mxp",
-  "datePublished": "2026-02-21T00:19:13.816783",
+  "url": "file://tests/samples/failing2.mxp",
+  "datePublished": "2026-02-22T17:32:03.645221",
   "description": "Recipe converted from MasterCook format"
 },
 {
@@ -183,7 +184,8 @@
   "recipeCategory": "Cheese",
   "keywords": "Cheese, Mushrooms, Onions, Peas/Pea Pods, Peppers, Rice, Side Dishes, Vegetables, Volume 2-4, Apr.'99, Pasta/Noodles",
   "comment": "Imported from tests/samples/failing2.mxp",
-  "datePublished": "2026-02-21T00:19:13.817016",
+  "url": "file://tests/samples/failing2.mxp",
+  "datePublished": "2026-02-22T17:32:03.645410",
   "description": "Recipe converted from MasterCook format"
 }
 ]

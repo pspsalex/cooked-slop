@@ -1,0 +1,112 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "14 Karat Cake W/cream Cheese Frosting",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Flour",
+      "value": 2,
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": "1 3/4",
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Baking soda",
+      "value": "1 1/4",
+      "unitText": "teaspoons"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cinnamon",
+      "value": 2,
+      "unitText": "teaspoons"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Olive oil",
+      "value": "3/4",
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Milk",
+      "value": "1/2",
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Eggs",
+      "value": 3,
+      "unitText": "large"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Finely grated raw carrots",
+      "value": 3,
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Chopped pecans",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cream cheese; softened",
+      "value": 6,
+      "unitText": "ounces"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Butter; softened",
+      "value": 6,
+      "unitText": "tablespoons"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Powdered sugar",
+      "value": "2 1/4",
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vanilla extract",
+      "value": "3/4",
+      "unitText": "teaspoons"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Grease and flour a 9X13X2\" pan. Preheat oven to 350 F. Sift flour, sugar, soda, salt, and cinnamon together. In a mixing bowl, combine dry ingredients with oil, milk, and eggs. Blend on low speed for about 1 minute. Add carrots and nuts and mix until well blended. Bake at 350 F for 40 to 45 minutes or until wooden pick inserted comes out clean. Cool thorough and frost with cream cheese frosting."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Frosting: Combine cream cheese, butter, and vanilla. Add powdered sugar and beat until light and fluffy."
+    }
+  ],
+  "recipeYield": "16",
+  "recipeCategory": "Cake",
+  "keywords": "Cake",
+  "comment": "Imported from tests/samples/14_Karat_Cake.xml",
+  "url": "file://tests/samples/14_Karat_Cake.xml",
+  "datePublished": "2026-02-22T17:32:20.950373",
+  "description": "Recipe converted from RecipeML format"
+}
+]

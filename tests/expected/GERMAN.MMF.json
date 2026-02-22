@@ -92,7 +92,8 @@
   "recipeCategory": "German Breads D",
   "keywords": "German Breads D",
   "comment": "Imported from tests/samples/GERMAN.MMF",
-  "datePublished": "2026-02-21T00:48:29.460702",
+  "url": "file://tests/samples/GERMAN.MMF",
+  "datePublished": "2026-02-22T17:32:10.534845",
   "description": "Recipe converted from MealMaster format"
 },
 {
@@ -170,7 +171,8 @@
   "recipeCategory": "German Fruits P",
   "keywords": "German Fruits P",
   "comment": "Imported from tests/samples/GERMAN.MMF",
-  "datePublished": "2026-02-21T00:48:29.460886",
+  "url": "file://tests/samples/GERMAN.MMF",
+  "datePublished": "2026-02-22T17:32:10.535047",
   "description": "Recipe converted from MealMaster format"
 },
 {
@@ -183,7 +185,8 @@
   "recipeCategory": "German Cakes De",
   "keywords": "German Cakes De",
   "comment": "Imported from tests/samples/GERMAN.MMF",
-  "datePublished": "2026-02-21T00:48:29.460937",
+  "url": "file://tests/samples/GERMAN.MMF",
+  "datePublished": "2026-02-22T17:32:10.535099",
   "description": "Recipe converted from MealMaster format"
 }
 ]

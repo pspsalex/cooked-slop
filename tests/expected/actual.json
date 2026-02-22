@@ -1,0 +1,45 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Acciughe Marinate",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Acciughe Piccole",
+      "value": 500,
+      "unitText": "G"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Aglio",
+      "value": 1,
+      "unitText": "Spicchio"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Limoni",
+      "value": 2
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Prezzemolo",
+      "value": 1,
+      "unitText": "Ciuffo"
+    },
+    "Olio D'oliva",
+    "Sale",
+    "Pepe"
+  ],
+  "recipeInstructions": [
+    "Pulite le acciughe, togliete testa, interiora e lisca, apritele a metà senza dividerle; disponetele a raggio in un piatto fondo. Tritate prezzemolo e aglio, unite il succo dei limoni, sale e pepe. Emulsionate e versate la salsa sui pesci; coprite e tenete al fresco alcune ore."
+  ],
+  "recipeYield": "4",
+  "recipeCategory": "Pesce",
+  "keywords": "Pesce, Acciughe",
+  "comment": "Imported from tests/samples/sample_ricette.json",
+  "url": "file://tests/samples/sample_ricette.json",
+  "datePublished": "2026-02-22T17:22:19.560995",
+  "description": "Recipe converted from Ricette JSON format"
+}
+]

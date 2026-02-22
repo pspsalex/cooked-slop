@@ -120,6 +120,7 @@ class SchemaOrgConverter:
         
         if recipe.source_file:
             schema_recipe['comment'] = f"Imported from {recipe.source_file}"
+            schema_recipe['url'] = f"file://{recipe.source_file}"
         
         schema_recipe['datePublished'] = datetime.now().isoformat()
         schema_recipe['description'] = f"Recipe converted from {recipe.source_format} format"
@@ -216,7 +217,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--no-nlp', action='store_true', help='Disable NLP ingredient parsing even if installed')
     parser.add_argument('--chunk', action='store_true', help='Split output into chunks')
     parser.add_argument('-v', '--verbose', action='store_true', help='Show verbose output')
-    parser.add_argument('-f', '--format', type=str, choices=['mealmaster', 'mastercook', 'compuchef', 'edna', 'ricette', 'ricette_md', 'nyc'],
+    parser.add_argument('-f', '--format', type=str, choices=['mealmaster', 'mastercook', 'compuchef', 'edna', 'ricette', 'ricette_md', 'nyc', 'recipeml', '20krecipes', 'ricette_json'],
                         help='Override auto-detection and specify input format')
     return parser.parse_args()
 

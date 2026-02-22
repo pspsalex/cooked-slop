@@ -51,11 +51,15 @@ def test_regression(sample_path: Path, tmp_path: Path):
         if "comment" in recipe:
              # Strip absolute paths from comments if they exist
              recipe["comment"] = "Imported from " + Path(recipe["comment"].split("Imported from ")[-1]).name
+        if "url" in recipe:
+             recipe["url"] = "file://" + Path(recipe["url"].replace("file://", "")).name
 
     for recipe in expected_json:
         if "datePublished" in recipe:
             recipe["datePublished"] = "NORMALIZED_DATE"
         if "comment" in recipe:
              recipe["comment"] = "Imported from " + Path(recipe["comment"].split("Imported from ")[-1]).name
+        if "url" in recipe:
+             recipe["url"] = "file://" + Path(recipe["url"].replace("file://", "")).name
 
     assert actual_json == expected_json

@@ -155,3 +155,4 @@ output.json
 test_output.json
 chunk_test*.json
 failing4_output.json
+output/**

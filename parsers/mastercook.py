@@ -79,6 +79,10 @@ class MasterCookParser(BaseRecipeParser):
                 # Split by 2 or more spaces to keep "Side Dish" together
                 recipe.categories = [c.strip() for c in re.split(r'\s{2,}', cats) if c.strip()]
                 continue
+            elif 'Amount' in line and 'Measure' in line and 'Ingredient' in line:
+                in_categories = False
+                found_ingredient_header = True
+                continue
             elif in_categories and line.startswith(' ') and line_stripped:
                 # Continuation of categories block
                 new_cats = [c.strip() for c in re.split(r'\s{2,}', line_stripped) if c.strip()]

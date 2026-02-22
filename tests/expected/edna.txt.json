@@ -133,7 +133,8 @@
   "recipeCategory": "Pizza",
   "keywords": "Pizza, Meat",
   "comment": "Imported from tests/samples/edna.txt",
-  "datePublished": "2026-02-21T02:19:24.250407",
+  "url": "file://tests/samples/edna.txt",
+  "datePublished": "2026-02-22T17:32:13.988544",
   "description": "Recipe converted from Edna format"
 },
 {
@@ -182,7 +183,8 @@
   "recipeCategory": "Pizza",
   "keywords": "Pizza, Meat",
   "comment": "Imported from tests/samples/edna.txt",
-  "datePublished": "2026-02-21T02:19:24.250529",
+  "url": "file://tests/samples/edna.txt",
+  "datePublished": "2026-02-22T17:32:13.988718",
   "description": "Recipe converted from Edna format"
 }
 ]

@@ -52,7 +52,8 @@
   "recipeCategory": "cookies",
   "keywords": "cookies",
   "comment": "Imported from tests/samples/nyc.txt",
-  "datePublished": "2026-02-21T02:39:20.939221",
+  "url": "file://tests/samples/nyc.txt",
+  "datePublished": "2026-02-22T17:32:17.424795",
   "description": "Recipe converted from NYC format"
 },
 {
@@ -114,7 +115,8 @@
   "recipeCategory": "cookies",
   "keywords": "cookies, deserts",
   "comment": "Imported from tests/samples/nyc.txt",
-  "datePublished": "2026-02-21T02:39:20.939350",
+  "url": "file://tests/samples/nyc.txt",
+  "datePublished": "2026-02-22T17:32:17.424974",
   "description": "Recipe converted from NYC format"
 }
 ]

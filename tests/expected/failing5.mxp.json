@@ -1,0 +1,73 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "100% Whole Wheat Bread",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Water",
+      "value": "2/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Yeast",
+      "value": 3,
+      "unitText": "package"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Scalded Milk",
+      "value": 8,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Shortening",
+      "value": "2/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Molasses",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Whole Wheat Flour",
+      "value": 12,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    "Dissolve yeast in 2/3 cup water while your milk is cooling. Dissolve 1 cup sugar in the hot milk. Stir all ingredients in large bowl, turn out and knead about 5 minutes, adding flour if needed. Knead about 5 minutes. Let rise until doubled in bulk, about 1 1/2 to 2 hours. Knead down and shape into 6 loaves, let rise until doubled in pans. Bake at 375 degrees F for 40 minutes. Turn out on wire rack and let cool to cold before slicing, if you can."
+  ],
+  "recipeYield": "6",
+  "recipeCategory": "Breads",
+  "keywords": "Breads",
+  "comment": "Imported from tests/samples/failing5.mxp",
+  "url": "file://tests/samples/failing5.mxp",
+  "datePublished": "2026-02-22T17:32:19.188485",
+  "description": "Recipe converted from MasterCook format"
+}
+]
