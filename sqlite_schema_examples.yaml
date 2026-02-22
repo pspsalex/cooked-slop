@@ -1,0 +1,81 @@
+# Example SQLite Recipe Schema Configurations
+# Place these files in a configs/ directory and load with:
+#   registry = get_sqlite_schema_registry()
+#   registry.load_schemas_from_yaml(Path("configs"))
+
+---
+# Example 1: Single table with newline-separated ingredients
+name: myfavapp_single_table
+recipes_table: recipes
+description: "MyFavApp format - recipes with ingredients in a text field"
+version: "1.0"
+
+recipe_columns:
+  - name: title
+    attribute: title
+    required: true
+
+ingredients:
+  type: field
+  field: ingredients
+  delimiter: "\n"
+
+instructions:
+  field: instructions
+  delimiter: "\n"
+
+---
+# Example 2: Recipes + separate ingredients table
+name: cooklist_separate_tables
+recipes_table: recipes
+description: "CookList format - recipes linked to ingredient table"
+version: "1.0"
+
+recipe_columns:
+  - name: id
+    attribute: id
+  - name: name
+    attribute: title
+    required: true
+
+ingredients:
+  type: table
+  table: ingredients
+  id_column: id
+  name_column: ingredient_name
+  quantity_column: quantity
+  unit_column: unit
+
+instructions:
+  field: method
+  delimiter: "\n"
+
+---
+# Example 3: Junction table pattern (most flexible)
+name: chefmate_junction
+recipes_table: recipes
+description: "ChefMate format - recipes linked to ingredients via junction table"
+version: "1.0"
+
+recipe_columns:
+  - name: id
+    attribute: id
+  - name: title
+    attribute: title
+    required: true
+
+ingredients:
+  type: junction
+  junction_table: recipe_ingredients
+  recipe_id_column: recipe_id
+  ingredient_id_column: ingredient_id
+  quantity_column: quantity
+  unit_column: unit
+  ingredient_table:
+    table: ingredients
+    id_column: id
+    name_column: name
+
+instructions:
+  field: directions
+  delimiter: "\n"

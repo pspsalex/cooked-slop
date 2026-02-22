@@ -8,6 +8,8 @@ from .compuchef import CompuChefParser
 from .recipeml import RecipeMLParser
 from .twentykrecipes import TwentyKRecipesParser
 from .ricette_json import RicetteJsonParser
+from .detection import get_detection_registry, Format, DetectionResult, FormatDetectionRegistry
+from .sqlite_config import get_sqlite_schema_registry, SqliteRecipeSchema, SqliteSchemaRegistry
 
 __all__ = [
     'Recipe',
@@ -22,4 +24,11 @@ __all__ = [
     'RecipeMLParser',
     'TwentyKRecipesParser',
     'RicetteJsonParser',
+    'get_detection_registry',
+    'Format',
+    'DetectionResult',
+    'FormatDetectionRegistry',
+    'get_sqlite_schema_registry',
+    'SqliteRecipeSchema',
+    'SqliteSchemaRegistry',
 ]
