@@ -1,0 +1,24 @@
+name: cc_rec_sql
+recipes_table: RECIPE
+description: "Config for cc-rec database"
+version: "1.0"
+
+recipe_columns:
+  - name: ID
+    attribute: id
+    required: true
+  - name: TITLE
+    attribute: title
+    required: true
+
+ingredients:
+  type: table
+  table: INGRED
+  id_column: ID
+  name_column: I_NAME
+  quantity_column: QUANT
+  unit_column: UNIT
+
+instructions:
+  field: DIR
+  delimiter: "\n"

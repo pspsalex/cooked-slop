@@ -21,3 +21,5 @@ class Recipe:
     instructions: List[str] = field(default_factory=list)
     source_file: Optional[str] = None
     source_format: str = 'Unknown'
+    sqlite_table: Optional[str] = None
+    sqlite_id: Optional[str] = None

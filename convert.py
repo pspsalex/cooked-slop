@@ -51,7 +51,7 @@ class Colors:
     BOLD = '\033[1m'
     DIM = '\033[2m'
 
-def print_progress_bar(iteration: int, total: int, prefix: str = '', suffix: str = '', 
+def print_progress_bar(iteration: int, total: int, prefix: str = '', suffix: str = '',
                        length: int = 50, fill: str = '█'):
     """Print a colorful progress bar"""
     if total <= 0:
@@ -61,10 +61,10 @@ def print_progress_bar(iteration: int, total: int, prefix: str = '', suffix: str
     bar_color = Colors.RED if percent < 33 else (Colors.YELLOW if percent < 66 else Colors.GREEN)
     bar = fill * filled_length + '░' * (length - filled_length)
     print(f'\r{Colors.CYAN}{prefix}{Colors.ENDC} |{bar_color}{bar}{Colors.ENDC}| '
-          f'{Colors.BOLD}{percent:.1f}%{Colors.ENDC} {Colors.DIM}{suffix[:30]}{Colors.ENDC}\033[K', 
+          f'{Colors.BOLD}{percent:.1f}%{Colors.ENDC} {Colors.DIM}{suffix[:30]}{Colors.ENDC}\033[K',
           end='', flush=True)
     if iteration >= total:
-        print() 
+        print()
 
 from parsers import (
     Recipe, Ingredient, BaseIngredientParser, BaseRecipeParser,
@@ -75,11 +75,11 @@ from parsers.units import normalize_unit
 # --- Output Conversion ---
 class SchemaOrgConverter:
     """Converter to schema.org Recipe JSON-LD format"""
-    
+
     def convert(self, recipe: Recipe, parse_ingredients: bool = True) -> dict:
         instructions = self._build_instructions(recipe.instructions)
         recipe_ingredients = []
-        
+
         if parse_ingredients:
             for ing in recipe.ingredients:
                 if ing.quantity or ing.unit:
@@ -96,13 +96,13 @@ class SchemaOrgConverter:
                         prop_value["unitText"] = ing.unit
                     if ing.comment:
                         prop_value["description"] = ing.comment
-                        
+
                     recipe_ingredients.append(prop_value)
                 else:
                     recipe_ingredients.append(ing.raw)
         else:
             recipe_ingredients = [ing.raw for ing in recipe.ingredients]
-        
+
         schema_recipe = {
             "@context": "https://schema.org",
             "@type": "Recipe",
@@ -110,23 +110,26 @@ class SchemaOrgConverter:
             "recipeIngredient": recipe_ingredients,
             "recipeInstructions": instructions,
         }
-        
+
         if recipe.yield_amount:
             schema_recipe['recipeYield'] = recipe.yield_amount
-        
+
         if recipe.categories:
             schema_recipe['recipeCategory'] = recipe.categories[0]
             schema_recipe['keywords'] = ', '.join(recipe.categories)
-        
+
         if recipe.source_file:
             schema_recipe['comment'] = f"Imported from {recipe.source_file}"
-            schema_recipe['url'] = f"file://{recipe.source_file}"
-        
+            if recipe.sqlite_table and recipe.sqlite_id:
+                schema_recipe['url'] = f"file://{recipe.source_file}#{recipe.sqlite_table},{recipe.sqlite_id}"
+            else:
+                schema_recipe['url'] = f"file://{recipe.source_file}"
+
         schema_recipe['datePublished'] = datetime.now().isoformat()
         schema_recipe['description'] = f"Recipe converted from {recipe.source_format} format"
-        
+
         return schema_recipe
-    
+
     @staticmethod
     def _build_instructions(instructions: List[str]) -> List:
         if not instructions: return []
@@ -138,20 +141,20 @@ class SchemaOrgConverter:
 
 class JSONStreamWriter:
     """Writes a JSON array to one or multiple files in a streaming fashion."""
-    
+
     def __init__(self, base_output_path: Path, indent: int = 2, chunk: bool = False):
         self.base_path = base_output_path
         self.indent = indent
         self.chunk = chunk
         self.max_recipes_per_chunk = 35000
         self.max_chunk_size_bytes = 50 * 1024 * 1024
-        
+
         self.current_f: Optional[Any] = None
         self.current_chunk_num = 1
         self.current_recipe_count = 0
         self.current_size_bytes = 0
         self.total_recipes = 0
-        
+
         self.base_path.parent.mkdir(parents=True, exist_ok=True)
 
     def _get_current_path(self) -> Path:
@@ -223,8 +226,8 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def convert_recipe_file(
-    input_path: Path, 
-    output_dir: Path, 
+    input_path: Path,
+    output_dir: Path,
     one_file_per_recipe: bool,
     verbose: bool,
     parse_ingredients: bool,
@@ -236,7 +239,7 @@ def convert_recipe_file(
     if not parser:
         if verbose: print(f"{Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}")
         return 0
-    
+
     try:
         recipes = parser.parse_file(str(input_path))
     except Exception as e:
@@ -244,20 +247,20 @@ def convert_recipe_file(
         import traceback
         if verbose: traceback.print_exc()
         return 0
-        
+
     if not recipes and input_path.suffix.lower() == '.txt' and not format_name:
         # Fallback to generic text parser
         fallback_parser = GenericTextParser(ingredient_parser)
         recipes = fallback_parser.parse_file(str(input_path))
-        
+
     if not recipes:
         if verbose: print(f"{Colors.YELLOW}No recipes found in {input_path}{Colors.ENDC}")
         return 0
-        
+
     converter = SchemaOrgConverter()
-    
+
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     if stream_writer:
         for recipe in recipes:
             schema_recipe = converter.convert(recipe, parse_ingredients)
@@ -282,12 +285,12 @@ def convert_recipe_file(
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(schema_recipes, f, indent=2, ensure_ascii=False)
         if verbose: print(f"{Colors.GREEN}Converted {len(schema_recipes)} recipes to {output_file}{Colors.ENDC}")
-            
+
     return input_path.stat().st_size
 
 def process_directory(
-    input_dir: Path, 
-    output_dir: Path, 
+    input_dir: Path,
+    output_dir: Path,
     one_file_per_recipe: bool,
     verbose: bool,
     recursive: bool,
@@ -297,50 +300,50 @@ def process_directory(
     stream_writer: Optional[JSONStreamWriter] = None
 ) -> None:
     global shutdown_requested
-    
+
     # Updated extensions to include stubs explicitly supported by ParserFactory.
     extensions = {'.mmf', '.mm', '.mxp', '.mx2', '.mz2', '.txt', '.html', '.htm', '.pdf', '.jpg', '.png', '.sqlite', '.db', '.csv', '.ccf', '.md'}
     extensions.update([e.upper() for e in extensions])
-    
+
     recipe_files = []
     if recursive:
         for ext in extensions: recipe_files.extend(input_dir.rglob(f'*{ext}'))
     else:
         for ext in extensions: recipe_files.extend(input_dir.glob(f'*{ext}'))
-        
+
     if not recipe_files:
         print(f"{Colors.RED}No recipe files found in {input_dir}{Colors.ENDC}")
         return
-        
+
     total_bytes = sum(f.stat().st_size for f in recipe_files)
     processed_bytes = 0
-    
+
     print(f"\n{Colors.BOLD}{Colors.CYAN}🍳 Modular Recipe Converter{Colors.ENDC}")
     print(f"{Colors.DIM}Found {len(recipe_files)} file(s) ({total_bytes:,} bytes){Colors.ENDC}\n")
-    
+
     for file_idx, recipe_file in enumerate(recipe_files, 1):
         if shutdown_requested:
             print(f"\n{Colors.YELLOW}Gracefully stopping after {file_idx-1}/{len(recipe_files)} files...{Colors.ENDC}")
             break
-            
+
         if verbose:
             rel_path = recipe_file.relative_to(input_dir) if input_dir in recipe_file.parents else recipe_file
             print(f"\n{Colors.BOLD}[{file_idx}/{len(recipe_files)}]{Colors.ENDC} {Colors.CYAN}{rel_path}{Colors.ENDC}")
-            
+
         bytes_processed = convert_recipe_file(recipe_file, output_dir, one_file_per_recipe, verbose, parse_ingredients, ingredient_parser, format_name, stream_writer)
         processed_bytes += recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
-        
+
         if not verbose:
             print_progress_bar(processed_bytes, total_bytes, prefix='Converting', suffix=recipe_file.name)
-            
+
     if not verbose: print()
 
 def merge_all_recipes_to_file(temp_dir: Path, output_file: Path, chunk: bool = False) -> None:
     import shutil
-    
+
     stream_writer = JSONStreamWriter(output_file, indent=2, chunk=chunk)
     json_files = sorted(temp_dir.glob('*.json'))
-    
+
     for json_file in json_files:
         try:
             with open(json_file, 'r', encoding='utf-8') as f:
@@ -352,62 +355,62 @@ def merge_all_recipes_to_file(temp_dir: Path, output_file: Path, chunk: bool = F
                     stream_writer.write_recipe(data)
         except Exception as e:
             print(f"{Colors.YELLOW}Warning: Could not read {json_file.name}: {e}{Colors.ENDC}")
-            
+
     stream_writer.close()
-    
+
     if stream_writer.total_recipes > 0:
         if chunk:
             print(f"\n{Colors.YELLOW}📦 Split {stream_writer.total_recipes} recipes into multiple files.{Colors.ENDC}")
         else:
             print(f"\n{Colors.YELLOW}📦 Merged {stream_writer.total_recipes} recipes into one file{Colors.ENDC}")
-    
+
     shutil.rmtree(temp_dir, ignore_errors=True)
 
 def main():
     global shutdown_requested
     signal.signal(signal.SIGINT, signal_handler)
     args = parse_arguments()
-    
+
     print(f"\n{Colors.BOLD}{Colors.HEADER}╔══════════════════════════════════════╗{Colors.ENDC}")
     print(f"{Colors.BOLD}{Colors.HEADER}║   🍳 Recipe Format Converter 🍳      ║{Colors.ENDC}")
     print(f"{Colors.BOLD}{Colors.HEADER}╚══════════════════════════════════════╝{Colors.ENDC}\n")
-    
+
     parse_ingredients = not args.no_parse_ingredients
     ingredient_parser = get_ingredient_parser(use_nlp=(not args.no_nlp))
     if HAS_NLP_PARSER and not args.no_nlp:
         print(f"{Colors.GREEN}✓ Using NLP Ingredient Parser{Colors.ENDC}")
     else:
         print(f"{Colors.YELLOW}ℹ Using Regex Fallback Ingredient Parser{Colors.ENDC}")
-    
+
     output_is_file = args.output.suffix != ''
     stream_writer = None
     if output_is_file:
         stream_writer = JSONStreamWriter(args.output, chunk=args.chunk)
-        
+
     try:
         if args.input.is_file():
             if not args.verbose:
                 print(f"{Colors.CYAN}Converting:{Colors.ENDC} {args.input.name}")
                 print_progress_bar(0, args.input.stat().st_size, prefix='Processing', suffix=args.input.name)
-            
-            convert_recipe_file(args.input, args.output.parent if output_is_file else args.output, 
-                               not args.multiple_per_file, args.verbose, parse_ingredients, 
+
+            convert_recipe_file(args.input, args.output.parent if output_is_file else args.output,
+                               not args.multiple_per_file, args.verbose, parse_ingredients,
                                ingredient_parser, args.format, stream_writer)
-                
+
             if not args.verbose:
                 print_progress_bar(args.input.stat().st_size, args.input.stat().st_size, prefix='Processing', suffix='Complete!')
-                
+
         elif args.input.is_dir():
-            process_directory(args.input, args.output.parent if output_is_file else args.output, 
-                             not args.multiple_per_file, args.verbose, args.recursive, 
+            process_directory(args.input, args.output.parent if output_is_file else args.output,
+                             not args.multiple_per_file, args.verbose, args.recursive,
                              parse_ingredients, ingredient_parser, args.format, stream_writer)
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
             return 1
-            
+
         if stream_writer:
             stream_writer.close()
-            
+
         if shutdown_requested:
             print(f"\n{Colors.YELLOW}{Colors.BOLD}⚠️  Conversion interrupted (partial results saved){Colors.ENDC}")
         else:
