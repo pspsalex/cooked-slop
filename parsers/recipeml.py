@@ -6,7 +6,7 @@ RecipeML (XML) parser - converts RecipeML format to internal Recipe model
 import os
 import sys
 from pathlib import Path
-from typing import List
+from typing import Iterator
 from xml.etree import ElementTree as ET
 
 from .base import BaseRecipeParser
@@ -192,13 +192,13 @@ class RecipeMLParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "RecipeML"
 
-    def parse_content(self, content: str, filepath: str) -> List[Recipe]:
+    def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         """Parse RecipeML content (XML string) and return list of Recipe objects."""
         try:
             root = ET.fromstring(content)
         except ET.ParseError as e:
             print(f"ERROR: Failed to parse XML: {e}", file=sys.stderr)
-            return []
+            return
 
         # Collect recipe elements
         if root.tag == "recipe":
@@ -208,13 +208,10 @@ class RecipeMLParser(BaseRecipeParser):
         else:
             recipe_els = root.findall(".//recipe")
 
-        recipes = []
         for recipe_el in recipe_els:
             recipe = self._parse_recipe_element(recipe_el, filepath)
             if recipe.title:
-                recipes.append(recipe)
-
-        return recipes
+                yield recipe
 
     def _parse_recipe_element(self, recipe_el, filepath: str) -> Recipe:
         """Convert an XML <recipe> element to a Recipe object."""

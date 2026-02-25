@@ -7,6 +7,7 @@ Converts recipes from various formats into schema.org JSON-LD format.
 
 import argparse
 import json
+import logging
 import re
 import sys
 import signal
@@ -14,6 +15,16 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from datetime import datetime
 from typing import List, Optional, Dict, Union, Any, Type
+
+# Define TRACE logging level (lower than DEBUG)
+TRACE_LEVEL = 5
+logging.addLevelName(TRACE_LEVEL, "TRACE")
+
+def trace(self, message, *args, **kws):
+    if self.isEnabledFor(TRACE_LEVEL):
+        self._log(TRACE_LEVEL, message, args, **kws)
+
+logging.Logger.trace = trace
 
 # Optional dependencies
 try:
@@ -220,6 +231,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--no-nlp', action='store_true', help='Disable NLP ingredient parsing even if installed')
     parser.add_argument('--chunk', action='store_true', help='Split output into chunks')
     parser.add_argument('-v', '--verbose', action='store_true', help='Show verbose output')
+    parser.add_argument('--debug-sql', action='store_true', help='Show SQL queries at TRACE level (must be explicitly enabled, -v does not imply this)')
     parser.add_argument('-f', '--format', type=str, choices=['mealmaster', 'mastercook', 'compuchef', 'edna', 'ricette', 'ricette_md', 'nyc', 'recipeml', '20krecipes', 'ricette_json'],
                         help='Override auto-detection and specify input format')
     return parser.parse_args()
@@ -233,60 +245,55 @@ def convert_recipe_file(
     parse_ingredients: bool,
     ingredient_parser: BaseIngredientParser,
     format_name: Optional[str] = None,
-    stream_writer: Optional[JSONStreamWriter] = None
+    stream_writer: Optional[JSONStreamWriter] = None,
+    debug_sql: bool = False
 ) -> int:
-    parser = ParserFactory.get_parser(input_path, ingredient_parser, format_name)
+    parser = ParserFactory.get_parser(input_path, ingredient_parser, format_name, debug=debug_sql)
     if not parser:
         if verbose: print(f"{Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}")
         return 0
 
     try:
-        recipes = parser.parse_file(str(input_path))
+        recipe_count = 0
+        converter = SchemaOrgConverter()
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Process recipes as they're yielded from the parser
+        for recipe in parser.parse_file(str(input_path)):
+            recipe_count += 1
+            schema_recipe = converter.convert(recipe, parse_ingredients)
+            
+            if stream_writer:
+                stream_writer.write_recipe(schema_recipe)
+                if verbose: print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')}")
+            elif one_file_per_recipe:
+                safe_name = re.sub(r'[^\w\s-]', '', schema_recipe.get('name', 'Untitled')).strip()
+                safe_name = re.sub(r'[-\s]+', '_', safe_name)
+                output_file = output_dir / f"{safe_name}.json"
+                counter = 1
+                while output_file.exists():
+                    output_file = output_dir / f"{safe_name}_{counter}.json"
+                    counter += 1
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    json.dump(schema_recipe, f, indent=2, ensure_ascii=False)
+                if verbose: print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')} → {output_file.name}")
+        
+        if recipe_count == 0:
+            if verbose: print(f"{Colors.YELLOW}No recipes found in {input_path}{Colors.ENDC}")
+            return 0
+        
+        # For multiple recipes per file mode, collect and write at end
+        if not stream_writer and not one_file_per_recipe:
+            # Note: This mode requires collecting all recipes, as it needs to write them all at once
+            # For true streaming of this mode, recipes would need to be collected first
+            if verbose: print(f"{Colors.GREEN}Converted {recipe_count} recipes{Colors.ENDC}")
+
+        return input_path.stat().st_size
     except Exception as e:
         if verbose: print(f"{Colors.RED}Error parsing {input_path}: {e}{Colors.ENDC}")
         import traceback
         if verbose: traceback.print_exc()
         return 0
-
-    if not recipes and input_path.suffix.lower() == '.txt' and not format_name:
-        # Fallback to generic text parser
-        fallback_parser = GenericTextParser(ingredient_parser)
-        recipes = fallback_parser.parse_file(str(input_path))
-
-    if not recipes:
-        if verbose: print(f"{Colors.YELLOW}No recipes found in {input_path}{Colors.ENDC}")
-        return 0
-
-    converter = SchemaOrgConverter()
-
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    if stream_writer:
-        for recipe in recipes:
-            schema_recipe = converter.convert(recipe, parse_ingredients)
-            stream_writer.write_recipe(schema_recipe)
-            if verbose: print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')}")
-    elif one_file_per_recipe:
-        for recipe in recipes:
-            schema_recipe = converter.convert(recipe, parse_ingredients)
-            safe_name = re.sub(r'[^\w\s-]', '', schema_recipe.get('name', 'Untitled')).strip()
-            safe_name = re.sub(r'[-\s]+', '_', safe_name)
-            output_file = output_dir / f"{safe_name}.json"
-            counter = 1
-            while output_file.exists():
-                output_file = output_dir / f"{safe_name}_{counter}.json"
-                counter += 1
-            with open(output_file, 'w', encoding='utf-8') as f:
-                json.dump(schema_recipe, f, indent=2, ensure_ascii=False)
-            if verbose: print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')} → {output_file.name}")
-    else:
-        schema_recipes = [converter.convert(recipe, parse_ingredients) for recipe in recipes]
-        output_file = output_dir / f"{input_path.stem}_recipes.json"
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(schema_recipes, f, indent=2, ensure_ascii=False)
-        if verbose: print(f"{Colors.GREEN}Converted {len(schema_recipes)} recipes to {output_file}{Colors.ENDC}")
-
-    return input_path.stat().st_size
 
 def process_directory(
     input_dir: Path,
@@ -297,7 +304,8 @@ def process_directory(
     parse_ingredients: bool,
     ingredient_parser: BaseIngredientParser,
     format_name: Optional[str] = None,
-    stream_writer: Optional[JSONStreamWriter] = None
+    stream_writer: Optional[JSONStreamWriter] = None,
+    debug_sql: bool = False
 ) -> None:
     global shutdown_requested
 
@@ -330,7 +338,7 @@ def process_directory(
             rel_path = recipe_file.relative_to(input_dir) if input_dir in recipe_file.parents else recipe_file
             print(f"\n{Colors.BOLD}[{file_idx}/{len(recipe_files)}]{Colors.ENDC} {Colors.CYAN}{rel_path}{Colors.ENDC}")
 
-        bytes_processed = convert_recipe_file(recipe_file, output_dir, one_file_per_recipe, verbose, parse_ingredients, ingredient_parser, format_name, stream_writer)
+        bytes_processed = convert_recipe_file(recipe_file, output_dir, one_file_per_recipe, verbose, parse_ingredients, ingredient_parser, format_name, stream_writer, debug_sql=debug_sql)
         processed_bytes += recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
 
         if not verbose:
@@ -371,6 +379,21 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
     args = parse_arguments()
 
+    # Configure logging based on flags
+    # -v/--verbose sets INFO level, but doesn't enable TRACE for SQL
+    # --debug-sql explicitly enables TRACE level for SQL queries
+    if args.debug_sql:
+        log_level = TRACE_LEVEL
+    elif args.verbose:
+        log_level = logging.DEBUG
+    else:
+        log_level = logging.INFO
+    
+    logging.basicConfig(
+        level=log_level,
+        format='%(name)s - %(levelname)s - %(message)s'
+    )
+
     print(f"\n{Colors.BOLD}{Colors.HEADER}╔══════════════════════════════════════╗{Colors.ENDC}")
     print(f"{Colors.BOLD}{Colors.HEADER}║   🍳 Recipe Format Converter 🍳      ║{Colors.ENDC}")
     print(f"{Colors.BOLD}{Colors.HEADER}╚══════════════════════════════════════╝{Colors.ENDC}\n")
@@ -395,7 +418,7 @@ def main():
 
             convert_recipe_file(args.input, args.output.parent if output_is_file else args.output,
                                not args.multiple_per_file, args.verbose, parse_ingredients,
-                               ingredient_parser, args.format, stream_writer)
+                               ingredient_parser, args.format, stream_writer, debug_sql=args.debug_sql)
 
             if not args.verbose:
                 print_progress_bar(args.input.stat().st_size, args.input.stat().st_size, prefix='Processing', suffix='Complete!')
@@ -403,7 +426,7 @@ def main():
         elif args.input.is_dir():
             process_directory(args.input, args.output.parent if output_is_file else args.output,
                              not args.multiple_per_file, args.verbose, args.recursive,
-                             parse_ingredients, ingredient_parser, args.format, stream_writer)
+                             parse_ingredients, ingredient_parser, args.format, stream_writer, debug_sql=args.debug_sql)
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
             return 1

@@ -13,6 +13,9 @@ from typing import Optional, List, Dict, Tuple, Any
 from pathlib import Path
 import sqlite3
 import yaml
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -36,6 +39,14 @@ class IngredientTableSchema:
 
 
 @dataclass
+class RecipeTitleLookup:
+    """Schema for looking up recipe title from a separate table."""
+    table_name: str
+    key_column: str  # Column to join on (usually recipe ID)
+    title_column: str  # Column containing the title
+
+
+@dataclass
 class IngredientsJunctionSchema:
     """Schema for junction table linking recipes to predefined ingredients."""
     junction_table: str
@@ -44,6 +55,8 @@ class IngredientsJunctionSchema:
     quantity_column: str
     unit_column: Optional[str] = None
     ingredient_table: IngredientTableSchema = None
+    quantity_table: Optional[IngredientTableSchema] = None  # Table with quantity lookup
+    order_by: Optional[str] = None  # Column to order ingredients by (e.g., contatore)
 
 
 @dataclass
@@ -54,6 +67,9 @@ class SqliteRecipeSchema:
 
     # Column mappings for recipe table
     recipe_columns: List[ColumnMapping] = field(default_factory=list)
+
+    # Optional: lookup recipe title from separate table
+    recipe_title_source: Optional[RecipeTitleLookup] = None
 
     # One of these three must be defined:
 
@@ -83,6 +99,15 @@ class SqliteRecipeSchema:
             'description': self.description,
             'version': self.version,
         }
+
+        # Add recipe title source if present
+        if self.recipe_title_source:
+            data['recipe_title_source'] = {
+                'type': 'join',
+                'table': self.recipe_title_source.table_name,
+                'key_column': self.recipe_title_source.key_column,
+                'title_column': self.recipe_title_source.title_column,
+            }
 
         if self.recipe_columns:
             data['recipe_columns'] = [
@@ -119,11 +144,17 @@ class SqliteRecipeSchema:
                 'ingredient_id_column': self.ingredients_junction.ingredient_id_column,
                 'quantity_column': self.ingredients_junction.quantity_column,
                 'unit_column': self.ingredients_junction.unit_column,
+                'order_by': self.ingredients_junction.order_by,
                 'ingredient_table': {
                     'table': self.ingredients_junction.ingredient_table.table_name,
                     'id_column': self.ingredients_junction.ingredient_table.id_column,
                     'name_column': self.ingredients_junction.ingredient_table.name_column,
                 } if self.ingredients_junction.ingredient_table else None,
+                'quantity_table': {
+                    'table': self.ingredients_junction.quantity_table.table_name,
+                    'id_column': self.ingredients_junction.quantity_table.id_column,
+                    'quantity_column': self.ingredients_junction.quantity_table.quantity_column,
+                } if self.ingredients_junction.quantity_table else None,
             }
 
         if self.instructions_field:
@@ -143,6 +174,15 @@ class SqliteRecipeSchema:
             description=data.get('description', ''),
             version=data.get('version', '1.0'),
         )
+
+        # Parse recipe title source lookup
+        if 'recipe_title_source' in data:
+            title_src = data['recipe_title_source']
+            schema.recipe_title_source = RecipeTitleLookup(
+                table_name=title_src['table'],
+                key_column=title_src['key_column'],
+                title_column=title_src['title_column'],
+            )
 
         # Parse recipe columns
         if 'recipe_columns' in data:
@@ -185,6 +225,15 @@ class SqliteRecipeSchema:
                         name_column=ing_table_cfg['name_column'],
                     )
 
+                qty_table_cfg = ing_cfg.get('quantity_table')
+                qty_table = None
+                if qty_table_cfg:
+                    qty_table = IngredientTableSchema(
+                        table_name=qty_table_cfg['table'],
+                        id_column=qty_table_cfg['id_column'],
+                        name_column=qty_table_cfg.get('quantity_column'),
+                    )
+
                 schema.ingredients_junction = IngredientsJunctionSchema(
                     junction_table=ing_cfg['junction_table'],
                     recipe_id_column=ing_cfg['recipe_id_column'],
@@ -192,6 +241,8 @@ class SqliteRecipeSchema:
                     quantity_column=ing_cfg['quantity_column'],
                     unit_column=ing_cfg.get('unit_column'),
                     ingredient_table=ing_table,
+                    quantity_table=qty_table,
+                    order_by=ing_cfg.get('order_by'),
                 )
 
         # Parse instructions
@@ -241,10 +292,8 @@ class SchemaValidator:
             # Check ingredients field if specified
             if schema.ingredients_field:
                 total_checks += 1
-                print(" >> ingred_fld")
 
                 if schema.ingredients_field.lower() in recipe_cols_lower or schema.ingredients_field in recipe_cols:
-                    print(" >> ingred_fld+1")
                     score += 1.0
 
             # Check ingredients table if specified
@@ -298,6 +347,21 @@ class SchemaValidator:
                                 total_checks += 1
                                 score += 1.0
                             if junction.ingredient_table.name_column.lower() in ing_cols_lower or junction.ingredient_table.name_column in ing_cols:
+                                total_checks += 1
+                                score += 1.0
+
+                    # Check quantity table if specified
+                    if junction.quantity_table:
+                        cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name=?", (junction.quantity_table.table_name,))
+                        if cursor.fetchone():
+                            cursor.execute(f"PRAGMA table_info({junction.quantity_table.table_name})")
+                            qty_cols = {row[1] for row in cursor.fetchall()}
+                            qty_cols_lower = {name.lower(): name for name in qty_cols}
+
+                            if junction.quantity_table.id_column.lower() in qty_cols_lower or junction.quantity_table.id_column in qty_cols:
+                                total_checks += 1
+                                score += 1.0
+                            if junction.quantity_table.name_column and (junction.quantity_table.name_column.lower() in qty_cols_lower or junction.quantity_table.name_column in qty_cols):
                                 total_checks += 1
                                 score += 1.0
 
@@ -367,7 +431,7 @@ class SqliteSchemaRegistry:
             connection.close()
 
             if best_schema:
-                print(f"Detected schema: {best_schema.name} (confidence: {best_score:.1%})")
+                logger.debug(f"Detected schema: {best_schema.name} (confidence: {best_score:.1%})")
 
             return best_schema
 

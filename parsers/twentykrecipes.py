@@ -12,7 +12,7 @@ Ingredient format per line:
 import csv
 import re
 import io
-from typing import List
+from typing import Iterator, List
 from pathlib import Path
 
 from .base import BaseRecipeParser
@@ -117,27 +117,25 @@ class TwentyKRecipesParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "20krecipes CSV"
 
-    def parse_content(self, content: str, filepath: str) -> List[Recipe]:
-        """Parse CSV content and return list of Recipe objects."""
+    def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
+        """Parse CSV content and yield Recipe objects."""
         lines = content.strip().split('\n')
         if not lines:
-            return []
+            return
 
         # Parse as CSV
-        recipes = []
         try:
             csv_reader = csv.DictReader(io.StringIO(content))
             row_number = 2  # Start at 2 (after header)
             for row in csv_reader:
                 recipe = self._parse_csv_row(row, filepath, row_number)
                 if recipe.title:
-                    recipes.append(recipe)
+                    yield recipe
                 row_number += 1
         except Exception as e:
-            print(f"Error parsing CSV: {e}")
-            return []
-
-        return recipes
+            import logging
+            logging.getLogger(__name__).warning(f"Error parsing CSV: {e}")
+            return
 
     def _parse_csv_row(self, row: dict, filepath: str, row_number: int) -> Recipe:
         """Convert a CSV row to a Recipe object."""

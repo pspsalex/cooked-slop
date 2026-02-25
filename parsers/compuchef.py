@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 import re
-from typing import List
+from typing import Iterator
 from .models import Recipe, Ingredient
 from .base import BaseRecipeParser, BaseIngredientParser
 from .units import normalize_unit
@@ -34,17 +34,15 @@ class CompuChefParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "CompuChef"
 
-    def parse_content(self, content: str, filepath: str) -> List[Recipe]:
+    def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         # Split on the Compu-Chef recipe footer/separator
         # Each recipe ends with "*** Recipe Via Compu-Chef (tm) ***"
         sections = re.split(r'\*{3}\s*Recipe Via Compu-Chef.*?\*{3}', content, flags=re.IGNORECASE)
-        recipes = []
         for section in sections:
             if section.strip():
                 recipe = self._parse_section(section.strip(), filepath)
                 if recipe and recipe.title:
-                    recipes.append(recipe)
-        return recipes
+                    yield recipe
 
     def _parse_section(self, section: str, filepath: str) -> Recipe:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)

@@ -38,6 +38,7 @@ class Format(Enum):
     # Structured formats
     CSV = "csv"
     CSV_20KRECIPES = "csv_20krecipes"
+    CSV_VITT = "csv_vitt"
     CSV_GENERIC = "csv_generic"
     SQLITE = "sqlite"
     HTML = "html"
@@ -345,7 +346,61 @@ class CsvDetector(FormatDetector):
         return 20
 
 
-# --- SQLite Detector ---
+class VittCsvDetector(FormatDetector):
+    """Detector for Vitt CSV recipe format."""
+
+    def _analyze_csv_headers(self, filepath: Path) -> Optional[Dict]:
+        """Extract CSV headers and metadata."""
+        try:
+            with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                # Read first line to detect delimiter
+                first_line = f.readline()
+                f.seek(0)
+
+                # Try common delimiters
+                for delimiter in [',', ';', '\t', '|']:
+                    reader = csv.DictReader(f, delimiter=delimiter)
+                    headers = reader.fieldnames
+                    if headers and len(headers) > 1:
+                        # Found a delimiter that works
+                        f.seek(0)
+                        return {
+                            'headers': [h.strip().lower() if h else '' for h in headers],
+                            'original_headers': headers,
+                            'delimiter': delimiter,
+                            'count': len(headers)
+                        }
+        except Exception:
+            pass
+        return None
+
+    def detect(self, filepath: Path, content_sample: Optional[str] = None) -> Optional[DetectionResult]:
+        if filepath.suffix.lower() != '.csv':
+            return None
+
+        headers_info = self._analyze_csv_headers(filepath)
+        if not headers_info:
+            return None
+
+        headers = headers_info['headers']
+
+        # Check for Vitt format (RNUM, NAME, KING, SOURCE, TXT, TAG)
+        vitt_fields = {'rnum', 'name', 'king', 'source', 'txt', 'tag'}
+        if vitt_fields.issubset(set(headers)):
+            return DetectionResult(
+                format=Format.CSV_VITT,
+                confidence=0.95,
+                reason="Detected Vitt CSV format",
+                metadata=headers_info
+            )
+
+        return None
+
+    def priority(self) -> int:
+        return 19  # Higher priority than generic CSV
+
+
+
 
 class SqliteDetector(FormatDetector):
     """Detects SQLite database files."""
@@ -501,6 +556,7 @@ class FormatDetectionRegistry:
             RecipeMLDetector(),
             RicetteMdDetector(),
             RicetteJsonDetector(),
+            VittCsvDetector(),
             CsvDetector(),
             SqliteDetector(),
             HtmlDetector(),
@@ -588,6 +644,7 @@ class FormatDetectionRegistry:
             Format.RECIPEML: 7,
             Format.RICETTE_MD: 10,
             Format.RICETTE_JSON: 11,
+            Format.CSV_VITT: 19,
             Format.CSV_20KRECIPES: 20,
             Format.CSV_GENERIC: 21,
             Format.CSV: 22,

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 
 import re
-from typing import List
+from typing import Iterator
 from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
 from .units import normalize_unit
@@ -16,8 +16,7 @@ class RicetteParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "Ricette"
 
-    def parse_content(self, content: str, filepath: str) -> List[Recipe]:
-        recipes = []
+    def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         # Split by :Ricette, but keep the content that follows
         sections = re.split(r'^:Ricette\s*', content, flags=re.MULTILINE)
         
@@ -27,9 +26,7 @@ class RicetteParser(BaseRecipeParser):
             
             recipe = self._parse_section(section, filepath)
             if recipe.title:
-                recipes.append(recipe)
-                
-        return recipes
+                yield recipe
 
     def _parse_section(self, section: str, filepath: str) -> Recipe:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)

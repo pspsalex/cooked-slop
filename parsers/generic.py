@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 from pathlib import Path
-from typing import List
+from typing import Iterator
 from .models import Recipe
 from .base import BaseRecipeParser, BaseIngredientParser
 
@@ -9,7 +9,7 @@ class GenericTextParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "Raw Text"
 
-    def parse_content(self, content: str, filepath: str) -> List[Recipe]:
+    def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)
         recipe.title = Path(filepath).stem
         
@@ -30,6 +30,5 @@ class GenericTextParser(BaseRecipeParser):
                 in_instructions = True # Once we hit instructions, everything else is instructions
                 recipe.instructions.append(line_str)
                 
-        if not recipe.ingredients and not recipe.instructions:
-            return []
-        return [recipe]
+        if recipe.ingredients or recipe.instructions:
+            yield recipe

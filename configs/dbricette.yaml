@@ -1,0 +1,59 @@
+name: dbricette
+recipes_table: datiRicetta
+description: "Config for Italian DbRicette SQLite database with Italian recipe system"
+version: "1.0"
+
+recipe_columns:
+  - name: idRicetta
+    attribute: id
+    required: true
+  - name: strPersone
+    attribute: yield_amount
+    required: false
+  - name: idTipoPiatto
+    attribute: category
+    required: false
+  - name: idIngredientePrincipale
+    attribute: main_ingredient
+    required: false
+  - name: strNote
+    attribute: notes
+    required: false
+
+recipe_title_source:
+  type: join
+  table: nomeRicetta
+  key_column: idRicetta
+  title_column: txtRicetta
+
+ingredients:
+  type: junction
+  junction_table: ingredientiRicetta
+  recipe_id_column: idRicetta
+  ingredient_id_column: idIngrediente
+  quantity_column: idQuantita
+  order_by: contatore
+  ingredient_table:
+    table: ingrediente
+    id_column: idIngrediente
+    name_column: txtIngrediente
+  quantity_table:
+    table: quantita
+    id_column: idQuantita
+    quantity_column: txtQuantita
+
+instructions:
+  field: strPreparazione
+  delimiter: "\n"
+
+category_mapping:
+  type: join
+  table: tipoPiatto
+  key_column: idTipoPiatto
+  value_column: txtTipoPiatto
+
+main_ingredient_mapping:
+  type: join
+  table: ingredientePrincipale
+  key_column: idIngredientePrincipale
+  value_column: txtIngredientePrincipale

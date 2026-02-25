@@ -1,0 +1,30 @@
+name: fscratch
+recipes_table: recipe
+description: "Config for fscratch database"
+version: "1.0"
+
+recipe_columns:
+  - name: TITLE_NO
+    attribute: id
+    required: true
+  - name: TITLE
+    attribute: title
+    required: true
+  - name: SERVES
+    attribute: yield_amount
+    required: false
+  - name: KEYWORD
+    attribute: categories
+    required: false
+
+ingredients:
+  type: table
+  table: recingre
+  id_column: TITLE_NO
+  name_column: ingtxt
+  quantity_column: QUANTITY
+  unit_column: MEASURE
+
+instructions:
+  field: INSTRUCT
+  delimiter: "\n"

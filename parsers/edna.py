@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 import re
-from typing import List, Generator
+from typing import Iterator
 from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
 
@@ -9,8 +9,7 @@ class EdnaParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "Edna"
 
-    def parse_content(self, content: str, filepath: str = "") -> List[Recipe]:
-        recipes = []
+    def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
         # Split by the record separator (refined to include positive lookahead for id:)
         sections = re.split(r'^------------\s*(?=[\r\n]+\s*id:)', content, flags=re.MULTILINE)
         
@@ -103,6 +102,4 @@ class EdnaParser(BaseRecipeParser):
                 recipe.instructions.pop()
                 
             if recipe.title:
-                recipes.append(recipe)
-                
-        return recipes
+                yield recipe

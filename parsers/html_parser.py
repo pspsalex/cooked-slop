@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: MIT
 import sys
 from pathlib import Path
-from typing import List
+from typing import Iterator
 from .models import Recipe
 from .base import BaseRecipeParser, BaseIngredientParser
+import logging
+
+logger = logging.getLogger(__name__)
 
 # ANSI colors - imported inline or redefined
 class Colors:
@@ -21,11 +24,11 @@ class HtmlParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "HTML/URL"
 
-    def parse_content(self, content: str, filepath: str) -> List[Recipe]:
+    def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         if not HAS_RECIPE_SCRAPERS:
-            print(f"{Colors.YELLOW}Warning: recipe-scrapers library not installed. Skipping {filepath}.{Colors.ENDC}")
-            return []
-        
+            logger.warning(f"recipe-scrapers library not installed. Skipping {filepath}.")
+            return
+
         try:
             # Passing it strictly to scrapers (some scrapers also accept raw html if host is provided)
             # This is a naive implementation, a better one would scrape local HTML via specific extractors.
@@ -50,7 +53,7 @@ class HtmlParser(BaseRecipeParser):
             try:
                 recipe.categories = scraper.category().split(',') if scraper.category() else []
             except: pass
-            return [recipe]
+            yield recipe
         except Exception as e:
-            print(f"{Colors.YELLOW}HTML parsing error for {filepath}: {e}{Colors.ENDC}")
-            return []
+            logger.warning(f"HTML parsing error for {filepath}: {e}")
+            return

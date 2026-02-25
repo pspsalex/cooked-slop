@@ -19,7 +19,7 @@ Expected JSON structure:
 
 import json
 import sys
-from typing import List
+from typing import List, Iterator
 
 from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
@@ -83,17 +83,14 @@ class RicetteJsonParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "Ricette JSON"
 
-    def parse_content(self, content: str, filepath: str) -> List[Recipe]:
-        """Parse JSON content and return list of Recipe objects."""
+    def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
+        """Parse JSON content and yield Recipe objects."""
         json_recipes = load_recipes_from_content(content)
 
-        recipes = []
         for row_index, json_recipe in enumerate(json_recipes):
             recipe = self._parse_json_recipe(json_recipe, filepath, row_index)
             if recipe.title:
-                recipes.append(recipe)
-
-        return recipes
+                yield recipe
 
     def _parse_json_recipe(self, json_recipe: dict, filepath: str, row_index: int) -> Recipe:
         """Convert a JSON recipe object to a Recipe."""

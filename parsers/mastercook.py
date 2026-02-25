@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 import re
-from typing import List
+from typing import Iterator
 from .models import Recipe, Ingredient
 from .base import BaseRecipeParser, BaseIngredientParser
 from .units import normalize_unit
@@ -19,9 +19,7 @@ class MasterCookParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "MasterCook"
 
-    def parse_content(self, content: str, filepath: str) -> List[Recipe]:
-        recipes = []
-        
+    def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         # Split by MasterCook export header, allowing for version numbers like "MasterCook II"
         # We use a non-greedy catch-all for the content between MasterCook and the final asterisk
         recipe_sections = re.split(r'\*\s*Exported\s+from\s+MasterCook[^*]*\*', content, flags=re.IGNORECASE)
@@ -31,8 +29,7 @@ class MasterCookParser(BaseRecipeParser):
             
             recipe = self._parse_mastercook_section(section_stripped, filepath)
             if recipe and recipe.title:
-                recipes.append(recipe)
-        return recipes
+                yield recipe
     
     def _parse_mastercook_section(self, section: str, filepath: str) -> Recipe:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)

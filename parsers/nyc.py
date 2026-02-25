@@ -1,5 +1,5 @@
 import re
-from typing import List, Optional
+from typing import Iterator, Optional
 from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
 
@@ -10,8 +10,7 @@ class NYCParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "NYC"
 
-    def parse_content(self, content: str, filepath: str = "") -> List[Recipe]:
-        recipes = []
+    def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
         # Split by the NYC header
         sections = re.split(r'@{5}\s+Now You\'re Cooking! Export Format', content)
         
@@ -168,6 +167,4 @@ class NYCParser(BaseRecipeParser):
                     recipe.ingredients.append(Ingredient(raw=ing_line, name=ing_line))
 
             recipe.instructions = recipe_instructions
-            recipes.append(recipe)
-
-        return recipes
+            yield recipe

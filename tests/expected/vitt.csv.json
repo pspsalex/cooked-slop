@@ -1,0 +1,238 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Frosty Peanut Butter Dessert",
+  "recipeIngredient": [
+    "Crust:",
+    {
+      "@type": "PropertyValue",
+      "name": "flour (all purpose)",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": 2,
+      "unitText": "tablespoons"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter or margarine, melted",
+      "value": 1,
+      "unitText": "stick"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chopped walnuts",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    "Filling:",
+    {
+      "@type": "PropertyValue",
+      "name": "(8 oz.) cream cheese softened",
+      "value": 1,
+      "unitText": "pkg."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": "1/2",
+      "unitText": "c."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "peanut butter",
+      "value": "1/4",
+      "unitText": "c."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "vanilla",
+      "value": 1,
+      "unitText": "tsp."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 2
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "frozen whipped topping, thawed",
+      "value": 2,
+      "unitText": "c."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chocolate chips",
+      "value": 1,
+      "unitText": "c."
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Mix and press into 13 x 9 pan. Bake at 350 for 15 minutes or until light brown. Toast 1 small package of coconut. Cool crust and coconut."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Beat cream cheese with sugar, peanut butter, vanilla. Add eggs, one at a time. Fold in topping. Spread over crust. In double boiler or microwave oven, melt chocolate chips. Drizzle chocolate in a thin stream over filling. With a knife, cut through to marble filling. Cover & freeze."
+    }
+  ],
+  "recipeCategory": "peanut butter",
+  "keywords": "peanut butter, chocolate, nuts",
+  "comment": "Imported from tests/samples/vitt.csv",
+  "url": "file://tests/samples/vitt.csv",
+  "datePublished": "2026-02-25T20:55:50.318892",
+  "description": "Recipe converted from vitt CSV format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Lamb Burgers with Raspberry-Mint Sauce",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "of ground lean lamb",
+      "value": 2,
+      "unitText": "pounds"
+    },
+    "salt and ground pepper",
+    {
+      "@type": "PropertyValue",
+      "name": "of soft mild chevre",
+      "value": 8,
+      "unitText": "ounces"
+    },
+    "Raspberry-Mint sauce"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "1. Season the ground lamb to taste with salt and pepper, and divide the meat into 8 burgers."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "2. Shape about 1 ounce of the chevre into a round nugget and mold one part of the lamb around the chevre. Now, mold it into a thick burger. Repeat with all parts."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "3. Make the mint sauce."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "4. Broil or grill the burgers. Serve with some of the sauce on the side."
+    }
+  ],
+  "recipeCategory": "lamb",
+  "keywords": "lamb, chevre",
+  "comment": "Imported from tests/samples/vitt.csv",
+  "url": "file://tests/samples/vitt.csv",
+  "datePublished": "2026-02-25T20:55:50.319353",
+  "description": "Recipe converted from vitt CSV format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Raspberry-Mint Sauce",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "mint leaves",
+      "value": "1-1/2",
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "white wine vinegar",
+      "value": "1/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "raspberry vinegar",
+      "value": 2,
+      "unitText": "tablespoons"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "fresh lemon juice",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "superfine sugar",
+      "value": "3-4",
+      "unitText": "tablespoons"
+    },
+    "salt and ground black pepper"
+  ],
+  "recipeInstructions": [
+    "Tear the mint leaves into coarse pieces and place in a shallow bowl. Add the vinegars and lemon juice. Stir in the sugar -- amount depends on desired sweetness -- and season to taste with salt and pepper. Store covered in refrigerator."
+  ],
+  "recipeCategory": "mint",
+  "keywords": "mint, raspberry, lemon, vinegar",
+  "comment": "Imported from tests/samples/vitt.csv",
+  "url": "file://tests/samples/vitt.csv",
+  "datePublished": "2026-02-25T20:55:50.319640",
+  "description": "Recipe converted from vitt CSV format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Quick Pasta Dish",
+  "recipeIngredient": [],
+  "recipeInstructions": [
+    "Took 15 minutes to put together."
+  ],
+  "recipeCategory": "spaghetti",
+  "keywords": "spaghetti, salad dressing, vegs",
+  "comment": "Imported from tests/samples/vitt.csv",
+  "url": "file://tests/samples/vitt.csv",
+  "datePublished": "2026-02-25T20:55:50.319768",
+  "description": "Recipe converted from vitt CSV format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Burpee (phone Number)",
+  "recipeIngredient": [
+    "Fortunately, the young lady was kind enough to give me the correct",
+    "one! So here goes:",
+    "Burpee phone number: 1-800-888-1447"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "You're right. The number given in the echo was wrong. I, too, called and got the other company..."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "P.S. it was the second '7' that got me... I've corrected it above to show as a '4'..."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "It worked!!"
+    }
+  ],
+  "recipeCategory": "none",
+  "keywords": "none",
+  "comment": "Imported from tests/samples/vitt.csv",
+  "url": "file://tests/samples/vitt.csv",
+  "datePublished": "2026-02-25T20:55:50.320005",
+  "description": "Recipe converted from vitt CSV format"
+}
+]

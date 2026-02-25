@@ -26,6 +26,7 @@ from .stubs import PdfParser, ImageParser, SqliteParser, CsvParser
 from .recipeml import RecipeMLParser
 from .twentykrecipes import TwentyKRecipesParser
 from .ricette_json import RicetteJsonParser
+from .vitt import VittRecipesParser
 from .detection import get_detection_registry, Format, DetectionResult
 
 
@@ -110,7 +111,7 @@ class MixedFormatParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "Mixed"
 
-    def parse_content(self, content: str, filepath: str) -> List[Recipe]:
+    def parse_content(self, content: str, filepath: str):
         """
         Parse content, supporting mixed formats.
         
@@ -119,9 +120,13 @@ class MixedFormatParser(BaseRecipeParser):
         """
         # First, try to find ALL mixed format signatures (mastercook, mealmaster, compuchef)
         # These are the ONLY formats that support true mixed-file parsing
-        recipes = self._try_parse_all_mixed_formats(content, filepath)
-        if recipes:
-            return recipes
+        found_mixed = False
+        for recipe in self._try_parse_all_mixed_formats(content, filepath):
+            found_mixed = True
+            yield recipe
+        
+        if found_mixed:
+            return
         
         # If no mixed formats found, try single format detection
         sample = content[:8192]
@@ -139,16 +144,15 @@ class MixedFormatParser(BaseRecipeParser):
         if detection_result:
             detected_fmt = detection_result.format
             # For any detected format, use the appropriate parser
-            return self._parse_single_format(content, filepath, detected_fmt)
-        
-        # Fallback: use generic parser
-        return GenericTextParser(self.ingredient_parser).parse_content(content, filepath)
+            yield from self._parse_single_format(content, filepath, detected_fmt)
+        else:
+            # Fallback: use generic parser
+            yield from GenericTextParser(self.ingredient_parser).parse_content(content, filepath)
     
-    def _try_parse_all_mixed_formats(self, content: str, filepath: str) -> List[Recipe]:
+    def _try_parse_all_mixed_formats(self, content: str, filepath: str):
         """
-        Try to parse a file containing recipes from multiple formats.
-        Looks for mastercook, mealmaster, and compuchef signatures.
-        Returns recipes if ANY mixed format found, empty list otherwise.
+        Try to parse mixed-format file and yield recipes if found.
+        Returns immediately if no mixed format found.
         """
         # Define start signatures for all three formats
         sigs = {
@@ -173,19 +177,18 @@ class MixedFormatParser(BaseRecipeParser):
         
         # If no mixed format signatures found, return empty (caller will try other detection)
         if not all_matches:
-            return []
+            return
         
         # Check if we have multiple formats or just one
         unique_formats = set(fmt for _, fmt in all_matches)
         if len(unique_formats) == 1:
             # Only one format found - not a true mixed file
-            return []
+            return
         
         # We have a true mixed-format file! Parse it.
         # Sort by position and then priority
         all_matches.sort(key=lambda x: (x[0], priority.get(x[1], 99)))
         
-        recipes = []
         idx = 0
         while idx < len(all_matches):
             msg_start, fmt = all_matches[idx]
@@ -222,18 +225,17 @@ class MixedFormatParser(BaseRecipeParser):
                 parser = None
             
             if parser:
-                recipes.extend(parser.parse_content(chunk, filepath))
+                yield from parser.parse_content(chunk, filepath)
             
             idx += 1
-        
-        return recipes
 
-    def _parse_single_format(self, content: str, filepath: str, detected_fmt: Format) -> List[Recipe]:
+    def _parse_single_format(self, content: str, filepath: str, detected_fmt: Format):
         """Apply a single format to the entire file."""
         parser = self._create_parser(detected_fmt)
         if parser:
-            return parser.parse_content(content, filepath)
-        return GenericTextParser(self.ingredient_parser).parse_content(content, filepath)
+            yield from parser.parse_content(content, filepath)
+        else:
+            yield from GenericTextParser(self.ingredient_parser).parse_content(content, filepath)
 
     def _create_parser(self, fmt: Format) -> Optional[BaseRecipeParser]:
         """Create appropriate parser for format."""
@@ -267,7 +269,7 @@ class ParserFactory:
 
     @staticmethod
     def get_parser(filepath: Path, ingredient_parser: BaseIngredientParser,
-                  format_name: Optional[str] = None) -> Optional[BaseRecipeParser]:
+                  format_name: Optional[str] = None, debug: bool = False) -> Optional[BaseRecipeParser]:
         """
         Get appropriate parser for file.
 
@@ -275,30 +277,31 @@ class ParserFactory:
             filepath: Path to recipe file
             ingredient_parser: Ingredient parser instance
             format_name: Optional format override (e.g., 'mastercook', 'csv_20krecipes')
+            debug: Enable debug logging for SQL queries and other details
 
         Returns:
             Appropriate parser instance, or None if format unknown
         """
         # Stage 1: Handle explicit format override
         if format_name:
-            return ParserFactory._get_parser_by_name(format_name, ingredient_parser)
+            return ParserFactory._get_parser_by_name(format_name, ingredient_parser, debug=debug)
 
         # Stage 2: Auto-detect format
         ext = filepath.suffix.lower()
 
         # Check for unambiguous extensions first
-        ext_parser = ParserFactory._get_parser_by_extension(ext, ingredient_parser)
+        ext_parser = ParserFactory._get_parser_by_extension(ext, ingredient_parser, debug=debug)
         if ext_parser:
             return ext_parser
 
         # For ambiguous extensions, use content sniffing
         if ext in AMBIGUOUS_EXTENSIONS:
-            return ParserFactory._detect_and_get_parser(filepath, ingredient_parser)
+            return ParserFactory._detect_and_get_parser(filepath, ingredient_parser, debug=debug)
 
         return None
 
     @staticmethod
-    def _get_parser_by_name(format_name: str, ingredient_parser: BaseIngredientParser) -> Optional[BaseRecipeParser]:
+    def _get_parser_by_name(format_name: str, ingredient_parser: BaseIngredientParser, debug: bool = False) -> Optional[BaseRecipeParser]:
         """Get parser by explicit format name."""
         fmt = format_name.lower()
 
@@ -313,6 +316,8 @@ class ParserFactory:
             'nyc': Format.NYC,
             'recipeml': Format.RECIPEML,
             'ricette_json': Format.RICETTE_JSON,
+            'vitt': Format.CSV_VITT,
+            'csv_vitt': Format.CSV_VITT,
             '20krecipes': Format.CSV_20KRECIPES,
             'csv_20krecipes': Format.CSV_20KRECIPES,
             'csv_generic': Format.CSV_GENERIC,
@@ -323,12 +328,12 @@ class ParserFactory:
 
         detected_format = format_map.get(fmt)
         if detected_format:
-            return ParserFactory._create_parser_for_format(detected_format, ingredient_parser)
+            return ParserFactory._create_parser_for_format(detected_format, ingredient_parser, debug=debug)
 
         return None
 
     @staticmethod
-    def _get_parser_by_extension(ext: str, ingredient_parser: BaseIngredientParser) -> Optional[BaseRecipeParser]:
+    def _get_parser_by_extension(ext: str, ingredient_parser: BaseIngredientParser, debug: bool = False) -> Optional[BaseRecipeParser]:
         """Get parser by file extension (unambiguous cases only)."""
         extension_map = {
             '.mmf': Format.MEALMASTER,
@@ -355,12 +360,12 @@ class ParserFactory:
 
         fmt = extension_map.get(ext)
         if fmt:
-            return ParserFactory._create_parser_for_format(fmt, ingredient_parser)
+            return ParserFactory._create_parser_for_format(fmt, ingredient_parser, debug=debug)
 
         return None
 
     @staticmethod
-    def _detect_and_get_parser(filepath: Path, ingredient_parser: BaseIngredientParser) -> Optional[BaseRecipeParser]:
+    def _detect_and_get_parser(filepath: Path, ingredient_parser: BaseIngredientParser, debug: bool = False) -> Optional[BaseRecipeParser]:
         """Auto-detect format from content and return appropriate parser."""
         try:
             registry = get_detection_registry()
@@ -371,12 +376,12 @@ class ParserFactory:
             if result.format in {Format.MASTERCOOK, Format.MEALMASTER, Format.COMPUCHEF}:
                 return MixedFormatParser(ingredient_parser)
             
-            return ParserFactory._create_parser_for_format(result.format, ingredient_parser)
+            return ParserFactory._create_parser_for_format(result.format, ingredient_parser, debug=debug)
         except Exception:
             return None
 
     @staticmethod
-    def _create_parser_for_format(fmt: Format, ingredient_parser: BaseIngredientParser) -> Optional[BaseRecipeParser]:
+    def _create_parser_for_format(fmt: Format, ingredient_parser: BaseIngredientParser, debug: bool = False) -> Optional[BaseRecipeParser]:
         """Create parser instance for detected format."""
         if fmt == Format.MASTERCOOK:
             return MasterCookParser(ingredient_parser)
@@ -396,6 +401,8 @@ class ParserFactory:
             return RecipeMLParser(ingredient_parser)
         elif fmt == Format.RICETTE_JSON:
             return RicetteJsonParser(ingredient_parser)
+        elif fmt == Format.CSV_VITT:
+            return VittRecipesParser(ingredient_parser)
         elif fmt == Format.CSV_20KRECIPES:
             return TwentyKRecipesParser(ingredient_parser)
         elif fmt in {Format.CSV, Format.CSV_GENERIC}:
@@ -407,7 +414,7 @@ class ParserFactory:
         elif fmt == Format.IMAGE:
             return ImageParser(ingredient_parser)
         elif fmt == Format.SQLITE:
-            return SqliteParser(ingredient_parser)
+            return SqliteParser(ingredient_parser, debug=debug)
         elif fmt == Format.GENERIC_TEXT:
             return GenericTextParser(ingredient_parser)
         elif fmt == Format.MIXED:
