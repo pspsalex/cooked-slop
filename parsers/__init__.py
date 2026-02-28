@@ -18,6 +18,7 @@ from .nyc import NYCParser
 from .sqlite.sqlite_parser import SqliteRecipeParser
 from .html_parser import HtmlParser
 from .llm_parser import LLMRecipeParser
+from .microcook import MicroCookParser
 
 __all__ = [
     'Recipe',
@@ -42,5 +43,6 @@ __all__ = [
     'NYCParser',
     'SqliteRecipeParser',
     'HtmlParser',
-    'LLMRecipeParser'
+    'LLMRecipeParser',
+    'MicroCookParser'
 ]

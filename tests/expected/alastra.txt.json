@@ -1,0 +1,143 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Kefta Tagine (Meatball Stew Moroccan)",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "ground lamb",
+      "value": 1,
+      "unitText": "lb"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chopped parsley",
+      "value": 2,
+      "unitText": "tbsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chopped fresh coriander",
+      "value": 1,
+      "unitText": "tbsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "ground cumin",
+      "value": "1/2",
+      "unitText": "tsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "onion, peeled and finely chopped",
+      "value": "1/2"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cayenne",
+      "value": "1/4",
+      "unitText": "tsp"
+    },
+    "salt to taste",
+    {
+      "@type": "PropertyValue",
+      "name": "olive oil for pan frying",
+      "value": 2,
+      "unitText": "tbsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic, peeled",
+      "value": 2,
+      "unitText": "cloves"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "onions, peeled and finely chopped",
+      "value": 2,
+      "unitText": "medium"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "bell pepper, cored, seeded and chopped",
+      "value": 1,
+      "unitText": "green"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "bunch of parsley, chopped",
+      "value": 1,
+      "unitText": "small"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tomatoes, chopped",
+      "value": 2,
+      "unitText": "lbs"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "ground cumin",
+      "value": 1,
+      "unitText": "tsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "freshly ground black pepper",
+      "value": 1,
+      "unitText": "tsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "ground cinnamon",
+      "value": "1/2",
+      "unitText": "tsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "fresh lemon juice",
+      "value": 2,
+      "unitText": "tbsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cayenne",
+      "value": "1/4",
+      "unitText": "tsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt (or to taste)",
+      "value": "1 1/2",
+      "unitText": "tsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 6
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Combine all the ingredients for the ketfa and form into 1 inch\nballs with wet hands.  Heat a 6- to 8-quart stove-top casserole\nand add the olive oil. Brown the meatballs in the oil, then remove,\nleaving the oil in the pot. Set the meatballs aside, covered.  Add\nthe garlic, onion, and bell pepper to the reserved oil and saute\nuntil the onion is clear.  Add the remaining ingredients for the\nsauce and simmer, covered, 30 minutes until the sauce has cooked\ndown to a thick gravy."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Return the meatballs to the sauce and simmer uncovered 10 minutes\nmore.  Carefully bread the eggs into the sauce and poach for a few\nminutes (don't overcook the eggs.) Serve at once directly with the\npan."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Serves 5.  Serve with Couscous."
+    }
+  ],
+  "comment": "Imported from tests/samples/alastra.txt",
+  "url": "file://tests/samples/alastra.txt",
+  "datePublished": "2026-02-28T23:18:04.808536",
+  "description": "Recipe converted from Raw Text format"
+}
+]
