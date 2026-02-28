@@ -5,9 +5,10 @@ MasterCook Recipe 1
 Recipe By     : Author 1
 Serving Size  : 4
 Categories    : Test Mixed
-
-  1            c  Sugar
-  2            tb  Butter
+  Amount  Measure       Ingredient -- Preparation Method
+--------  ------------  --------------------------------
+  1            c        Sugar
+  2            tb       Butter
 
 Directions:
 Mix everything.

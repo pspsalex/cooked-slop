@@ -76,12 +76,38 @@ def parse_ingredients(ingredients_str: str) -> List[str]:
     return [ing.strip() for ing in ingredients_str.split(";") if ing.strip()]
 
 
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class RicetteJsonParser(BaseRecipeParser):
     """Parser for Ricette JSON format."""
 
     def __init__(self, ingredient_parser=None):
         super().__init__(ingredient_parser)
         self.source_format = "Ricette JSON"
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "ricette_json"
+
+    @classmethod
+    def aliases(cls) -> list[str]:
+        return ["json"]
+
+    @classmethod
+    def priority(cls) -> int:
+        return 11
+
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        import re
+        if not content_sample:
+            return 0.0
+        if re.match(r'^\s*[\{\[]', content_sample):
+            if '"Nome"' in content_sample or '"Ingredienti"' in content_sample:
+                return 0.95
+            return 0.4
+        return 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         """Parse JSON content and yield Recipe objects."""

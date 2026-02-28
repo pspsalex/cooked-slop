@@ -3,11 +3,7 @@ import re
 from .models import Ingredient
 from .base import BaseIngredientParser
 
-try:
-    from ingredient_parser import parse_ingredient
-    HAS_NLP_PARSER = True
-except ImportError:
-    HAS_NLP_PARSER = False
+HAS_NLP_PARSER = None
 
 class RegexIngredientParser(BaseIngredientParser):
     def parse(self, raw_line: str) -> Ingredient:
@@ -62,6 +58,16 @@ class NLPIngredientParser(BaseIngredientParser):
             return self._fallback.parse(raw_line)
 
 def get_ingredient_parser(use_nlp: bool = True) -> BaseIngredientParser:
-    if use_nlp and HAS_NLP_PARSER:
-        return NLPIngredientParser()
+    global HAS_NLP_PARSER
+    if use_nlp:
+        if HAS_NLP_PARSER is None:
+            try:
+                from ingredient_parser import parse_ingredient
+                HAS_NLP_PARSER = True
+            except ImportError:
+                HAS_NLP_PARSER = False
+        
+        if HAS_NLP_PARSER:
+            return NLPIngredientParser()
+
     return RegexIngredientParser()

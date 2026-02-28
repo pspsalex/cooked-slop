@@ -461,7 +461,7 @@ def get_sqlite_schema_registry() -> SqliteSchemaRegistry:
         # Auto-load YAML configurations from configs directory
         # Look for configs in multiple possible locations
         config_paths = [
-            Path(__file__).parent.parent / "configs",  # Relative to parsers module
+            Path(__file__).parent.parent.parent / "configs",  # Relative to parsers module
             Path.cwd() / "configs",                      # In current working directory
         ]
 

@@ -51,9 +51,9 @@
   "recipeYield": "8 servings",
   "recipeCategory": "cookies",
   "keywords": "cookies",
-  "comment": "Imported from tests/samples/nyc.txt",
-  "url": "file://tests/samples/nyc.txt",
-  "datePublished": "2026-02-25T20:55:41.333799",
+  "comment": "Imported from tests/samples/nyc.nyc",
+  "url": "file://tests/samples/nyc.nyc",
+  "datePublished": "2026-02-28T19:42:23.812281",
   "description": "Recipe converted from NYC format"
 },
 {
@@ -114,9 +114,9 @@
   "recipeYield": "84 servings",
   "recipeCategory": "cookies",
   "keywords": "cookies, deserts",
-  "comment": "Imported from tests/samples/nyc.txt",
-  "url": "file://tests/samples/nyc.txt",
-  "datePublished": "2026-02-25T20:55:41.334059",
+  "comment": "Imported from tests/samples/nyc.nyc",
+  "url": "file://tests/samples/nyc.nyc",
+  "datePublished": "2026-02-28T19:42:23.812587",
   "description": "Recipe converted from NYC format"
 }
 ]

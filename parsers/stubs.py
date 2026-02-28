@@ -5,13 +5,24 @@ import csv
 from pathlib import Path
 from .models import Recipe
 from .base import BaseRecipeParser, BaseIngredientParser
+from .registry import ParserRegistry
 
 class Colors:
     YELLOW = '\033[93m'
     ENDC = '\033[0m'
 
+@ParserRegistry.register
 class PdfParser(BaseRecipeParser):
     """Stub for PDF recipe parsing."""
+    
+    @classmethod
+    def format_id(cls) -> str: return "pdf"
+    @classmethod
+    def priority(cls) -> int: return 35
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        if Path(filepath).suffix.lower() == '.pdf': return 0.99
+        return 0.0
     def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "PDF"
@@ -21,8 +32,18 @@ class PdfParser(BaseRecipeParser):
         return
         yield  # Make it a generator
 
+@ParserRegistry.register
 class ImageParser(BaseRecipeParser):
     """Stub for Image/OCR recipe parsing."""
+    
+    @classmethod
+    def format_id(cls) -> str: return "image"
+    @classmethod
+    def priority(cls) -> int: return 36
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        if Path(filepath).suffix.lower() in {'.jpg', '.jpeg', '.png', '.gif', '.bmp'}: return 0.99
+        return 0.0
     def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "Image/OCR"
@@ -32,48 +53,47 @@ class ImageParser(BaseRecipeParser):
         return
         yield  # Make it a generator
 
-class SqliteParser(BaseRecipeParser):
-    """SQLite database recipe parsing using schema configuration."""
-    def __init__(self, ingredient_parser: BaseIngredientParser, debug: bool = True):
-        super().__init__(ingredient_parser)
-        self.source_format = "SQLite"
-        self.debug = debug
-
-    def parse_file(self, filepath: str) -> Iterator[Recipe]:
-        # Import here to avoid circular imports
-        from .sqlite_parser import SqliteRecipeParser
-        parser = SqliteRecipeParser(self.ingredient_parser, debug=self.debug)
-        yield from parser.parse_file(filepath)
-
+@ParserRegistry.register
 class CsvParser(BaseRecipeParser):
     """CSV recipe parser with format detection."""
+    
+    @classmethod
+    def format_id(cls) -> str: return "csv_generic"
+    @classmethod
+    def priority(cls) -> int: return 21
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        if Path(filepath).suffix.lower() != '.csv': return 0.0
+        try:
+            with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                f.readline()
+                f.seek(0)
+                for delimiter in [',', ';', '\t', '|']:
+                    reader = csv.DictReader(f, delimiter=delimiter)
+                    if reader.fieldnames and len(reader.fieldnames) > 1:
+                        headers = [h.strip().lower() for h in reader.fieldnames if h]
+                        has_title = any(h in headers for h in ['title', 'name', 'recipe_name', 'recipe name'])
+                        has_ing = any(h in headers for h in ['ingredients', 'ingredient', 'ingred', 'ingredient_list'])
+                        has_inst = any(h in headers for h in ['instructions', 'instruction', 'directions', 'method', 'instruct', 'steps'])
+                        if has_title and has_ing and has_inst: return 0.80
+        except Exception: pass
+        return 0.1 # Generic CSV fallback
+
     def __init__(self, ingredient_parser: BaseIngredientParser, format_hint: str = None):
         super().__init__(ingredient_parser)
         self.source_format = "CSV"
         self.format_hint = format_hint
 
     def parse_file(self, filepath: str) -> Iterator[Recipe]:
-        from .detection import get_detection_registry, Format
-        from .twentykrecipes import TwentyKRecipesParser
-        from .vitt import VittRecipesParser
-
-        db_path = Path(filepath)
-
-        # Try to detect CSV format
-        registry = get_detection_registry()
-        result = registry.detect(db_path)
-
-        if result.format == Format.CSV_VITT:
-            parser = VittRecipesParser(self.ingredient_parser)
-            yield from parser.parse_file(filepath)
-        elif result.format == Format.CSV_20KRECIPES:
-            parser = TwentyKRecipesParser(self.ingredient_parser)
-            yield from parser.parse_file(filepath)
-        elif result.format == Format.CSV_GENERIC:
-            yield from self._parse_generic_csv(filepath)
-        else:
-            # Fallback to generic
-            yield from self._parse_generic_csv(filepath)
+        recipes = self._parse_generic_csv(filepath)
+            
+        for recipe in recipes:
+            if not recipe.description:
+                recipe.description = f"Imported from {self.source_format}"
+            if not recipe.url:
+                from pathlib import Path
+                recipe.url = f"file://{Path(filepath).absolute()}"
+            yield recipe
 
     def _parse_generic_csv(self, filepath: str) -> Iterator[Recipe]:
         """Generic CSV parser for common recipe layouts."""

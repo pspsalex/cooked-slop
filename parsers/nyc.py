@@ -3,12 +3,32 @@ from typing import Iterator, Optional
 from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
 
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class NYCParser(BaseRecipeParser):
     """Parser for Now You're Cooking! (NYC) export format."""
 
     def __init__(self, ingredient_parser=None):
         super().__init__(ingredient_parser)
         self.source_format = "NYC"
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "nyc"
+
+    @classmethod
+    def priority(cls) -> int:
+        return 6
+
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        import re
+        if not content_sample:
+            return 0.0
+        if re.search(r'^@{5}\s+Now You\'re Cooking!', content_sample, re.MULTILINE):
+            return 0.95
+        return 0.0
 
     def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
         # Split by the NYC header

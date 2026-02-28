@@ -2,14 +2,19 @@
 from .models import Recipe, Ingredient
 from .base import BaseIngredientParser, BaseRecipeParser
 from .ingredients import get_ingredient_parser
-from .factory import ParserFactory, sniff_format
+from .registry import ParserRegistry
 from .generic import GenericTextParser
+from .mixed import MixedFormatParser
 from .compuchef import CompuChefParser
 from .recipeml import RecipeMLParser
 from .twentykrecipes import TwentyKRecipesParser
 from .ricette_json import RicetteJsonParser
-from .detection import get_detection_registry, Format, DetectionResult, FormatDetectionRegistry
-from .sqlite_config import get_sqlite_schema_registry, SqliteRecipeSchema, SqliteSchemaRegistry
+from .sqlite.sqlite_config import get_sqlite_schema_registry, SqliteRecipeSchema, SqliteSchemaRegistry
+from .ricette import RicetteParser
+from .edna import EdnaParser
+from .ricette_md import RicetteMdParser
+from .vitt import VittRecipesParser
+from .nyc import NYCParser
 
 __all__ = [
     'Recipe',
@@ -17,18 +22,19 @@ __all__ = [
     'BaseIngredientParser',
     'BaseRecipeParser',
     'get_ingredient_parser',
-    'ParserFactory',
-    'sniff_format',
+    'ParserRegistry',
     'GenericTextParser',
+    'MixedFormatParser',
     'CompuChefParser',
+    'RicetteMdParser',
     'RecipeMLParser',
+    'EdnaParser',
     'TwentyKRecipesParser',
     'RicetteJsonParser',
-    'get_detection_registry',
-    'Format',
-    'DetectionResult',
-    'FormatDetectionRegistry',
     'get_sqlite_schema_registry',
     'SqliteRecipeSchema',
     'SqliteSchemaRegistry',
+    'RicetteParser',
+    'VittRecipesParser',
+    'NYCParser',
 ]

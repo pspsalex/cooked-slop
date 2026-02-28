@@ -1,13 +1,33 @@
 # SPDX-License-Identifier: MIT
 from pathlib import Path
-from typing import Iterator
-from .models import Recipe
-from .base import BaseRecipeParser, BaseIngredientParser
+from typing import Iterator, List
 
+from .base import BaseRecipeParser, BaseIngredientParser
+from .models import Recipe
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class GenericTextParser(BaseRecipeParser):
     def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "Raw Text"
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "generic_text"
+
+    @classmethod
+    def priority(cls) -> int:
+        # This is a fallback parser, so it should have lowest priority
+        return 100
+
+    @classmethod
+    def detect(cls, filepath: str, content: str) -> float:
+        # This parser is a generic fallback and should always be able to
+        # attempt parsing, as long as the file is not empty.
+        # More specific parsers should have higher priority and detect
+        # their formats first.
+        return 0.01 if content.strip() else 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)

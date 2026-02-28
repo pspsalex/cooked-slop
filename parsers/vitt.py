@@ -41,12 +41,39 @@ class BlockType(Enum):
     UNKNOWN = "unknown"
 
 
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class VittRecipesParser(BaseRecipeParser):
     """Parser for vitt CSV format."""
 
     def __init__(self, ingredient_parser: BaseIngredientParser = None):
         super().__init__(ingredient_parser)
         self.source_format = "vitt CSV"
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "csv_vitt"
+
+    @classmethod
+    def priority(cls) -> int:
+        return 19
+
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        import csv
+        import io
+        if not content_sample:
+            return 0.0
+        try:
+            reader = csv.reader(io.StringIO(content_sample))
+            headers = next(reader)
+            expected = ["RNUM", "NAME", "KING", "SOURCE", "TXT", "TAG"]
+            if len(headers) >= 6 and headers[:6] == expected:
+                return 0.95
+        except Exception:
+            pass
+        return 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         """Parse CSV content and yield Recipe objects."""
@@ -88,11 +115,7 @@ class VittRecipesParser(BaseRecipeParser):
         name = row.get("NAME", "").strip()
         title_block = next((b for b, t in blocks_with_types if t == BlockType.TITLE), None)
 
-        if title_block:
-            recipe.title = title_block.rstrip(':').strip()
-        else:
-            # Fall back to NAME column, convert from ALL CAPS to Title Case
-            recipe.title = self._to_title_case(name) if name else "Untitled Recipe"
+        recipe.title = self._to_title_case(name)
 
         # Keywords / Categories
         keyword = row.get("KING", "").strip()

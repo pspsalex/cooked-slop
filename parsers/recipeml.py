@@ -185,12 +185,32 @@ def get_times(recipe_el):
 
 # ── main recipe converter ─────────────────────────────────────────────────────
 
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class RecipeMLParser(BaseRecipeParser):
     """Parser for RecipeML (XML) format."""
 
     def __init__(self, ingredient_parser=None):
         super().__init__(ingredient_parser)
         self.source_format = "RecipeML"
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "recipeml"
+
+    @classmethod
+    def priority(cls) -> int:
+        return 7
+
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        import re
+        if not content_sample:
+            return 0.0
+        if re.search(r'<recipeml|<recipe[^a-zA-Z]', content_sample, re.IGNORECASE):
+            return 0.95
+        return 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         """Parse RecipeML content (XML string) and return list of Recipe objects."""

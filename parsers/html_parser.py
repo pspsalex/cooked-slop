@@ -2,8 +2,10 @@
 import sys
 from pathlib import Path
 from typing import Iterator
+import re # Added for detect method
 from .models import Recipe
 from .base import BaseRecipeParser, BaseIngredientParser
+from .registry import ParserRegistry # Added registry import
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,7 +21,28 @@ try:
 except ImportError:
     HAS_RECIPE_SCRAPERS = False
 
+@ParserRegistry.register # Added decorator
 class HtmlParser(BaseRecipeParser):
+    """Parse recipes from HTML pages using recipe-scrapers.""" # Added docstring
+    
+    @classmethod
+    def format_id(cls) -> str:
+        return "html"
+        
+    @classmethod
+    def priority(cls) -> int:
+        return 20
+        
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        # Path is already imported at the top
+        # re is already imported at the top
+        if Path(filepath).suffix.lower() in {'.html', '.htm'}:
+            return 0.99
+        if re.search(r'<html|<body|<div|<p>', content_sample, re.IGNORECASE):
+            return 0.8
+        return 0.0
+
     def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "HTML/URL"

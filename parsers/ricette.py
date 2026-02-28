@@ -6,6 +6,9 @@ from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
 from .units import normalize_unit
 
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class RicetteParser(BaseRecipeParser):
     """
     Parser for the Italian 'Ricette' format.
@@ -15,6 +18,23 @@ class RicetteParser(BaseRecipeParser):
     def __init__(self, ingredient_parser=None):
         super().__init__(ingredient_parser)
         self.source_format = "Ricette"
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "ricette"
+
+    @classmethod
+    def priority(cls) -> int:
+        return 5
+
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        import re
+        if not content_sample:
+            return 0.0
+        if re.search(r'^:Ricette', content_sample, re.MULTILINE):
+            return 0.95
+        return 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         # Split by :Ricette, but keep the content that follows

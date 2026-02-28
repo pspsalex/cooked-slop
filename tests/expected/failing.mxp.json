@@ -24,7 +24,7 @@
     },
     {
       "@type": "PropertyValue",
-      "name": "canned sliced apples -- or one can",
+      "name": "canned sliced apples, or one can",
       "value": 16,
       "unitText": "ounce"
     },
@@ -60,7 +60,7 @@
     {
       "@type": "HowToStep",
       "position": 5,
-      "text": "Posted to FareShare  by kitpath@earthlink.net 4/99"
+      "text": "Source: Uncle Ben's Newsletter, \"Appetize,\" Vol. 1 No. 1 (1999). Posted to FareShare  by kitpath@earthlink.net 4/99"
     }
   ],
   "recipeYield": "6",
@@ -68,7 +68,7 @@
   "keywords": "Desserts, Apples, Rice, Volume 2-4, Apr.'99",
   "comment": "Imported from tests/samples/failing.mxp",
   "url": "file://tests/samples/failing.mxp",
-  "datePublished": "2026-02-25T20:55:24.986726",
+  "datePublished": "2026-02-28T16:23:21.960315",
   "description": "Recipe converted from MasterCook format"
 }
 ]

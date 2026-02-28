@@ -4,10 +4,36 @@ from typing import Iterator
 from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
 
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class EdnaParser(BaseRecipeParser):
     def __init__(self, ingredient_parser=None):
         super().__init__(ingredient_parser)
         self.source_format = "Edna"
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "edna"
+
+    @classmethod
+    def priority(cls) -> int:
+        return 4
+
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        import re
+        if not content_sample:
+            return 0.0
+        m = re.search(r'^------------\s*(?=[\r\n]+\s*id:)', content_sample, re.MULTILINE)
+        if m:
+            prefix = content_sample[:m.start()].strip()
+            if prefix:
+                before = content_sample[max(0, m.start()-4):m.start()]
+                if not before.endswith('\n\n') and not before.endswith('\r\n\r\n'):
+                    return 0.0
+            return 0.90
+        return 0.0
 
     def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
         # Split by the record separator (refined to include positive lookahead for id:)

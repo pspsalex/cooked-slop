@@ -110,12 +110,39 @@ def parse_ingredients(ingred_field: str) -> List[str]:
     return result
 
 
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class TwentyKRecipesParser(BaseRecipeParser):
     """Parser for 20krecipes CSV format."""
 
     def __init__(self, ingredient_parser=None):
         super().__init__(ingredient_parser)
         self.source_format = "20krecipes CSV"
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "csv_20krecipes"
+
+    @classmethod
+    def priority(cls) -> int:
+        return 20
+
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        import csv
+        import io
+        if not content_sample:
+            return 0.0
+        try:
+            reader = csv.reader(io.StringIO(content_sample))
+            headers = next(reader)
+            expected = ["TITLE_NO", "TITLE", "KEYWORD", "INSTRUCT", "ORIGIN", "SERVES", "SUBDIR", "INGRED"]
+            if len(headers) >= 8 and headers[:8] == expected:
+                return 0.95
+        except Exception:
+            pass
+        return 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         """Parse CSV content and yield Recipe objects."""

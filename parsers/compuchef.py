@@ -1,11 +1,14 @@
 # SPDX-License-Identifier: MIT
 import re
-from typing import Iterator
+from typing import Iterator, Optional
 from .models import Recipe, Ingredient
 from .base import BaseRecipeParser, BaseIngredientParser
 from .units import normalize_unit
 
 
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class CompuChefParser(BaseRecipeParser):
     """Parser for Compu-Chef (tm) recipe files (.ccf).
     
@@ -34,15 +37,58 @@ class CompuChefParser(BaseRecipeParser):
         super().__init__(ingredient_parser)
         self.source_format = "CompuChef"
 
+        self.end_re = re.compile(r'\*{3}\s*Recipe Via Compu-Chef.*\*{3}', flags=re.IGNORECASE)
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "compuchef"
+
+    @classmethod
+    def priority(cls) -> int:
+        return 3
+
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        import re
+        if not content_sample:
+            return 0.0
+        if re.search(r'Recipe Via Compu-Chef', content_sample, re.IGNORECASE):
+            return 0.95
+        if re.search(r'^\s*\*{3,}\s*(?![^*]*Exported from)[^*]+\s*\*{3,}', content_sample, re.MULTILINE):
+            return 0.75
+        return 0.0
+
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         # Split on the Compu-Chef recipe footer/separator
         # Each recipe ends with "*** Recipe Via Compu-Chef (tm) ***"
-        sections = re.split(r'\*{3}\s*Recipe Via Compu-Chef.*?\*{3}', content, flags=re.IGNORECASE)
+        sections = re.split(self.end_re, content)
         for section in sections:
             if section.strip():
                 recipe = self._parse_section(section.strip(), filepath)
                 if recipe and recipe.title:
                     yield recipe
+
+    def parse_buffer(self, f, first_line: str) -> (Optional[Recipe], int):
+        """
+        Parse a buffer (file stream) containing CompuChef recipes.
+        Reads until the next recipe header or EOF.
+        """
+        read_lines = 0
+        recipe_text = first_line
+        
+        for line in f:
+            read_lines += 1
+            if self.end_re.match(line.strip()):
+                break
+            recipe_text += line
+
+        if not recipe_text.strip():
+            return (None, read_lines)
+        
+        print(f"Parsing recipe from {f.name} {recipe_text}")
+
+        recipe = self._parse_section(recipe_text, f.name)
+        return (recipe, read_lines)
 
     def _parse_section(self, section: str, filepath: str) -> Recipe:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)

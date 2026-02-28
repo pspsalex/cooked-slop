@@ -6,29 +6,29 @@
   "recipeIngredient": [
     {
       "@type": "PropertyValue",
-      "name": "tomato -- chopped",
+      "name": "tomato, chopped",
       "value": 1
     },
     {
       "@type": "PropertyValue",
-      "name": "green pepper -- chopped",
+      "name": "green pepper, chopped",
       "value": 1
     },
     {
       "@type": "PropertyValue",
-      "name": "onion -- chopped",
+      "name": "onion, chopped",
       "value": 1,
       "unitText": "large"
     },
     {
       "@type": "PropertyValue",
-      "name": "fresh spinach -- chopped OR",
+      "name": "fresh spinach, chopped OR",
       "value": 1,
       "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
-      "name": "frozen chopped spinach -- defrosted/well drain",
+      "name": "frozen chopped spinach, defrosted/well drain",
       "value": 1,
       "unitText": "package"
     },
@@ -50,7 +50,7 @@
       "value": 3,
       "unitText": "tablespoon"
     },
-    "salt, pepper and garlic salt, basil -- to taste"
+    "salt, pepper and garlic salt, basil, to taste"
   ],
   "recipeInstructions": [
     {
@@ -74,7 +74,7 @@
   "keywords": "Onions, Peppers, Side Dishes, Spinach, Tomatoes, Volume 2-4, Apr.'99",
   "comment": "Imported from tests/samples/failing2.mxp",
   "url": "file://tests/samples/failing2.mxp",
-  "datePublished": "2026-02-25T20:55:26.922545",
+  "datePublished": "2026-02-28T16:24:02.368244",
   "description": "Recipe converted from MasterCook format"
 },
 {
@@ -90,23 +90,23 @@
     },
     {
       "@type": "PropertyValue",
-      "name": "Onion -- finely chopped",
+      "name": "Onion, finely chopped",
       "value": 1
     },
     {
       "@type": "PropertyValue",
-      "name": "Green ball pepper -- cut into 1/2-inch squares",
+      "name": "Green ball pepper, cut into 1/2-inch squares",
       "value": 1
     },
     {
       "@type": "PropertyValue",
-      "name": "Mushrooms -- thinly sliced",
+      "name": "Mushrooms, thinly sliced",
       "value": "1/2",
       "unitText": "pound"
     },
     {
       "@type": "PropertyValue",
-      "name": "Vermicelli noodles -- broken into 2-inch lengths",
+      "name": "Vermicelli noodles, broken into 2-inch lengths",
       "value": 3,
       "unitText": "ounce"
     },
@@ -118,13 +118,14 @@
     },
     {
       "@type": "PropertyValue",
-      "name": "Reduced-sodium vegetable Broth",
+      "name": "Reduced-sodium vegetable",
       "value": "2 1/2",
       "unitText": "cup"
     },
+    "Broth",
     {
       "@type": "PropertyValue",
-      "name": "Fresh dill -- snipped",
+      "name": "Fresh dill, snipped",
       "value": "1/3",
       "unitText": "cup"
     },
@@ -142,7 +143,7 @@
     },
     {
       "@type": "PropertyValue",
-      "name": "Almonds -- sliced",
+      "name": "Almonds, sliced",
       "value": 2,
       "unitText": "tablespoon"
     },
@@ -177,6 +178,11 @@
     {
       "@type": "HowToStep",
       "position": 5,
+      "text": "Source:  Meatless Main Dishes, Time Life Books"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
       "text": "Posted on FareShare 4-99 by Judi Mae Phelps  jphelps@slip.net or jphelps@best.com"
     }
   ],
@@ -185,7 +191,7 @@
   "keywords": "Cheese, Mushrooms, Onions, Peas/Pea Pods, Peppers, Rice, Side Dishes, Vegetables, Volume 2-4, Apr.'99, Pasta/Noodles",
   "comment": "Imported from tests/samples/failing2.mxp",
   "url": "file://tests/samples/failing2.mxp",
-  "datePublished": "2026-02-25T20:55:26.923076",
+  "datePublished": "2026-02-28T16:24:02.368732",
   "description": "Recipe converted from MasterCook format"
 }
 ]

@@ -1,0 +1,30 @@
+name: wensoftware
+recipes_table: Recipe
+description: "Config for wensoftware database"
+version: "1.0"
+
+recipe_columns:
+  - name: rID
+    attribute: id
+    required: true
+  - name: Name
+    attribute: title
+    required: true
+  - name: Category
+    attribute: categories
+    required: false
+  - name: Yield
+    attribute: yield_amount
+    required: false
+
+ingredients:
+  type: table
+  table: Ingredient
+  id_column: rID
+  name_column: Ingredient
+  quantity_column: Amount
+  unit_column: Measure
+
+instructions:
+  field: Preparation
+  delimiter: "\n"

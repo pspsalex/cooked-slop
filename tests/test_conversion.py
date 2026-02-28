@@ -30,7 +30,7 @@ def get_samples():
 def test_regression(sample_path: Path, tmp_path: Path):
     """Test that conversion output matches expected JSON."""
     expected_path = EXPECTED_DIR / f"{sample_path.name}.json"
-    
+
     if not expected_path.exists():
         pytest.fail(f"Expected output file not found: {expected_path}. Run with --generate-expected if implementing a new test.")
 
@@ -39,7 +39,7 @@ def test_regression(sample_path: Path, tmp_path: Path):
 
     with open(expected_path, "r") as f:
         expected_json = json.load(f)
-    
+
     with open(actual_path, "r") as f:
         actual_json = json.load(f)
 

@@ -23,3 +23,5 @@ class Recipe:
     source_format: str = 'Unknown'
     sqlite_table: Optional[str] = None
     sqlite_id: Optional[str] = None
+    description: Optional[str] = None
+    url: Optional[str] = None

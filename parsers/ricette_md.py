@@ -4,10 +4,34 @@ from typing import Iterator, Optional
 from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
 
+from .registry import ParserRegistry
+
+@ParserRegistry.register
 class RicetteMdParser(BaseRecipeParser):
     def __init__(self, ingredient_parser=None):
         super().__init__(ingredient_parser)
         self.source_format = "RicetteMD"
+
+    @classmethod
+    def format_id(cls) -> str:
+        return "ricette_md"
+
+    @classmethod
+    def aliases(cls) -> list[str]:
+        return ["md"]
+
+    @classmethod
+    def priority(cls) -> int:
+        return 10
+
+    @classmethod
+    def detect(cls, filepath: str, content_sample: str) -> float:
+        import re
+        if not content_sample:
+            return 0.0
+        if re.search(r'^#\s+', content_sample, re.MULTILINE):
+            return 0.60
+        return 0.0
 
     def _unescape(self, text: str) -> str:
         r"""Unescape common Markdown escapes like \( or \)."""

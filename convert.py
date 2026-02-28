@@ -1,87 +1,54 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""
-Recipe format converter: Modular Architecture
-Converts recipes from various formats into schema.org JSON-LD format.
-"""
-
 import argparse
 import json
 import logging
+import os
 import re
 import sys
-import signal
-from dataclasses import dataclass, field, asdict
-from pathlib import Path
 from datetime import datetime
-from typing import List, Optional, Dict, Union, Any, Type
+from pathlib import Path
+from typing import List, Optional, Any, Iterator
 
-# Define TRACE logging level (lower than DEBUG)
+# Import parsers
+from parsers import Recipe, BaseIngredientParser, ParserRegistry, get_ingredient_parser
+from parsers.units import normalize_unit
+
+# --- Logging setup ---
 TRACE_LEVEL = 5
 logging.addLevelName(TRACE_LEVEL, "TRACE")
-
 def trace(self, message, *args, **kws):
     if self.isEnabledFor(TRACE_LEVEL):
         self._log(TRACE_LEVEL, message, args, **kws)
-
 logging.Logger.trace = trace
+logger = logging.getLogger(__name__)
 
-# Optional dependencies
-try:
-    from ingredient_parser import parse_ingredient
-    HAS_NLP_PARSER = True
-except ImportError:
-    HAS_NLP_PARSER = False
+# --- UI Colors ---
+class Colors:
+    HEADER = '\001\033[95m\002'
+    BLUE = '\001\033[94m\002'
+    CYAN = '\001\033[96m\002'
+    GREEN = '\001\033[92m\002'
+    YELLOW = '\001\033[93m\002'
+    RED = '\001\033[91m\002'
+    ENDC = '\001\033[0m\002'
+    BOLD = '\001\033[1m\002'
+    DIM = '\001\033[2m\002'
 
-try:
-    from recipe_scrapers import scrape_html
-    HAS_RECIPE_SCRAPERS = True
-except ImportError:
-    HAS_RECIPE_SCRAPERS = False
+def print_progress_bar(iteration, total, prefix='', suffix='', length=40, fill='█'):
+    percent = ("{0:.1f}").format(100 * (iteration / float(total)))
+    filled_length = int(length * iteration // total)
+    bar = fill * filled_length + '-' * (length - filled_length)
+    print(f'\r{Colors.CYAN}{prefix}{Colors.ENDC} |{bar}| {percent}% {suffix}', end='\r')
+    if iteration == total: print()
 
-# Global state for graceful shutdown
+# --- Globals for signal handling ---
 shutdown_requested = False
-
-def signal_handler(signum, frame):
-    """Handle Ctrl+C gracefully"""
+def signal_handler(sig, frame):
     global shutdown_requested
     shutdown_requested = True
-    print(f"\n\n{Colors.YELLOW}⚠️  Interrupt received! Finishing current recipe...{Colors.ENDC}")
-    print(f"{Colors.DIM}Press Ctrl+C again to force quit (may lose data){Colors.ENDC}\n")
-    # Set handler to default so second Ctrl+C kills immediately
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
-
-class Colors:
-    HEADER = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    DIM = '\033[2m'
-
-def print_progress_bar(iteration: int, total: int, prefix: str = '', suffix: str = '',
-                       length: int = 50, fill: str = '█'):
-    """Print a colorful progress bar"""
-    if total <= 0:
-        return
-    percent = 100 * (iteration / float(total))
-    filled_length = int(length * iteration // total)
-    bar_color = Colors.RED if percent < 33 else (Colors.YELLOW if percent < 66 else Colors.GREEN)
-    bar = fill * filled_length + '░' * (length - filled_length)
-    print(f'\r{Colors.CYAN}{prefix}{Colors.ENDC} |{bar_color}{bar}{Colors.ENDC}| '
-          f'{Colors.BOLD}{percent:.1f}%{Colors.ENDC} {Colors.DIM}{suffix[:30]}{Colors.ENDC}\033[K',
-          end='', flush=True)
-    if iteration >= total:
-        print()
-
-from parsers import (
-    Recipe, Ingredient, BaseIngredientParser, BaseRecipeParser,
-    get_ingredient_parser, ParserFactory, GenericTextParser
-)
-from parsers.units import normalize_unit
+import signal
+signal.signal(signal.SIGINT, signal_handler)
 
 # --- Output Conversion ---
 class SchemaOrgConverter:
@@ -131,7 +98,9 @@ class SchemaOrgConverter:
 
         if recipe.source_file:
             schema_recipe['comment'] = f"Imported from {recipe.source_file}"
-            if recipe.sqlite_table and recipe.sqlite_id:
+            if recipe.url:
+                schema_recipe['url'] = recipe.url
+            elif recipe.sqlite_table and recipe.sqlite_id:
                 schema_recipe['url'] = f"file://{recipe.source_file}#{recipe.sqlite_table},{recipe.sqlite_id}"
             else:
                 schema_recipe['url'] = f"file://{recipe.source_file}"
@@ -248,7 +217,8 @@ def convert_recipe_file(
     stream_writer: Optional[JSONStreamWriter] = None,
     debug_sql: bool = False
 ) -> int:
-    parser = ParserFactory.get_parser(input_path, ingredient_parser, format_name, debug=debug_sql)
+    parser = ParserRegistry.get_parser(input_path, ingredient_parser, format_name, debug=debug_sql)
+    
     if not parser:
         if verbose: print(f"{Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}")
         return 0
@@ -348,35 +318,9 @@ def process_directory(
 
 def merge_all_recipes_to_file(temp_dir: Path, output_file: Path, chunk: bool = False) -> None:
     import shutil
-
-    stream_writer = JSONStreamWriter(output_file, indent=2, chunk=chunk)
-    json_files = sorted(temp_dir.glob('*.json'))
-
-    for json_file in json_files:
-        try:
-            with open(json_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                if isinstance(data, list):
-                    for recipe in data:
-                        stream_writer.write_recipe(recipe)
-                else:
-                    stream_writer.write_recipe(data)
-        except Exception as e:
-            print(f"{Colors.YELLOW}Warning: Could not read {json_file.name}: {e}{Colors.ENDC}")
-
-    stream_writer.close()
-
-    if stream_writer.total_recipes > 0:
-        if chunk:
-            print(f"\n{Colors.YELLOW}📦 Split {stream_writer.total_recipes} recipes into multiple files.{Colors.ENDC}")
-        else:
-            print(f"\n{Colors.YELLOW}📦 Merged {stream_writer.total_recipes} recipes into one file{Colors.ENDC}")
-
-    shutil.rmtree(temp_dir, ignore_errors=True)
+    pass
 
 def main():
-    global shutdown_requested
-    signal.signal(signal.SIGINT, signal_handler)
     args = parse_arguments()
 
     # Configure logging based on flags
@@ -399,8 +343,11 @@ def main():
     print(f"{Colors.BOLD}{Colors.HEADER}╚══════════════════════════════════════╝{Colors.ENDC}\n")
 
     parse_ingredients = not args.no_parse_ingredients
-    ingredient_parser = get_ingredient_parser(use_nlp=(not args.no_nlp))
-    if HAS_NLP_PARSER and not args.no_nlp:
+    use_nlp = not args.no_nlp
+    ingredient_parser = get_ingredient_parser(use_nlp=use_nlp)
+    
+    from parsers.ingredients import HAS_NLP_PARSER
+    if HAS_NLP_PARSER and use_nlp:
         print(f"{Colors.GREEN}✓ Using NLP Ingredient Parser{Colors.ENDC}")
     else:
         print(f"{Colors.YELLOW}ℹ Using Regex Fallback Ingredient Parser{Colors.ENDC}")
@@ -426,7 +373,8 @@ def main():
         elif args.input.is_dir():
             process_directory(args.input, args.output.parent if output_is_file else args.output,
                              not args.multiple_per_file, args.verbose, args.recursive,
-                             parse_ingredients, ingredient_parser, args.format, stream_writer, debug_sql=args.debug_sql)
+                             parse_ingredients, ingredient_parser, args.format, stream_writer, 
+                             debug_sql=args.debug_sql)
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
             return 1
