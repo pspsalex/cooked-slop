@@ -1,0 +1,54 @@
+# LLM Recipe Parser Configuration
+# Copy this file and adjust settings for your provider.
+# Usage: python3 convert.py <input> --llm-config configs/my_llm.yaml -o output.json
+
+provider:
+  # Base URL for an OpenAI-compatible API endpoint.
+  # Ollama default: http://localhost:11434/v1
+  # OpenAI:         https://api.openai.com/v1
+  base_url: "http://localhost:11434/v1"
+
+  # Model identifier (must be pulled in Ollama, or available at the provider)
+  model: "qwen2.5:7b-instruct"
+
+  # API key — leave empty for local Ollama
+  api_key: ""
+
+  # Request timeout in seconds (LLM calls can be slow on CPU)
+  timeout_seconds: 120
+
+  # Low temperature for deterministic/structured extraction
+  temperature: 0.1
+
+prompt:
+  # System prompt — keep concise for small models
+  system: |
+    You are a recipe extraction assistant. Given raw recipe text, extract the
+    recipe data and return ONLY a valid JSON object. No markdown, no extra text.
+    Use this exact schema:
+    {
+      "title": "string",
+      "categories": ["string"],
+      "yield_amount": "string",
+      "ingredients": ["string"],
+      "instructions": ["string"]
+    }
+    If a field cannot be determined, use an empty string or empty list.
+
+  # Maximum characters of file content sent to the model.
+  # Keep low for small/quantised models to avoid context exhaustion.
+  max_input_chars: 6000
+
+sanity:
+  # Flag recipes where ingredient/instruction counts are outside these ranges.
+  min_ingredients: 2
+  max_ingredients: 50
+  min_instructions: 1
+  max_instructions: 80
+
+  # Title length bounds (characters)
+  min_title_len: 3
+  max_title_len: 120
+
+  # Flag if any single instruction step exceeds this length (likely padding)
+  max_single_instruction_len: 2000

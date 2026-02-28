@@ -6,7 +6,7 @@ from .base import BaseRecipeParser, BaseIngredientParser
 
 class ParserRegistry:
     """Registry for format detection and parser selection."""
-    
+
     _parsers: List[Type[BaseRecipeParser]] = []
 
     @classmethod
@@ -18,10 +18,10 @@ class ParserRegistry:
 
     @classmethod
     def get_parser(
-        cls, 
-        filepath: Path, 
-        ingredient_parser: BaseIngredientParser, 
-        format_name: Optional[str] = None, 
+        cls,
+        filepath: Path,
+        ingredient_parser: BaseIngredientParser,
+        format_name: Optional[str] = None,
         debug: bool = False
     ) -> Optional[BaseRecipeParser]:
         """
@@ -54,7 +54,6 @@ class ParserRegistry:
         for p_cls in cls._parsers:
             try:
                 score = p_cls.detect(filepath, sample)
-                print(f"Scored {p_cls.format_id()}: {score}")
                 if score > best_score:
                     best_score = score
                     best_parser_cls = p_cls

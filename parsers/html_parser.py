@@ -24,15 +24,15 @@ except ImportError:
 @ParserRegistry.register # Added decorator
 class HtmlParser(BaseRecipeParser):
     """Parse recipes from HTML pages using recipe-scrapers.""" # Added docstring
-    
+
     @classmethod
     def format_id(cls) -> str:
         return "html"
-        
+
     @classmethod
     def priority(cls) -> int:
         return 20
-        
+
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         # Path is already imported at the top

@@ -12,6 +12,7 @@ from typing import List, Optional, Any, Iterator
 
 # Import parsers
 from parsers import Recipe, BaseIngredientParser, ParserRegistry, get_ingredient_parser
+from parsers.llm_parser import LLMRecipeParser
 from parsers.units import normalize_unit
 
 # --- Logging setup ---
@@ -195,6 +196,9 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--debug-sql', action='store_true', help='Show SQL queries at TRACE level (must be explicitly enabled, -v does not imply this)')
     parser.add_argument('-f', '--format', type=str, choices=['mealmaster', 'mastercook', 'compuchef', 'edna', 'ricette', 'ricette_md', 'nyc', 'recipeml', '20krecipes', 'ricette_json'],
                         help='Override auto-detection and specify input format')
+    parser.add_argument('--llm-config', type=Path, default=None, metavar='CONFIG',
+                        help='Path to LLM provider YAML config. When set, all files are parsed '
+                             'via the configured LLM instead of the auto-detected parser.')
     return parser.parse_args()
 
 
@@ -207,9 +211,13 @@ def convert_recipe_file(
     ingredient_parser: BaseIngredientParser,
     format_name: Optional[str] = None,
     stream_writer: Optional[JSONStreamWriter] = None,
-    debug_sql: bool = False
+    debug_sql: bool = False,
+    llm_parser: Optional['LLMRecipeParser'] = None,
 ) -> int:
-    parser = ParserRegistry.get_parser(input_path, ingredient_parser, format_name, debug=debug_sql)
+    if llm_parser is not None:
+        parser = llm_parser
+    else:
+        parser = ParserRegistry.get_parser(input_path, ingredient_parser, format_name, debug=debug_sql)
 
     if not parser:
         if verbose: print(f"{Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}")
@@ -267,7 +275,8 @@ def process_directory(
     ingredient_parser: BaseIngredientParser,
     format_name: Optional[str] = None,
     stream_writer: Optional[JSONStreamWriter] = None,
-    debug_sql: bool = False
+    debug_sql: bool = False,
+    llm_parser: Optional['LLMRecipeParser'] = None,
 ) -> None:
     # Updated extensions to include stubs explicitly supported by ParserFactory.
     extensions = {'.mmf', '.mm', '.mxp', '.mx2', '.mz2', '.txt', '.html', '.htm', '.pdf', '.jpg', '.png', '.sqlite', '.db', '.csv', '.ccf', '.md'}
@@ -294,7 +303,7 @@ def process_directory(
             rel_path = recipe_file.relative_to(input_dir) if input_dir in recipe_file.parents else recipe_file
             print(f"\n{Colors.BOLD}[{file_idx}/{len(recipe_files)}]{Colors.ENDC} {Colors.CYAN}{rel_path}{Colors.ENDC}")
 
-        bytes_processed = convert_recipe_file(recipe_file, output_dir, one_file_per_recipe, verbose, parse_ingredients, ingredient_parser, format_name, stream_writer, debug_sql=debug_sql)
+        bytes_processed = convert_recipe_file(recipe_file, output_dir, one_file_per_recipe, verbose, parse_ingredients, ingredient_parser, format_name, stream_writer, debug_sql=debug_sql, llm_parser=llm_parser)
         processed_bytes += recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
 
         if not verbose:
@@ -339,6 +348,15 @@ def main():
     else:
         print(f"{Colors.YELLOW}ℹ Using Regex Fallback Ingredient Parser{Colors.ENDC}")
 
+    # Build LLM parser if requested
+    llm_parser = None
+    if args.llm_config:
+        if not args.llm_config.exists():
+            print(f"{Colors.RED}Error: LLM config not found: {args.llm_config}{Colors.ENDC}")
+            return 1
+        print(f"{Colors.CYAN}✓ LLM mode enabled — config: {args.llm_config}{Colors.ENDC}")
+        llm_parser = LLMRecipeParser(ingredient_parser, config_path=str(args.llm_config))
+
     output_is_file = args.output.suffix != ''
     stream_writer = None
     if output_is_file:
@@ -352,7 +370,8 @@ def main():
 
             convert_recipe_file(args.input, args.output.parent if output_is_file else args.output,
                                not args.multiple_per_file, args.verbose, parse_ingredients,
-                               ingredient_parser, args.format, stream_writer, debug_sql=args.debug_sql)
+                               ingredient_parser, args.format, stream_writer, debug_sql=args.debug_sql,
+                               llm_parser=llm_parser)
 
             if not args.verbose:
                 print_progress_bar(args.input.stat().st_size, args.input.stat().st_size, prefix='Processing', suffix='Complete!')
@@ -361,7 +380,7 @@ def main():
             process_directory(args.input, args.output.parent if output_is_file else args.output,
                              not args.multiple_per_file, args.verbose, args.recursive,
                              parse_ingredients, ingredient_parser, args.format, stream_writer,
-                             debug_sql=args.debug_sql)
+                             debug_sql=args.debug_sql, llm_parser=llm_parser)
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
             return 1

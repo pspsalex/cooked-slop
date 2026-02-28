@@ -16,6 +16,8 @@ from .ricette_md import RicetteMdParser
 from .vitt import VittRecipesParser
 from .nyc import NYCParser
 from .sqlite.sqlite_parser import SqliteRecipeParser
+from .html_parser import HtmlParser
+from .llm_parser import LLMRecipeParser
 
 __all__ = [
     'Recipe',
@@ -38,5 +40,7 @@ __all__ = [
     'RicetteParser',
     'VittRecipesParser',
     'NYCParser',
-    'SqliteRecipeParser'
+    'SqliteRecipeParser',
+    'HtmlParser',
+    'LLMRecipeParser'
 ]

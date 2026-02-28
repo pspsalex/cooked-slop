@@ -11,6 +11,9 @@ from .mealmaster import MealMasterParser
 from .compuchef import CompuChefParser
 from .nyc import NYCParser
 
+import logging
+logger = logging.getLogger(__name__)
+
 @ParserRegistry.register
 class MixedFormatParser(BaseRecipeParser):
     """
@@ -31,7 +34,6 @@ class MixedFormatParser(BaseRecipeParser):
         score = 0.0
         for parser in (MasterCookParser, MealMasterParser, CompuChefParser, NYCParser):
             score += parser.detect(filepath, content_sample)
-            print(f"Mix parser score: {score} due to {parser.format_id()}, {len(content_sample)}")
 
         if score > 1.0:
             return 1.0
@@ -46,7 +48,7 @@ class MixedFormatParser(BaseRecipeParser):
     def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "Mixed"
-        
+
     def parse_file(self, filepath: str) -> Iterator[Recipe]:
         try:
             line_number = 0
@@ -58,35 +60,29 @@ class MixedFormatParser(BaseRecipeParser):
                         continue
 
                     if MasterCookParser.detect(filepath, line) > 0.5:
-                        print(f"Detected at line {line_number}: MasterCook")
                         parser = MasterCookParser(self.ingredient_parser)
                     elif MealMasterParser.detect(filepath, line) > 0.5:
-                        print(f"Detected at line {line_number}: MealMaster")
                         parser = MealMasterParser(self.ingredient_parser)
                     elif CompuChefParser.detect(filepath, line) > 0.5:
-                        print(f"Detected at line {line_number}: CompuChef")
                         parser = CompuChefParser(self.ingredient_parser)
                     elif NYCParser.detect(filepath, line) > 0.5:
-                        print(f"Detected at line {line_number}: NYC")
                         parser = NYCParser(self.ingredient_parser)
                     else:
-                        print(f"Not detected at line {line_number}: {line}")
                         continue
 
+                    logger.debug(f"Mixed format parser detected at line {line_number}: {parser.format_id}")
                     recipe, lines_read = parser.parse_buffer(f, line)
                     if recipe:
                         if not recipe.description:
                             recipe.description = f"Imported from {self.source_format}"
-                        # if not recipe.url:
                         recipe.url = f"file://{filepath}#{line_number}"
 
-                        print(f"recipe: {recipe.title}")
                         yield recipe
 
                     line_number += lines_read
 
         except Exception as e:
-            print(f"Error reading {filepath}: {e}")
+            logger.error(f"Error reading {filepath}: {e}")
             return
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:

@@ -6,6 +6,10 @@ from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe
 from .registry import ParserRegistry
 
+import re
+import logging
+logger = logging.getLogger(__name__)
+
 @ParserRegistry.register
 class GenericTextParser(BaseRecipeParser):
     def __init__(self, ingredient_parser: BaseIngredientParser):
@@ -32,23 +36,67 @@ class GenericTextParser(BaseRecipeParser):
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)
         recipe.title = Path(filepath).stem
-        
-        lines = content.split('\n')
-            
-        in_instructions = False
-        for line in lines:
-            line_str = line.strip()
-            if not line_str: continue
-            
-            # Heuristic: If it's a long sentence or doesn't start with a number, it's an instruction
-            first_word = line_str.split()[0] if line_str.split() else ""
-            looks_like_ingredient = any(c.isdigit() for c in first_word) or first_word.lower() in ['a', 'an', 'some', 'few', 'dash', 'pinch']
-            
-            if not in_instructions and looks_like_ingredient and len(line_str) < 80:
-                recipe.ingredients.append(self.ingredient_parser.parse(line_str))
+
+
+        blocks = re.split(r'\n\s*\n', content)
+
+        title_re = re.compile(r'^[A-Z ]{5,}')
+        yield_re = re.compile(r'(?:Serves|Yield|Serving).*(\d+ \w)', flags = re.IGNORECASE)
+        title_found = False
+
+        is_description = True
+        description = []
+
+        for block in blocks:
+            lines = block.split('\n')
+
+            is_ingredient = False
+            ingredient_lines = 0
+            for line in lines:
+                line_str = line.strip()
+                if not line_str: continue
+
+                first_word = line_str.split()[0] if line_str.split() else ""
+                looks_like_ingredient = any(c.isdigit() for c in first_word) or first_word.lower() in ['a', 'an', 'some', 'few', 'dash', 'pinch']
+
+                if looks_like_ingredient and len(line_str) < 80:
+                    ingredient_lines += 1
+
+                if is_description:
+                    if not title_found:
+                        if line_str.istitle():
+                            recipe.title = line_str
+                            title_found = True
+                            continue
+
+                        if title_re.search(line_str):
+                            recipe.title = line_str.title()
+                            title_found = True
+                            continue
+
+                    recipe_yield = yield_re.match(line_str)
+                    if recipe_yield:
+                        recipe.yield_amount = recipe_yield[0]
+                        continue
+
+                    description.append(line_str)
+
+            if ingredient_lines > len(lines)/2:
+                is_ingredient = True
+
+            if is_description:
+                recipe.description = '\n'.join(description)
+                is_description = False
+            elif is_ingredient:
+                for line in lines:
+                    line_str = line.strip()
+                    if not line_str: continue
+                    recipe.ingredients.append(self.ingredient_parser.parse(line_str))
             else:
-                in_instructions = True # Once we hit instructions, everything else is instructions
-                recipe.instructions.append(line_str)
-                
+                if block.strip():
+                    recipe.instructions.append(block.strip())
+
         if recipe.ingredients or recipe.instructions:
             yield recipe
+        else:
+            logger.error(f"Can't find any ingredients or instructions in {filepath}")
