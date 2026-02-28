@@ -42,14 +42,6 @@ def print_progress_bar(iteration, total, prefix='', suffix='', length=40, fill='
     print(f'\r{Colors.CYAN}{prefix}{Colors.ENDC} |{bar}| {percent}% {suffix}', end='\r')
     if iteration == total: print()
 
-# --- Globals for signal handling ---
-shutdown_requested = False
-def signal_handler(sig, frame):
-    global shutdown_requested
-    shutdown_requested = True
-import signal
-signal.signal(signal.SIGINT, signal_handler)
-
 # --- Output Conversion ---
 class SchemaOrgConverter:
     """Converter to schema.org Recipe JSON-LD format"""
@@ -218,7 +210,7 @@ def convert_recipe_file(
     debug_sql: bool = False
 ) -> int:
     parser = ParserRegistry.get_parser(input_path, ingredient_parser, format_name, debug=debug_sql)
-    
+
     if not parser:
         if verbose: print(f"{Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}")
         return 0
@@ -227,12 +219,12 @@ def convert_recipe_file(
         recipe_count = 0
         converter = SchemaOrgConverter()
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Process recipes as they're yielded from the parser
         for recipe in parser.parse_file(str(input_path)):
             recipe_count += 1
             schema_recipe = converter.convert(recipe, parse_ingredients)
-            
+
             if stream_writer:
                 stream_writer.write_recipe(schema_recipe)
                 if verbose: print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')}")
@@ -247,11 +239,11 @@ def convert_recipe_file(
                 with open(output_file, 'w', encoding='utf-8') as f:
                     json.dump(schema_recipe, f, indent=2, ensure_ascii=False)
                 if verbose: print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')} → {output_file.name}")
-        
+
         if recipe_count == 0:
             if verbose: print(f"{Colors.YELLOW}No recipes found in {input_path}{Colors.ENDC}")
             return 0
-        
+
         # For multiple recipes per file mode, collect and write at end
         if not stream_writer and not one_file_per_recipe:
             # Note: This mode requires collecting all recipes, as it needs to write them all at once
@@ -277,8 +269,6 @@ def process_directory(
     stream_writer: Optional[JSONStreamWriter] = None,
     debug_sql: bool = False
 ) -> None:
-    global shutdown_requested
-
     # Updated extensions to include stubs explicitly supported by ParserFactory.
     extensions = {'.mmf', '.mm', '.mxp', '.mx2', '.mz2', '.txt', '.html', '.htm', '.pdf', '.jpg', '.png', '.sqlite', '.db', '.csv', '.ccf', '.md'}
     extensions.update([e.upper() for e in extensions])
@@ -300,10 +290,6 @@ def process_directory(
     print(f"{Colors.DIM}Found {len(recipe_files)} file(s) ({total_bytes:,} bytes){Colors.ENDC}\n")
 
     for file_idx, recipe_file in enumerate(recipe_files, 1):
-        if shutdown_requested:
-            print(f"\n{Colors.YELLOW}Gracefully stopping after {file_idx-1}/{len(recipe_files)} files...{Colors.ENDC}")
-            break
-
         if verbose:
             rel_path = recipe_file.relative_to(input_dir) if input_dir in recipe_file.parents else recipe_file
             print(f"\n{Colors.BOLD}[{file_idx}/{len(recipe_files)}]{Colors.ENDC} {Colors.CYAN}{rel_path}{Colors.ENDC}")
@@ -332,20 +318,21 @@ def main():
         log_level = logging.DEBUG
     else:
         log_level = logging.INFO
-    
+
     logging.basicConfig(
         level=log_level,
         format='%(name)s - %(levelname)s - %(message)s'
     )
 
-    print(f"\n{Colors.BOLD}{Colors.HEADER}╔══════════════════════════════════════╗{Colors.ENDC}")
+    print("")
+    print(f"{Colors.BOLD}{Colors.HEADER}╔══════════════════════════════════════╗{Colors.ENDC}")
     print(f"{Colors.BOLD}{Colors.HEADER}║   🍳 Recipe Format Converter 🍳      ║{Colors.ENDC}")
     print(f"{Colors.BOLD}{Colors.HEADER}╚══════════════════════════════════════╝{Colors.ENDC}\n")
 
     parse_ingredients = not args.no_parse_ingredients
     use_nlp = not args.no_nlp
     ingredient_parser = get_ingredient_parser(use_nlp=use_nlp)
-    
+
     from parsers.ingredients import HAS_NLP_PARSER
     if HAS_NLP_PARSER and use_nlp:
         print(f"{Colors.GREEN}✓ Using NLP Ingredient Parser{Colors.ENDC}")
@@ -373,7 +360,7 @@ def main():
         elif args.input.is_dir():
             process_directory(args.input, args.output.parent if output_is_file else args.output,
                              not args.multiple_per_file, args.verbose, args.recursive,
-                             parse_ingredients, ingredient_parser, args.format, stream_writer, 
+                             parse_ingredients, ingredient_parser, args.format, stream_writer,
                              debug_sql=args.debug_sql)
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
@@ -382,10 +369,7 @@ def main():
         if stream_writer:
             stream_writer.close()
 
-        if shutdown_requested:
-            print(f"\n{Colors.YELLOW}{Colors.BOLD}⚠️  Conversion interrupted (partial results saved){Colors.ENDC}")
-        else:
-            print(f"\n{Colors.GREEN}{Colors.BOLD}✨ Conversion complete! ✨{Colors.ENDC}")
+        print(f"\n{Colors.GREEN}{Colors.BOLD}✨ Conversion finished! ✨{Colors.ENDC}")
         print(f"{Colors.DIM}Output saved to: {args.output.absolute()}{Colors.ENDC}\n")
         return 0
     except KeyboardInterrupt:

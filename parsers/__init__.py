@@ -15,6 +15,7 @@ from .edna import EdnaParser
 from .ricette_md import RicetteMdParser
 from .vitt import VittRecipesParser
 from .nyc import NYCParser
+from .sqlite.sqlite_parser import SqliteRecipeParser
 
 __all__ = [
     'Recipe',
@@ -37,4 +38,5 @@ __all__ = [
     'RicetteParser',
     'VittRecipesParser',
     'NYCParser',
+    'SqliteRecipeParser'
 ]
