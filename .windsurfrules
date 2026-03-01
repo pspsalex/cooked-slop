@@ -1,0 +1,57 @@
+# Recipe Format Converter - Windsurf Rules
+
+You are an AI agent contributing to the Recipe Format Converter project. To maintain consistency and quality, follow these rules:
+
+## 🏗 Architecture: Parser Registry
+The project uses a **Registry Pattern** for recipe parsers.
+- **Location**: All parsers live in the `parsers/` directory.
+- **Registration**: Use the `@ParserRegistry.register` decorator on your parser class.
+  - The decorator only fires if the module is imported — add the import to `parsers/__init__.py`.
+- **Base Class**: Inherit from `BaseRecipeParser` (in `parsers/base.py`).
+- **Required Methods**:
+    - `format_id(cls) -> str`: Unique lowercase identifier (e.g. `"mealmaster"`).
+    - `aliases(cls) -> list[str]`: Alternate `-f` flag names; return `[]` if none.
+    - `priority(cls) -> int`: Lower = higher priority. Specific parsers: 1–30. Fallbacks: 90–100.
+    - `detect(cls, filepath: str, content_sample: str) -> float`: Confidence 0.0–1.0. Score ≥0.99 causes early exit.
+    - `parse_content(self, content: str, filepath: str) -> Iterator[Recipe]`: Must use `yield`, not `return`.
+- Reference implementation: `parsers/cookware.py`
+
+## 📦 Models (`parsers/models.py`)
+- `Recipe`: `title`, `categories: List[str]`, `yield_amount`, `ingredients: List[Ingredient]`, `instructions: List[str]`, `source_file`, `source_format`, `description`, `url`, `sqlite_table`, `sqlite_id`
+- `Ingredient`: `raw` (always required), `quantity`, `unit`, `name`, `comment`
+- `instructions` is a list of strings; `categories` is a list (not a single string).
+- `raw` must always be set to the original ingredient line.
+
+## 🧪 Testing & Verification
+The project uses a regression test suite in `tests/test_conversion.py`.
+- **Virtual Environment**: ALWAYS use `./venv/bin/python3`. Never use bare `python3`.
+- **Run tests**: `./venv/bin/python3 -m pytest tests/test_conversion.py`
+- **New Parsers**:
+    1. Add a sample file to `tests/samples/`.
+    2. Generate expected output: `./venv/bin/python3 convert.py tests/samples/<sample> -o tests/expected/<sample>.json --no-nlp`
+       (`--no-nlp` is required — NLP parsing is non-deterministic)
+    3. Add import + `__all__` entry to `parsers/__init__.py`.
+    4. Run `pytest` to ensure all tests pass.
+
+## 🐍 Coding Style
+- **Python Version**: 3.10+
+- **Typing**: Mandatory type hints for all function signatures.
+- **Documentation**: Google-style docstrings for classes and complex methods.
+- **Header**: Add `# SPDX-License-Identifier: MIT` as line 1 of every new parser file.
+- **Logging**: Use `logger = logging.getLogger(__name__)` — never `print()` or `logging.basicConfig()` in parsers.
+
+## 🛠 Command Execution
+- Prefix all Python commands with `./venv/bin/python3`.
+- Do not install new dependencies without justification.
+
+## 🤖 Cascade Agent Guardrails
+- Complete one parser at a time; do not start a second parser while tests for the first are failing.
+- Never modify `parsers/registry.py` or `parsers/base.py` as part of adding a new parser.
+- Always run `./venv/bin/python3 -m pytest tests/test_conversion.py` after any parser change.
+- Do not regenerate expected outputs for the LLM parser (`parsers/llm_parser.py`) — its output is non-deterministic.
+
+## ⚠️ Common Pitfalls
+- Missing `parsers/__init__.py` import → parser silently never registers.
+- `return` instead of `yield` in `parse_content` → breaks streaming.
+- High `detect()` scores for generic/fallback parsers → they shadow specific parsers.
+- Generating `tests/expected/` files without `--no-nlp` → non-reproducible test failures.

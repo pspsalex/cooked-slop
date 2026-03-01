@@ -194,7 +194,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--chunk', action='store_true', help='Split output into chunks')
     parser.add_argument('-v', '--verbose', action='store_true', help='Show verbose output')
     parser.add_argument('--debug-sql', action='store_true', help='Show SQL queries at TRACE level (must be explicitly enabled, -v does not imply this)')
-    parser.add_argument('-f', '--format', type=str, choices=['mealmaster', 'mastercook', 'compuchef', 'edna', 'ricette', 'ricette_md', 'nyc', 'recipeml', '20krecipes', 'ricette_json'],
+    parser.add_argument('-f', '--format', type=str, choices=['mealmaster', 'mastercook', 'compuchef', 'edna', 'ricette', 'ricette_md', 'nyc', 'recipeml', '20krecipes', 'ricette_json', 'cookware'],
                         help='Override auto-detection and specify input format')
     parser.add_argument('--llm-config', type=Path, default=None, metavar='CONFIG',
                         help='Path to LLM provider YAML config. When set, all files are parsed '
@@ -279,7 +279,7 @@ def process_directory(
     llm_parser: Optional['LLMRecipeParser'] = None,
 ) -> None:
     # Updated extensions to include stubs explicitly supported by ParserFactory.
-    extensions = {'.mmf', '.mm', '.mxp', '.mx2', '.mz2', '.txt', '.html', '.htm', '.pdf', '.jpg', '.png', '.sqlite', '.db', '.csv', '.ccf', '.md'}
+    extensions = {'.mca', '.mmf', '.mm', '.mxp', '.mx2', '.mz2', '.txt', '.html', '.htm', '.pdf', '.jpg', '.png', '.sqlite', '.db', '.csv', '.ccf', '.md'}
     extensions.update([e.upper() for e in extensions])
 
     recipe_files = []
