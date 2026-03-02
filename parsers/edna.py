@@ -1,14 +1,24 @@
 # SPDX-License-Identifier: MIT
 import re
 from typing import Iterator
-from .base import BaseRecipeParser
+from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
-
 from .registry import ParserRegistry
 
 @ParserRegistry.register
 class EdnaParser(BaseRecipeParser):
-    def __init__(self, ingredient_parser=None):
+    """Parser for the Edna recipe format.
+
+    Records are separated by a line of dashes (``------------``) followed
+    immediately by a line starting with ``id:``.  Each record contains
+    YAML-like ``key: value`` metadata fields plus ``ingredients:`` and
+    ``instructions:`` block markers.
+    """
+
+    # Compiled once; shared between detect() and parse_content()
+    _SEPARATOR_RE = re.compile(r'^------------\s*(?=[\r\n]+\s*id:)', re.MULTILINE)
+
+    def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "Edna"
 
@@ -22,10 +32,9 @@ class EdnaParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        import re
         if not content_sample:
             return 0.0
-        m = re.search(r'^------------\s*(?=[\r\n]+\s*id:)', content_sample, re.MULTILINE)
+        m = cls._SEPARATOR_RE.search(content_sample)
         if m:
             prefix = content_sample[:m.start()].strip()
             if prefix:
@@ -36,8 +45,8 @@ class EdnaParser(BaseRecipeParser):
         return 0.0
 
     def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
-        # Split by the record separator (refined to include positive lookahead for id:)
-        sections = re.split(r'^------------\s*(?=[\r\n]+\s*id:)', content, flags=re.MULTILINE)
+        """Yield one Recipe per Edna record found in *content*."""
+        sections = self._SEPARATOR_RE.split(content)
         
         for section in sections:
             section = section.strip()

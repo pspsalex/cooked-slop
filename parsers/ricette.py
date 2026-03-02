@@ -2,20 +2,25 @@
 
 import re
 from typing import Iterator
-from .base import BaseRecipeParser
+from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
 from .units import normalize_unit
-
 from .registry import ParserRegistry
 
 @ParserRegistry.register
 class RicetteParser(BaseRecipeParser):
+    """Parser for the Italian 'Ricette' format.
+
+    Records begin with ``:Ricette`` and contain ``-FieldName`` markers that
+    delimit metadata and content blocks.  Ingredients use ``====`` as a
+    separator between amount and ingredient name.
     """
-    Parser for the Italian 'Ricette' format.
-    Characterized by :Ricette record separators and -Field markers.
-    """
-    
-    def __init__(self, ingredient_parser=None):
+
+    # Compiled once; shared between detect() and parse_content()
+    _SECTION_RE = re.compile(r'^:Ricette\s*', re.MULTILINE)
+    _FIELD_RE = re.compile(r'^-([a-zA-Z_]+)\s*\n?', re.MULTILINE)
+
+    def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "Ricette"
 
@@ -29,16 +34,15 @@ class RicetteParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        import re
         if not content_sample:
             return 0.0
-        if re.search(r'^:Ricette', content_sample, re.MULTILINE):
+        if cls._SECTION_RE.search(content_sample):
             return 0.95
         return 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
-        # Split by :Ricette, but keep the content that follows
-        sections = re.split(r'^:Ricette\s*', content, flags=re.MULTILINE)
+        """Yield one Recipe per ``:Ricette`` block found in *content*."""
+        sections = self._SECTION_RE.split(content)
         
         for section in sections:
             if not section.strip():
@@ -50,10 +54,9 @@ class RicetteParser(BaseRecipeParser):
 
     def _parse_section(self, section: str, filepath: str) -> Recipe:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)
-        
-        # Split by -Field entries
-        # We look for a hyphen at the start of a line followed by a word
-        fields = re.split(r'^-([a-zA-Z_]+)\s*\n?', section, flags=re.MULTILINE)
+
+        # Split by -Field entries; result is [leading, name1, content1, name2, content2, ...]
+        fields = self._FIELD_RE.split(section)
         
         # fields list will be [leading_text, field_name1, field_content1, field_name2, field_content2, ...]
         i = 1
@@ -84,7 +87,13 @@ class RicetteParser(BaseRecipeParser):
             
         return recipe
 
-    def _parse_ingredients(self, content: str, recipe: Recipe):
+    def _parse_ingredients(self, content: str, recipe: Recipe) -> None:
+        """Parse a Ricette ingredients block and append to *recipe*.
+
+        Each line uses ``====`` as a separator between the amount/unit
+        on the left and the ingredient name on the right.  Lines without
+        ``====`` are treated as plain ingredient strings.
+        """
         lines = content.split('\n')
         for line in lines:
             line = line.strip()

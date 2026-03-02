@@ -3,14 +3,16 @@
 RecipeML (XML) parser - converts RecipeML format to internal Recipe model
 """
 
-import os
-import sys
+import logging
 from pathlib import Path
 from typing import Iterator
 from xml.etree import ElementTree as ET
 
-from .base import BaseRecipeParser
+from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
+from .registry import ParserRegistry
+
+logger = logging.getLogger(__name__)
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
@@ -185,13 +187,11 @@ def get_times(recipe_el):
 
 # ── main recipe converter ─────────────────────────────────────────────────────
 
-from .registry import ParserRegistry
-
 @ParserRegistry.register
 class RecipeMLParser(BaseRecipeParser):
     """Parser for RecipeML (XML) format."""
 
-    def __init__(self, ingredient_parser=None):
+    def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "RecipeML"
 
@@ -217,7 +217,7 @@ class RecipeMLParser(BaseRecipeParser):
         try:
             root = ET.fromstring(content)
         except ET.ParseError as e:
-            print(f"ERROR: Failed to parse XML: {e}", file=sys.stderr)
+            logger.error("Failed to parse XML in %s: %s", filepath, e)
             return
 
         # Collect recipe elements

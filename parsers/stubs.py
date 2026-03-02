@@ -1,15 +1,14 @@
 # SPDX-License-Identifier: MIT
-from typing import Iterator
-import re
 import csv
+import logging
+import re
 from pathlib import Path
+from typing import Iterator
 from .models import Recipe
 from .base import BaseRecipeParser, BaseIngredientParser
 from .registry import ParserRegistry
 
-class Colors:
-    YELLOW = '\033[93m'
-    ENDC = '\033[0m'
+logger = logging.getLogger(__name__)
 
 @ParserRegistry.register
 class PdfParser(BaseRecipeParser):
@@ -28,9 +27,8 @@ class PdfParser(BaseRecipeParser):
         self.source_format = "PDF"
 
     def parse_file(self, filepath: str) -> Iterator[Recipe]:
-        print(f"{Colors.YELLOW}Note: PDF parser is a stub. Requires 'pdfminer.six' or 'pypdf' for implementation.{Colors.ENDC}")
-        return
-        yield  # Make it a generator
+        logger.warning("PDF parser is a stub. Requires 'pdfminer.six' or 'pypdf' for implementation.")
+        yield from ()
 
 @ParserRegistry.register
 class ImageParser(BaseRecipeParser):
@@ -49,9 +47,8 @@ class ImageParser(BaseRecipeParser):
         self.source_format = "Image/OCR"
 
     def parse_file(self, filepath: str) -> Iterator[Recipe]:
-        print(f"{Colors.YELLOW}Note: Image parser is a stub. Requires 'tesseract' or Cloud Vision API.{Colors.ENDC}")
-        return
-        yield  # Make it a generator
+        logger.warning("Image parser is a stub. Requires 'tesseract' or Cloud Vision API.")
+        yield from ()
 
 @ParserRegistry.register
 class CsvParser(BaseRecipeParser):
@@ -79,19 +76,16 @@ class CsvParser(BaseRecipeParser):
         except Exception: pass
         return 0.1 # Generic CSV fallback
 
-    def __init__(self, ingredient_parser: BaseIngredientParser, format_hint: str = None):
+    def __init__(self, ingredient_parser: BaseIngredientParser, format_hint: str | None = None):
         super().__init__(ingredient_parser)
         self.source_format = "CSV"
         self.format_hint = format_hint
 
     def parse_file(self, filepath: str) -> Iterator[Recipe]:
-        recipes = self._parse_generic_csv(filepath)
-            
-        for recipe in recipes:
+        for recipe in self._parse_generic_csv(filepath):
             if not recipe.description:
                 recipe.description = f"Imported from {self.source_format}"
             if not recipe.url:
-                from pathlib import Path
                 recipe.url = f"file://{Path(filepath).absolute()}"
             yield recipe
 
@@ -137,7 +131,7 @@ class CsvParser(BaseRecipeParser):
 
                     yield recipe
         except Exception as e:
-            print(f"{Colors.YELLOW}Error parsing CSV {filepath}: {e}{Colors.ENDC}")
+            logger.error("Error parsing CSV %s: %s", filepath, e)
 
     def _detect_delimiter(self, sample: str) -> str:
         """Detect CSV delimiter from sample line."""

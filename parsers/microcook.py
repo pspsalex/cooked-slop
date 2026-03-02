@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 import re
+from pathlib import Path
 from typing import Iterator
 from .models import Recipe, Ingredient
 from .base import BaseRecipeParser, BaseIngredientParser
@@ -41,7 +42,7 @@ class MicroCookParser(BaseRecipeParser):
         return "microcook"
 
     @classmethod
-    def aliases(cls) -> list:
+    def aliases(cls) -> list[str]:
         return ["mca"]
 
     @classmethod
@@ -54,8 +55,7 @@ class MicroCookParser(BaseRecipeParser):
             return 0.0
         if re.search(r'ASCII Recipe from MicroCook', content_sample, re.IGNORECASE):
             return 0.97
-        import pathlib
-        if pathlib.Path(filepath).suffix.lower() == '.mca':
+        if Path(filepath).suffix.lower() == '.mca':
             return 0.5
         return 0.0
 

@@ -1,19 +1,13 @@
 # SPDX-License-Identifier: MIT
-import sys
+import logging
+import re
 from pathlib import Path
 from typing import Iterator
-import re # Added for detect method
 from .models import Recipe
 from .base import BaseRecipeParser, BaseIngredientParser
-from .registry import ParserRegistry # Added registry import
-import logging
+from .registry import ParserRegistry
 
 logger = logging.getLogger(__name__)
-
-# ANSI colors - imported inline or redefined
-class Colors:
-    YELLOW = '\033[93m'
-    ENDC = '\033[0m'
 
 try:
     from recipe_scrapers import scrape_html
@@ -21,9 +15,9 @@ try:
 except ImportError:
     HAS_RECIPE_SCRAPERS = False
 
-@ParserRegistry.register # Added decorator
+@ParserRegistry.register
 class HtmlParser(BaseRecipeParser):
-    """Parse recipes from HTML pages using recipe-scrapers.""" # Added docstring
+    """Parse recipes from HTML pages using recipe-scrapers."""
 
     @classmethod
     def format_id(cls) -> str:
@@ -49,34 +43,38 @@ class HtmlParser(BaseRecipeParser):
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         if not HAS_RECIPE_SCRAPERS:
-            logger.warning(f"recipe-scrapers library not installed. Skipping {filepath}.")
+            logger.warning("recipe-scrapers library not installed. Skipping %s.", filepath)
             return
 
         try:
-            # Passing it strictly to scrapers (some scrapers also accept raw html if host is provided)
-            # This is a naive implementation, a better one would scrape local HTML via specific extractors.
             scraper = scrape_html(content, org_url="file://" + str(Path(filepath).absolute()))
             recipe = Recipe(source_file=filepath, source_format=self.source_format)
-            try: recipe.title = scraper.title()
-            except: recipe.title = Path(filepath).stem
-            try: recipe.yield_amount = str(scraper.yields())
-            except: pass
+            try:
+                recipe.title = scraper.title()
+            except Exception:
+                recipe.title = Path(filepath).stem
+            try:
+                recipe.yield_amount = str(scraper.yields())
+            except Exception as e:
+                logger.debug("Could not extract yield from %s: %s", filepath, e)
             try:
                 for ing in scraper.ingredients():
                     recipe.ingredients.append(self.ingredient_parser.parse(ing))
-            except: pass
+            except Exception as e:
+                logger.debug("Could not extract ingredients from %s: %s", filepath, e)
             try:
                 instr = scraper.instructions()
-                # Ensure it's a list since scraper might return a string depending on version
                 if isinstance(instr, str):
                     recipe.instructions = [i.strip() for i in instr.split('\n') if i.strip()]
                 else:
                     recipe.instructions = [str(i).strip() for i in instr if str(i).strip()]
-            except: pass
+            except Exception as e:
+                logger.debug("Could not extract instructions from %s: %s", filepath, e)
             try:
                 recipe.categories = scraper.category().split(',') if scraper.category() else []
-            except: pass
+            except Exception as e:
+                logger.debug("Could not extract categories from %s: %s", filepath, e)
             yield recipe
         except Exception as e:
-            logger.warning(f"HTML parsing error for {filepath}: {e}")
+            logger.warning("HTML parsing error for %s: %s", filepath, e)
             return

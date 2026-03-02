@@ -311,10 +311,6 @@ def process_directory(
 
     if not verbose: print()
 
-def merge_all_recipes_to_file(temp_dir: Path, output_file: Path, chunk: bool = False) -> None:
-    import shutil
-    pass
-
 def main():
     args = parse_arguments()
 

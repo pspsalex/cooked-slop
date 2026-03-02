@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: MIT
+import logging
 import re
 from typing import Iterator, List, Optional
 from pathlib import Path
 from .models import Recipe
 from .base import BaseRecipeParser, BaseIngredientParser
-
 from .registry import ParserRegistry
+
+logger = logging.getLogger(__name__)
 
 @ParserRegistry.register
 class MealMasterParser(BaseRecipeParser):
@@ -45,7 +47,7 @@ class MealMasterParser(BaseRecipeParser):
 
             yield self._parse_single_mealmaster(recipe_text, filepath)
 
-    def parse_buffer(self, f, first_line: str) -> (Optional[Recipe], int):
+    def parse_buffer(self, f, first_line: str) -> tuple[Optional[Recipe], int]:
         """
         Parse a buffer (file stream) containing MealMaster recipes.
         Reads until the next recipe header or EOF.
@@ -66,20 +68,35 @@ class MealMasterParser(BaseRecipeParser):
         return (recipe, read_lines)
 
     def _parse_single_mealmaster(self, content: str, filepath: str) -> Optional[Recipe]:
+        """Parse a single MealMaster recipe block.
+
+        MealMaster files contain one or more recipes delimited by
+        ``MMMMM`` / ``-----`` header lines.  Each block begins with
+        ``Title:``, ``Categories:``, and ``Yield:``/``Servings:`` metadata
+        fields, followed by space-indented ingredient lines and then free-form
+        instruction paragraphs.
+
+        Args:
+            content: Text of one recipe block, excluding the leading header.
+            filepath: Source file path (used to populate ``Recipe.source_file``).
+
+        Returns:
+            A populated ``Recipe``, or ``None`` if the block lacks a title.
+        """
         current_recipe = Recipe(source_file=filepath, source_format=self.source_format)
         in_header = True
         in_instructions = False
         current_instruction_paragraph = []
         current_ingredient_raw = []
 
-        print("---- BEGIN -----")
+        logger.debug("_parse_single_mealmaster: start")
         lines = content.split('\n')
 
         for line in lines:
             line_str = line.rstrip()
-            print(f"Processing: [{line_str}]")
+            logger.debug("Processing: [%s]", line_str)
             if (line_str.startswith('MMMMM') or line_str.startswith('-----')) and 'Recipe via' in line_str:
-                print("  - got header and skipped")
+                logger.debug("  - got header, stopping")
                 break
 
             if line_str.startswith('MMMMM') and '-' in line_str and 'Recipe via' not in line_str:

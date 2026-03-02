@@ -1,6 +1,9 @@
 # SPDX-License-Identifier: MIT
+import logging
 from typing import Iterator
 from .models import Ingredient, Recipe
+
+logger = logging.getLogger(__name__)
 
 class BaseIngredientParser:
     def parse(self, raw_line: str) -> Ingredient:
@@ -47,7 +50,7 @@ class BaseRecipeParser:
                     recipe.url = f"file://{filepath}"
                 yield recipe
         except Exception as e:
-            print(f"Error reading {filepath}: {e}")
+            logger.error("Error reading %s: %s", filepath, e)
             return
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:

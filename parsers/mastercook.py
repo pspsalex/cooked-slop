@@ -1,10 +1,13 @@
 # SPDX-License-Identifier: MIT
+import logging
 import re
 from typing import Iterator, Optional
 from .models import Recipe, Ingredient
 from .base import BaseRecipeParser, BaseIngredientParser
 from .units import normalize_unit
 from .registry import ParserRegistry
+
+logger = logging.getLogger(__name__)
 
 @ParserRegistry.register
 class MasterCookParser(BaseRecipeParser):
@@ -33,6 +36,17 @@ class MasterCookParser(BaseRecipeParser):
 
     HEADER_SIG = r'\*\s+Exported\s+from\s+MasterCook[^*]*\*'
 
+    # Fixed-width column positions for the ingredient table
+    # Format: "   1      cup           converted rice"
+    _AMOUNT_COL = slice(0, 8)
+    _MEASURE_COL = slice(10, 24)
+    _INGREDIENT_COL = slice(24, None)
+
+    # Fixed-width column positions for the categories table
+    # Format: "                Desserts                         Apples"
+    _CATEGORY_COL1 = slice(16, 48)
+    _CATEGORY_COL2 = slice(49, None)
+
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         header_sig = cls.HEADER_SIG
@@ -60,7 +74,7 @@ class MasterCookParser(BaseRecipeParser):
                 recipe.source_file = filepath
                 yield recipe
 
-    def parse_buffer(self, f, first_line: str) -> (Optional[Recipe], int):
+    def parse_buffer(self, f, first_line: str) -> tuple[Optional[Recipe], int]:
         """
         Parse a buffer (file stream) containing MasterCook recipes.
         Reads until the next recipe header or EOF.
@@ -86,6 +100,22 @@ class MasterCookParser(BaseRecipeParser):
         return (None, read_lines)
 
     def _parse_single_mastercook(self, text: str) -> Optional[Recipe]:
+        """Parse a single MasterCook recipe block.
+
+        MasterCook exports fixed-width ASCII text.  This method drives a
+        state machine through five named sections: ``header``, ``categories``,
+        ``ingredients``, ``instructions``, and ``notes``.  The ingredient table
+        uses fixed column offsets (see ``_AMOUNT_COL`` / ``_MEASURE_COL`` /
+        ``_INGREDIENT_COL``).  The categories table uses a two-column layout
+        (see ``_CATEGORY_COL1`` / ``_CATEGORY_COL2``).
+
+        Args:
+            text: Raw text for one recipe (everything after the ``* Exported``
+                  header up to, but not including, the next header or EOF).
+
+        Returns:
+            A populated ``Recipe`` instance, or ``None`` if the block is empty.
+        """
         recipe = Recipe()
         lines = text.strip().split('\n')
         
@@ -103,8 +133,9 @@ class MasterCookParser(BaseRecipeParser):
         # First non-empty line after header is the title
         recipe.title = lines[start_idx].strip()
         current_section = 'header'
-        print("Setting header for title ", recipe.title)
-        
+        instruction_block: list[str] = []
+        logger.debug("mastercook title: %s", recipe.title)
+
         for i in range(start_idx + 1, len(lines)):
             line = lines[i].strip('\r') # Keep leading spaces but remove \r
             stripped = line.strip()
@@ -116,42 +147,44 @@ class MasterCookParser(BaseRecipeParser):
                 author_match = self.author_re.match(stripped)
                 yield_match = self.yield_re.match(stripped)
                 if author_match:
-                    recipe.author = author_match.group(1).strip()
+                    logger.debug("author: %s", author_match.group(1).strip())
                     continue
                 if yield_match:
                     recipe.yield_amount = yield_match.group(1).strip()
                     if yield_match.group(2):
-                        recipe.prep_time = yield_match.group(2).strip()
+                        logger.debug("prep_time: %s", yield_match.group(2).strip())
                     continue
 
             # Section detection
             if stripped == 'Amount  Measure       Ingredient -- Preparation Method':
                 current_section = 'ingredients'
-                print("Setting ingredients")
+                logger.debug("section: ingredients (header row)")
                 continue
             elif stripped == '--------  ------------  --------------------------------':
                 current_section = 'ingredients'
-                print("Setting ingredients")
+                logger.debug("section: ingredients (divider row)")
                 continue
             elif stripped.startswith('Directions') or stripped.startswith('Instructions'):
                 current_section = 'instructions'
-                print("Setting instructions")
+                logger.debug("section: instructions")
                 instruction_block = []
                 continue
             elif stripped.startswith('Notes:'):
                 current_section = 'notes'
-                print("Setting notes")
-                recipe.notes.append(stripped.replace('Notes:', '', 1).strip())
+                logger.debug("section: notes")
+                note_text = stripped.replace('Notes:', '', 1).strip()
+                if note_text:
+                    recipe.instructions.append(note_text)
                 continue
             elif stripped.startswith('Categories') or current_section == 'categories':
                 current_section = 'categories'
-                print("Setting categories")
+                logger.debug("section: categories")
                 if not stripped:
                     current_section = 'header'
-                    print("Setting header")
+                    logger.debug("section: header (categories end)")
                     continue
-                first_column = line[16:48].strip()
-                second_column = line[49:].strip()
+                first_column = line[self._CATEGORY_COL1].strip()
+                second_column = line[self._CATEGORY_COL2].strip()
                 if first_column:
                     recipe.categories.append(first_column)
                 if second_column:
@@ -163,20 +196,20 @@ class MasterCookParser(BaseRecipeParser):
                 # MasterCook ingredients usually have numbers at fixed positions or start with spaces
                 if re.match(r'^\s*[\d./-]+\s+[a-zA-Z.]+\s+', line) or re.match(r'^\s+\d+\s+', line):
                     current_section = 'ingredients'
-                    print("Setting ingredients")
-            
+                    logger.debug("section: ingredients (heuristic)")
+
             # Handle sections
             if current_section == 'ingredients':
                 if not stripped:
                     current_section = 'instructions'
-                    print("Setting instructions")
+                    logger.debug("section: instructions (blank line after ingredients)")
                     instruction_block = []
                     continue
                 
-                # MasterCook format is fixed width: 8 spaces for Amount, 12 for Measure, then Ingredient
-                amount = line[0:8].strip()
-                measure = line[10:24].strip()
-                ingredient_part = line[24:].strip()
+                # MasterCook format is fixed width — see _AMOUNT_COL/_MEASURE_COL/_INGREDIENT_COL
+                amount = line[self._AMOUNT_COL].strip()
+                measure = line[self._MEASURE_COL].strip()
+                ingredient_part = line[self._INGREDIENT_COL].strip()
                 
                 if ingredient_part:
                     # Check if this is a continuation
@@ -215,6 +248,6 @@ class MasterCookParser(BaseRecipeParser):
             
             elif current_section == 'notes':
                 if stripped:
-                     recipe.notes.append(stripped)
+                    recipe.instructions.append(stripped)
                      
         return recipe

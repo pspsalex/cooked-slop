@@ -1,19 +1,22 @@
 # SPDX-License-Identifier: MIT
 import csv
 import io
-from typing import Iterator, List
+import logging
 from pathlib import Path
+from typing import Iterator, List
 
-from .base import BaseRecipeParser
+from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
 from .registry import ParserRegistry
+
+logger = logging.getLogger(__name__)
 
 
 @ParserRegistry.register
 class CookwareCSVParser(BaseRecipeParser):
     """Parser for Cookware CSV format."""
 
-    def __init__(self, ingredient_parser=None):
+    def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "Cookware CSV"
 
@@ -51,8 +54,7 @@ class CookwareCSVParser(BaseRecipeParser):
                     recipe.url = f"file://{Path(filepath).absolute()}#{row_number}"
                     yield recipe
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).warning(f"Error parsing Cookware CSV: {e}")
+            logger.warning("Error parsing Cookware CSV %s: %s", filepath, e)
             return
 
     def _parse_csv_row(self, row: dict, filepath: str) -> Recipe:

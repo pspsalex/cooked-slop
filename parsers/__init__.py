@@ -20,6 +20,11 @@ from .html_parser import HtmlParser
 from .llm_parser import LLMRecipeParser
 from .microcook import MicroCookParser
 from .cookware import CookwareCSVParser
+# Explicit imports ensure @ParserRegistry.register fires; mixed.py transitively
+# imports mealmaster/mastercook but they must be listed here for clarity and __all__.
+from .mealmaster import MealMasterParser
+from .mastercook import MasterCookParser
+from .stubs import PdfParser, ImageParser, CsvParser
 
 __all__ = [
     'Recipe',
@@ -46,5 +51,10 @@ __all__ = [
     'HtmlParser',
     'LLMRecipeParser',
     'MicroCookParser',
-    'CookwareCSVParser'
+    'CookwareCSVParser',
+    'MealMasterParser',
+    'MasterCookParser',
+    'PdfParser',
+    'ImageParser',
+    'CsvParser',
 ]

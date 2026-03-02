@@ -70,7 +70,7 @@ class MixedFormatParser(BaseRecipeParser):
                     else:
                         continue
 
-                    logger.debug(f"Mixed format parser detected at line {line_number}: {parser.format_id}")
+                    logger.debug("Mixed format parser detected at line %d: %s", line_number, parser.format_id())
                     recipe, lines_read = parser.parse_buffer(f, line)
                     if recipe:
                         if not recipe.description:
@@ -82,7 +82,7 @@ class MixedFormatParser(BaseRecipeParser):
                     line_number += lines_read
 
         except Exception as e:
-            logger.error(f"Error reading {filepath}: {e}")
+            logger.error("Error reading %s: %s", filepath, e)
             return
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
