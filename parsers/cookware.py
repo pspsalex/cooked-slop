@@ -45,9 +45,10 @@ class CookwareCSVParser(BaseRecipeParser):
         """Parse CSV content and yield Recipe objects."""
         try:
             csv_reader = csv.DictReader(io.StringIO(content))
-            for row in csv_reader:
+            for row_number, row in enumerate(csv_reader, start=1):
                 recipe = self._parse_csv_row(row, filepath)
                 if recipe.title:
+                    recipe.url = f"file://{Path(filepath).absolute()}#{row_number}"
                     yield recipe
         except Exception as e:
             import logging
@@ -66,11 +67,11 @@ class CookwareCSVParser(BaseRecipeParser):
         course = row.get("Course", "").strip()
         if course:
             categories.append(course.rstrip('.'))
-        
+
         region = row.get("Region", "").strip()
         if region:
             categories.append(region.rstrip('.'))
-            
+
         main_ingredient = row.get("Main Ingredient", "").strip()
         if main_ingredient:
             categories.append(main_ingredient.rstrip('.'))
