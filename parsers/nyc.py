@@ -1,15 +1,20 @@
+# SPDX-License-Identifier: MIT
 import re
+import logging
 from typing import Iterator, Optional
-from .base import BaseRecipeParser
+from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
 
 from .registry import ParserRegistry
+
+logger = logging.getLogger(__name__)
+
 
 @ParserRegistry.register
 class NYCParser(BaseRecipeParser):
     """Parser for Now You're Cooking! (NYC) export format."""
 
-    def __init__(self, ingredient_parser=None):
+    def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "NYC"
 
@@ -23,17 +28,52 @@ class NYCParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        import re
         if not content_sample:
             return 0.0
-        if re.search(r'^@{5}\s+Now You\'re Cooking!', content_sample, re.MULTILINE):
+        if re.search(r"^@{5}\s+Now You\'re Cooking!", content_sample, re.MULTILINE):
             return 0.95
         return 0.0
 
+    def parse_buffer(self, f, first_line: str) -> tuple[Optional[Recipe], int]:
+        """Read a single NYC recipe from a file buffer for mixed-format parsing.
+
+        Reads lines until the NYC footer ('** Exported from Now You're Cooking!...')
+        is found, then parses the accumulated text as a single recipe.
+
+        Args:
+            f: Open file iterator positioned after first_line.
+            first_line: The NYC header line that triggered detection.
+
+        Returns:
+            Tuple of (parsed Recipe or None, number of lines read from f).
+        """
+        lines_read = 0
+        recipe_text = first_line
+
+        footer_re = re.compile(r"\*\* Exported from Now You\'re Cooking!.* \*\*")
+
+        for line in f:
+            lines_read += 1
+            recipe_text += line
+
+            if footer_re.search(line):
+                break
+
+        if not recipe_text.strip():
+            return (None, lines_read)
+
+        # Reuse parse_content to parse the accumulated text
+        recipe = None
+        for r in self.parse_content(recipe_text, f.name):
+            recipe = r
+            break  # Only take the first recipe from the buffer
+
+        return (recipe, lines_read)
+
     def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
         # Split by the NYC header
-        sections = re.split(r'@{5}\s+Now You\'re Cooking! Export Format', content)
-        
+        sections = re.split(r"@{5}\s+Now You\'re Cooking! Export Format", content)
+
         for section in sections:
             section = section.strip()
             if not section:
@@ -41,9 +81,9 @@ class NYCParser(BaseRecipeParser):
 
             # Split into lines and find title, category, ingredients, instructions
             lines = section.splitlines()
-            
+
             # Remove the footer if present
-            footer_regex = r'\*\* Exported from Now You\'re Cooking!.* \*\*'
+            footer_regex = r"\*\* Exported from Now You\'re Cooking!.* \*\*"
             filtered_lines = []
             for line in lines:
                 if not re.search(footer_regex, line):
@@ -83,32 +123,32 @@ class NYCParser(BaseRecipeParser):
                 idx += 1
             if idx < len(lines):
                 cat_line = lines[idx].strip()
-                categories = [c.strip() for c in cat_line.split(',')]
+                categories = [c.strip() for c in cat_line.split(",")]
                 idx += 1
 
             # Phase 2: Ingredients vs Instructions
-            # This is the hardest part. Usually, ingredients are lines starting with 
+            # This is the hardest part. Usually, ingredients are lines starting with
             # a number, a fraction, or a measurement.
             # Instructions are paragraphs of text.
-            
+
             in_ingredients = True
-            
+
             # Skip initial blank lines
             while idx < len(lines) and not lines[idx].strip():
                 idx += 1
-                
+
             temp_instructions = []
-            
+
             while idx < len(lines):
                 line = lines[idx].strip()
-                
+
                 # Check for yield at any point near the end
-                yield_match = re.match(r'^Yield:\s*(.*)$', line, re.IGNORECASE)
+                yield_match = re.match(r"^Yield:\s*(.*)$", line, re.IGNORECASE)
                 if yield_match:
                     yield_str = yield_match.group(1).strip()
                     idx += 1
                     continue
-                
+
                 if in_ingredients:
                     if not line:
                         # Empty line might signify transition to instructions
@@ -119,8 +159,12 @@ class NYCParser(BaseRecipeParser):
                             peek_line = lines[peek_idx].strip()
                             if peek_line:
                                 # Heuristic: if it starts with a digit or Fraction-like string
-                                if re.match(r'^[\d½⅓⅔¼¾⅛⅜⅝⅞\*\-]', peek_line) or \
-                                   re.match(r'^(?:[Aa] [Ff]ew|[Aa] [Dd]ash|[Aa] [Pp]inch|[Ss]alt|[Pp]epper)', peek_line):
+                                if re.match(
+                                    r"^[\d½⅓⅔¼¾⅛⅜⅝⅞\*\-]", peek_line
+                                ) or re.match(
+                                    r"^(?:[Aa] [Ff]ew|[Aa] [Dd]ash|[Aa] [Pp]inch|[Ss]alt|[Pp]epper)",
+                                    peek_line,
+                                ):
                                     # Still in ingredients
                                     pass
                                 else:
@@ -128,10 +172,10 @@ class NYCParser(BaseRecipeParser):
                                 found_next = True
                                 break
                             peek_idx += 1
-                        
+
                         if not found_next:
                             in_ingredients = False
-                        
+
                         if in_ingredients:
                             # Just a blank line in ingredients, maybe skip or preserve?
                             # Usually NYC doesn't have blank lines IN ingredients
@@ -139,7 +183,7 @@ class NYCParser(BaseRecipeParser):
                     else:
                         # Check if this line looks like an instruction instead
                         # If a line is long and doesn't start with quantities, it's likely instructions
-                        if len(line) > 50 and not re.match(r'^[\d½⅓⅔¼¾⅛⅜⅝⅞]', line):
+                        if len(line) > 50 and not re.match(r"^[\d½⅓⅔¼¾⅛⅜⅝⅞]", line):
                             in_ingredients = False
                             temp_instructions.append(line)
                         else:
@@ -150,7 +194,7 @@ class NYCParser(BaseRecipeParser):
                 else:
                     if line:
                         temp_instructions.append(line)
-                        
+
                 idx += 1
 
             # Group instructions into paragraphs
@@ -172,7 +216,7 @@ class NYCParser(BaseRecipeParser):
                 categories=categories,
                 source_format=self.source_format,
                 source_file=filepath,
-                yield_amount=yield_str
+                yield_amount=yield_str,
             )
 
             # Parse ingredients
@@ -180,7 +224,7 @@ class NYCParser(BaseRecipeParser):
                 # NYC sometimes uses "--" for comments
                 if " -- " in ing_line:
                     ing_line = ing_line.replace(" -- ", " ")
-                
+
                 if self.ingredient_parser:
                     recipe.ingredients.append(self.ingredient_parser.parse(ing_line))
                 else:

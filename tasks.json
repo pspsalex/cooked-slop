@@ -57,13 +57,13 @@
       "title": "Fix mixed.py crash when NYCParser detected in mixed file",
       "priority": "P0",
       "category": "Critical Bugs",
-      "status": "not done",
+      "status": "done",
       "description": "mixed.py line 69 calls parser.parse_buffer(f, line) but NYCParser has no parse_buffer() method. Will raise AttributeError at runtime.",
       "files": ["parsers/mixed.py", "parsers/nyc.py"],
       "subtasks": [
-        { "id": "BUG-003a", "title": "Add parse_buffer(f, line) method to NYCParser (model after mealmaster.py or compuchef.py)", "status": "not done" },
-        { "id": "BUG-003b", "title": "Add NYC section to tests/samples/mixed_test.txt and regenerate expected output", "status": "not done" },
-        { "id": "BUG-003c", "title": "Run tests to verify mixed-format parsing with NYC content", "status": "not done" }
+        { "id": "BUG-003a", "title": "Add parse_buffer(f, line) method to NYCParser (model after mealmaster.py or compuchef.py)", "status": "done" },
+        { "id": "BUG-003b", "title": "Add NYC section to tests/samples/mixed_test.txt and regenerate expected output", "status": "done" },
+        { "id": "BUG-003c", "title": "Run tests to verify mixed-format parsing with NYC content", "status": "done" }
       ]
     },
     {
@@ -141,11 +141,11 @@
       "title": "Add SPDX license header to nyc.py",
       "priority": "P1",
       "category": "Code Quality",
-      "status": "not done",
+      "status": "done",
       "description": "parsers/nyc.py is the only parser file missing '# SPDX-License-Identifier: MIT' on line 1.",
       "files": ["parsers/nyc.py"],
       "subtasks": [
-        { "id": "QUAL-001a", "title": "Add '# SPDX-License-Identifier: MIT' as line 1", "status": "not done" }
+        { "id": "QUAL-001a", "title": "Add '# SPDX-License-Identifier: MIT' as line 1", "status": "done" }
       ]
     },
     {
@@ -157,7 +157,7 @@
       "description": "Multiple parsers have untyped __init__ parameters. All should match: __init__(self, ingredient_parser: Optional[BaseIngredientParser] = None)",
       "files": ["parsers/nyc.py", "parsers/vitt.py", "parsers/ricette_md.py", "parsers/ricette_json.py", "parsers/twentykrecipes.py", "parsers/stubs.py"],
       "subtasks": [
-        { "id": "QUAL-002a", "title": "Fix nyc.py __init__ type hint", "status": "not done" },
+        { "id": "QUAL-002a", "title": "Fix nyc.py __init__ type hint", "status": "done" },
         { "id": "QUAL-002b", "title": "Fix vitt.py __init__ type hint (add Optional)", "status": "not done" },
         { "id": "QUAL-002c", "title": "Fix ricette_md.py __init__ type hint", "status": "not done" },
         { "id": "QUAL-002d", "title": "Fix ricette_json.py __init__ type hint", "status": "not done" },
@@ -190,7 +190,7 @@
       "files": ["parsers/compuchef.py", "parsers/nyc.py", "parsers/vitt.py", "parsers/twentykrecipes.py"],
       "subtasks": [
         { "id": "QUAL-004a", "title": "Add 'import logging' and 'logger = logging.getLogger(__name__)' to compuchef.py", "status": "not done" },
-        { "id": "QUAL-004b", "title": "Add logger to nyc.py", "status": "not done" },
+        { "id": "QUAL-004b", "title": "Add logger to nyc.py", "status": "done" },
         { "id": "QUAL-004c", "title": "Add logger to vitt.py (replace lazy import logging inside parse_content)", "status": "not done" },
         { "id": "QUAL-004d", "title": "Add logger to twentykrecipes.py (replace lazy import logging inside except block)", "status": "not done" }
       ]

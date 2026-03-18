@@ -25,7 +25,7 @@
   "keywords": "Test Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
   "url": "file://tests/samples/mixed_test.txt#1",
-  "datePublished": "2026-02-28T16:25:04.150685",
+  "datePublished": "2026-03-18T23:47:44.273260",
   "description": "Recipe converted from MasterCook format"
 },
 {
@@ -52,7 +52,7 @@
   "keywords": "Test Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
   "url": "file://tests/samples/mixed_test.txt#18",
-  "datePublished": "2026-02-28T16:25:04.151274",
+  "datePublished": "2026-03-18T23:47:44.273878",
   "description": "Recipe converted from MealMaster format"
 },
 {
@@ -81,7 +81,42 @@
   "keywords": "Test, Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
   "url": "file://tests/samples/mixed_test.txt#29",
-  "datePublished": "2026-02-28T16:25:04.152079",
+  "datePublished": "2026-03-18T23:47:44.275288",
   "description": "Recipe converted from CompuChef format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "NYC Mixed Recipe 4",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "flour",
+      "value": 2,
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "milk",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    "Combine flour and salt. Add milk and stir until smooth."
+  ],
+  "recipeYield": "4 servings",
+  "recipeCategory": "Test Mixed",
+  "keywords": "Test Mixed",
+  "comment": "Imported from tests/samples/mixed_test.txt",
+  "url": "file://tests/samples/mixed_test.txt#44",
+  "datePublished": "2026-03-18T23:47:44.276503",
+  "description": "Recipe converted from NYC format"
 }
 ]

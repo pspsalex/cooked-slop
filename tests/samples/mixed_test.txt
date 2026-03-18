@@ -40,3 +40,19 @@ DIRECTIONS ---------------------------------------
 Cook it.
 
 *** Recipe Via Compu-Chef (tm) ***
+
+@@@@@ Now You're Cooking! Export Format
+
+NYC Mixed Recipe 4
+
+Test Mixed
+
+2 cups flour
+1 teaspoon salt
+1 cup milk
+
+Combine flour and salt. Add milk and stir until smooth.
+
+Yield: 4 servings
+
+** Exported from Now You're Cooking! v5.93 **
