@@ -19,7 +19,7 @@ class MasterCookParser(BaseRecipeParser):
         self.source_format = "MasterCook"
 
         self.author_re = re.compile(r'^Recipe By\s+:(.*)$', re.IGNORECASE)
-        self.yield_re = re.compile(r'^Serving Size\s+:(.*?)(?:\s+Preparation Time\s+:(.*))?$', re.IGNORECASE) 
+        self.yield_re = re.compile(r'^Serving Size\s+:(.*?)(?:\s+Preparation Time\s+:(.*))?$', re.IGNORECASE)
         self.end_re = re.compile(r'^(- ){16}-')
 
     @classmethod
@@ -53,21 +53,21 @@ class MasterCookParser(BaseRecipeParser):
 
         if re.search(header_sig, content_sample):
             return 0.75
-            
+
         return 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         # Use regex to split based on the header marker
         header_sig = self.HEADER_SIG
-        
+
         # Split but keep the remainder of the line in the chunk
         parts = re.split(header_sig, content)
-        
+
         # The first part is usually preamble or empty
         for recipe_text in parts[1:]:
             if not recipe_text.strip():
                 continue
-            
+
             recipe = self._parse_single_mastercook(recipe_text)
             if recipe:
                 recipe.source_format = self.source_format
@@ -81,7 +81,7 @@ class MasterCookParser(BaseRecipeParser):
         """
         read_lines = 0
         recipe_text = ""
-        
+
         for line in f:
             recipe_text += line
             read_lines += 1
@@ -90,13 +90,13 @@ class MasterCookParser(BaseRecipeParser):
 
         if not recipe_text.strip():
             return (None, read_lines)
-        
+
         recipe = self._parse_single_mastercook(recipe_text)
         if recipe:
             recipe.source_format = self.source_format
             recipe.source_file = f.name
             return (recipe, read_lines)
-        
+
         return (None, read_lines)
 
     def _parse_single_mastercook(self, text: str) -> Optional[Recipe]:
@@ -118,15 +118,15 @@ class MasterCookParser(BaseRecipeParser):
         """
         recipe = Recipe()
         lines = text.strip().split('\n')
-        
+
         # Basic state machine for MasterCook format
         current_section = None # None, 'header', 'ingredients', 'instructions', 'notes', 'categories'
-        
+
         # Skip leading empty lines to find title
         start_idx = 0
         while start_idx < len(lines) and not lines[start_idx].strip():
             start_idx += 1
-            
+
         if start_idx >= len(lines):
             return None
 
@@ -134,7 +134,6 @@ class MasterCookParser(BaseRecipeParser):
         recipe.title = lines[start_idx].strip()
         current_section = 'header'
         instruction_block: list[str] = []
-        logger.debug("mastercook title: %s", recipe.title)
 
         for i in range(start_idx + 1, len(lines)):
             line = lines[i].strip('\r') # Keep leading spaces but remove \r
@@ -147,41 +146,32 @@ class MasterCookParser(BaseRecipeParser):
                 author_match = self.author_re.match(stripped)
                 yield_match = self.yield_re.match(stripped)
                 if author_match:
-                    logger.debug("author: %s", author_match.group(1).strip())
                     continue
                 if yield_match:
                     recipe.yield_amount = yield_match.group(1).strip()
-                    if yield_match.group(2):
-                        logger.debug("prep_time: %s", yield_match.group(2).strip())
                     continue
 
             # Section detection
             if stripped == 'Amount  Measure       Ingredient -- Preparation Method':
                 current_section = 'ingredients'
-                logger.debug("section: ingredients (header row)")
                 continue
             elif stripped == '--------  ------------  --------------------------------':
                 current_section = 'ingredients'
-                logger.debug("section: ingredients (divider row)")
                 continue
             elif stripped.startswith('Directions') or stripped.startswith('Instructions'):
                 current_section = 'instructions'
-                logger.debug("section: instructions")
                 instruction_block = []
                 continue
             elif stripped.startswith('Notes:'):
                 current_section = 'notes'
-                logger.debug("section: notes")
                 note_text = stripped.replace('Notes:', '', 1).strip()
                 if note_text:
                     recipe.instructions.append(note_text)
                 continue
             elif stripped.startswith('Categories') or current_section == 'categories':
                 current_section = 'categories'
-                logger.debug("section: categories")
                 if not stripped:
                     current_section = 'header'
-                    logger.debug("section: header (categories end)")
                     continue
                 first_column = line[self._CATEGORY_COL1].strip()
                 second_column = line[self._CATEGORY_COL2].strip()
@@ -190,52 +180,50 @@ class MasterCookParser(BaseRecipeParser):
                 if second_column:
                     recipe.categories.append(second_column)
                 continue
-            
+
             # Heuristic for ingredient start even without header
             if current_section == 'header' and stripped:
                 # MasterCook ingredients usually have numbers at fixed positions or start with spaces
                 if re.match(r'^\s*[\d./-]+\s+[a-zA-Z.]+\s+', line) or re.match(r'^\s+\d+\s+', line):
                     current_section = 'ingredients'
-                    logger.debug("section: ingredients (heuristic)")
 
             # Handle sections
             if current_section == 'ingredients':
                 if not stripped:
                     current_section = 'instructions'
-                    logger.debug("section: instructions (blank line after ingredients)")
                     instruction_block = []
                     continue
-                
+
                 # MasterCook format is fixed width — see _AMOUNT_COL/_MEASURE_COL/_INGREDIENT_COL
                 amount = line[self._AMOUNT_COL].strip()
                 measure = line[self._MEASURE_COL].strip()
                 ingredient_part = line[self._INGREDIENT_COL].strip()
-                
+
                 if ingredient_part:
                     # Check if this is a continuation
                     is_continuation = False
-                    
+
                     if not amount and not measure:
                         if stripped and stripped[0].startswith('-'):
                             stripped = stripped[1:].strip()
                             is_continuation = True
-                    
+
                     if is_continuation and recipe.ingredients:
                         recipe.ingredients[-1].raw += " " + stripped
                     else:
                         # Normalize unit
                         measure = normalize_unit(measure)
-                        
+
                         # Check for preparation method at end of ingredient
                         if " -- " in ingredient_part:
                             ingredient_part = ingredient_part.replace(" -- ", ", ")
-                        
+
                         ing = Ingredient(ingredient_part)
                         if amount: ing.quantity = amount
                         if measure: ing.unit = measure
                         # if ingredient_part: ing.name = ingredient_part
                         recipe.ingredients.append(ing)
-            
+
             elif current_section == 'instructions' or current_section == 'header':
                 if stripped:
                     if current_section == 'header' and not recipe.title:
@@ -245,9 +233,9 @@ class MasterCookParser(BaseRecipeParser):
                 if current_section == 'instructions' and not stripped and len(instruction_block):
                     recipe.instructions.append(" ".join(instruction_block))
                     instruction_block = []
-            
+
             elif current_section == 'notes':
                 if stripped:
                     recipe.instructions.append(stripped)
-                     
+
         return recipe

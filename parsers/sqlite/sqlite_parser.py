@@ -19,6 +19,16 @@ from ..registry import ParserRegistry
 logger = logging.getLogger(__name__)
 
 
+def _sqlite_text_factory(b: bytes) -> str:
+    """Decode SQLite TEXT bytes, falling back through common encodings."""
+    for enc in ('utf-8', 'latin-1', 'cp1252'):
+        try:
+            return b.decode(enc)
+        except UnicodeDecodeError:
+            continue
+    return b.decode('utf-8', errors='replace')
+
+
 @ParserRegistry.register
 class SqliteRecipeParser(BaseRecipeParser):
     """Parse recipes from SQLite databases."""
@@ -80,8 +90,9 @@ class SqliteRecipeParser(BaseRecipeParser):
 
         try:
             connection = sqlite3.connect(filepath)
-            connection.row_factory = sqlite3.Row  # Access columns by name
-            connection.text_factory = bytes  # Return bytes instead of trying UTF-8 decode
+            connection.row_factory = sqlite3.Row
+            # Decode bytes at the SQLite layer so _safe_str fields are already str
+            connection.text_factory = _sqlite_text_factory
 
             if self.schema.ingredients_field:
                 yield from self._parse_with_ingredients_field(connection)
@@ -106,21 +117,24 @@ class SqliteRecipeParser(BaseRecipeParser):
 
     def _parse_with_ingredients_field(self, connection: sqlite3.Connection) -> Iterator[Recipe]:
         """Parse recipes where ingredients are in a single field (newline or delimiter separated)."""
-        cursor = connection.cursor()
+        # Hoist column lookups — these never change across rows
+        title_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'title'), None)
+        id_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'id'), None)
 
-        # Get all columns from recipes table
         query = f"SELECT * FROM {self.schema.recipes_table}"
         self._log_query(query)
+        cursor = connection.cursor()
         cursor.execute(query)
+
+        # Pre-check field existence once from cursor metadata
+        col_names = {desc[0] for desc in cursor.description} if cursor.description else set()
+        has_ing_field = bool(self.schema.ingredients_field and self.schema.ingredients_field in col_names)
+        has_inst_field = bool(self.schema.instructions_field and self.schema.instructions_field in col_names)
 
         for row in cursor:
             recipe = Recipe(source_file="sqlite", source_format=self.source_format)
             recipe.sqlite_table = self.sqlite_table
             recipe.source_file = self.sqlite_db_path
-
-            # Extract mapped columns
-            title_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'title'), None)
-            id_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'id'), None)
 
             recipe_id = None
             if id_col:
@@ -131,12 +145,12 @@ class SqliteRecipeParser(BaseRecipeParser):
             if self.schema.recipe_title_source and recipe_id is not None:
                 try:
                     title_cursor = connection.cursor()
-                    title_query = f"""
-                        SELECT {self.schema.recipe_title_source.title_column}
-                        FROM {self.schema.recipe_title_source.table_name}
-                        WHERE {self.schema.recipe_title_source.key_column} = ?
-                        """
-                    self._log_query(title_query.strip() + f"; ? = {recipe_id}")
+                    title_query = (
+                        f"SELECT {self.schema.recipe_title_source.title_column}"
+                        f" FROM {self.schema.recipe_title_source.table_name}"
+                        f" WHERE {self.schema.recipe_title_source.key_column} = ?"
+                    )
+                    self._log_query(title_query + f"; ? = {recipe_id}")
                     title_cursor.execute(title_query, (recipe_id,))
                     title_row = title_cursor.fetchone()
                     if title_row:
@@ -144,12 +158,10 @@ class SqliteRecipeParser(BaseRecipeParser):
                 except Exception as e:
                     logger.warning(f"Failed to get title for recipe {recipe_id}: {e}")
 
-            # If no title from lookup, try direct column
             if not recipe.title and title_col:
                 recipe.title = self._safe_str(row[title_col])
 
-            # Extract ingredients from field
-            if self.schema.ingredients_field in row.keys():
+            if has_ing_field:
                 ing_text = self._safe_str(row[self.schema.ingredients_field])
                 if ing_text:
                     for ing_line in ing_text.split(self.schema.ingredients_delimiter):
@@ -157,8 +169,7 @@ class SqliteRecipeParser(BaseRecipeParser):
                         if ing_line:
                             recipe.ingredients.append(self.ingredient_parser.parse(ing_line))
 
-            # Extract instructions from field
-            if self.schema.instructions_field and self.schema.instructions_field in row.keys():
+            if has_inst_field:
                 inst_text = self._safe_str(row[self.schema.instructions_field])
                 if inst_text:
                     recipe.instructions = [
@@ -171,43 +182,76 @@ class SqliteRecipeParser(BaseRecipeParser):
                 yield recipe
 
     def _parse_with_ingredients_table(self, connection: sqlite3.Connection) -> Iterator[Recipe]:
-        """Parse recipes where ingredients are in a separate table."""
+        """Parse recipes where ingredients are in a separate table.
+
+        Fetches all ingredients in a single query and groups them by recipe ID,
+        avoiding the N+1 query problem (one query per recipe).
+        """
         if not self.schema.ingredients_table:
             return
 
-        cursor = connection.cursor()
         ing_schema = self.schema.ingredients_table
 
-        # Get all columns from recipes table
-        query = f"SELECT * FROM {self.schema.recipes_table}"
-        self._log_query(query)
-        cursor.execute(query)
+        # Hoist column lookups — these never change across rows
+        title_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'title'), None)
+        id_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'id'), None)
+
+        # Pre-fetch ALL ingredients in one query (N+1 → 2 queries total)
+        unit_expr = ing_schema.unit_column if ing_schema.unit_column else "''"
+        ing_query = (
+            f"SELECT {ing_schema.id_column} AS _rid,"
+            f" {ing_schema.quantity_column} AS _qty,"
+            f" {unit_expr} AS _unit,"
+            f" {ing_schema.name_column} AS _name"
+            f" FROM {ing_schema.table_name}"
+        )
+        self._log_query(ing_query)
+        ingredients_by_id: dict[str, list[Ingredient]] = {}
+        try:
+            ing_cursor = connection.cursor()
+            ing_cursor.execute(ing_query)
+            for ing_row in ing_cursor:
+                rid = self._safe_str(ing_row['_rid'])
+                qty = self._safe_str(ing_row['_qty'])
+                unit = self._safe_str(ing_row['_unit'])
+                name = self._safe_str(ing_row['_name'])
+                ing_str = " ".join(part for part in (qty, unit, name) if part)
+                if ing_str:
+                    ingredients_by_id.setdefault(rid, []).append(
+                        self.ingredient_parser.parse(ing_str)
+                    )
+        except Exception as e:
+            logger.warning(f"Failed to pre-fetch ingredients: {e}")
+
+        recipe_query = f"SELECT * FROM {self.schema.recipes_table}"
+        self._log_query(recipe_query)
+        cursor = connection.cursor()
+        cursor.execute(recipe_query)
+
+        # Pre-check field existence once from cursor metadata
+        col_names = {desc[0] for desc in cursor.description} if cursor.description else set()
+        has_inst_field = bool(self.schema.instructions_field and self.schema.instructions_field in col_names)
 
         for row in cursor:
             recipe = Recipe(source_file="sqlite", source_format=self.source_format)
             recipe.sqlite_table = self.sqlite_table
             recipe.source_file = self.sqlite_db_path
 
-            # Extract mapped columns
-            title_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'title'), None)
-            id_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'id'), None)
-            recipe_id_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'id'), None)
-
             recipe_id = None
-            if recipe_id_col:
-                recipe_id = self._safe_str(row[recipe_id_col])
+            if id_col:
+                recipe_id = self._safe_str(row[id_col])
                 recipe.sqlite_id = recipe_id
 
             # Try to get title from lookup table if configured
             if self.schema.recipe_title_source and recipe_id is not None:
                 try:
                     title_cursor = connection.cursor()
-                    title_query = f"""
-                        SELECT {self.schema.recipe_title_source.title_column}
-                        FROM {self.schema.recipe_title_source.table_name}
-                        WHERE {self.schema.recipe_title_source.key_column} = ?
-                    """
-                    self._log_query(title_query.strip() + f"; ? = {recipe_id}")
+                    title_query = (
+                        f"SELECT {self.schema.recipe_title_source.title_column}"
+                        f" FROM {self.schema.recipe_title_source.table_name}"
+                        f" WHERE {self.schema.recipe_title_source.key_column} = ?"
+                    )
+                    self._log_query(title_query + f"; ? = {recipe_id}")
                     title_cursor.execute(title_query, (recipe_id,))
                     title_row = title_cursor.fetchone()
                     if title_row:
@@ -215,47 +259,14 @@ class SqliteRecipeParser(BaseRecipeParser):
                 except Exception as e:
                     logger.warning(f"Failed to get title for recipe {recipe_id}: {e}")
 
-            # If no title from lookup, try direct column
             if not recipe.title and title_col:
                 recipe.title = self._safe_str(row[title_col])
 
-            # Query ingredients table using recipe ID
+            # O(1) dict lookup instead of per-recipe SQL query
             if recipe_id is not None:
-                ing_query = f"""
-                    SELECT
-                        {ing_schema.quantity_column} as qty,
-                        {ing_schema.unit_column or "''" } as unit,
-                        {ing_schema.name_column} as ing_name
-                    FROM {ing_schema.table_name}
-                    WHERE {ing_schema.id_column} = ?
-                """
-                self._log_query(ing_query.strip() + f"; ? = {recipe_id}")
+                recipe.ingredients = ingredients_by_id.get(recipe_id, [])
 
-                try:
-                    ing_cursor = connection.cursor()
-                    ing_cursor.execute(ing_query, (recipe_id,))
-
-                    for ing_row in ing_cursor:
-                        qty = self._safe_str(ing_row['qty'])
-                        unit = self._safe_str(ing_row['unit'])
-                        name = self._safe_str(ing_row['ing_name'])
-
-                        # Build ingredient string
-                        ing_str = ""
-                        if qty:
-                            ing_str += qty
-                        if unit:
-                            ing_str += f" {unit}" if ing_str else unit
-                        if name:
-                            ing_str += f" {name}" if ing_str else name
-
-                        if ing_str:
-                            recipe.ingredients.append(self.ingredient_parser.parse(ing_str))
-                except Exception as e:
-                    logger.warning(f"Failed to get ingredients for recipe {recipe_id}: {e}")
-
-            # Extract instructions
-            if self.schema.instructions_field and self.schema.instructions_field in row.keys():
+            if has_inst_field:
                 inst_text = self._safe_str(row[self.schema.instructions_field])
                 if inst_text:
                     recipe.instructions = [
@@ -268,119 +279,114 @@ class SqliteRecipeParser(BaseRecipeParser):
                 yield recipe
 
     def _parse_with_junction_table(self, connection: sqlite3.Connection) -> Iterator[Recipe]:
-        """Parse recipes where ingredients are linked via junction table."""
+        """Parse recipes where ingredients are linked via junction table.
+
+        Pre-loads the quantity lookup table (if any) and pre-fetches all junction
+        rows to avoid per-recipe and per-ingredient queries.
+        """
         if not self.schema.ingredients_junction:
             return
 
-        cursor = connection.cursor()
         junction = self.schema.ingredients_junction
 
-        # Get all recipes
-        query = f"SELECT * FROM {self.schema.recipes_table}"
-        self._log_query(query)
-        cursor.execute(query)
+        # Hoist column lookups — these never change across rows
+        title_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'title'), None)
+        id_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'id'), None)
+
+        # Pre-load quantity lookup table entirely into memory (it's typically small)
+        qty_lookup: dict[str, str] = {}
+        if junction.quantity_table:
+            qty_query = (
+                f"SELECT {junction.quantity_table.id_column},"
+                f" {junction.quantity_table.name_column}"
+                f" FROM {junction.quantity_table.table_name}"
+            )
+            self._log_query(qty_query)
+            try:
+                qty_cursor = connection.cursor()
+                qty_cursor.execute(qty_query)
+                for qty_row in qty_cursor:
+                    qty_lookup[self._safe_str(qty_row[0])] = self._safe_str(qty_row[1])
+            except Exception as e:
+                logger.warning(f"Failed to pre-load quantity table: {e}")
+
+        # Pre-fetch all junction rows grouped by recipe ID
+        order_clause = f" ORDER BY {junction.junction_table}.{junction.order_by}" if junction.order_by else ""
+        unit_expr = junction.unit_column if junction.unit_column else "''"
+        junc_query = (
+            f"SELECT {junction.junction_table}.{junction.recipe_id_column} AS _rid,"
+            f" {junction.quantity_column} AS _qty_id,"
+            f" {unit_expr} AS _unit,"
+            f" {junction.ingredient_table.name_column} AS _ing_name"
+            f" FROM {junction.junction_table}"
+            f" JOIN {junction.ingredient_table.table_name}"
+            f"   ON {junction.junction_table}.{junction.ingredient_id_column}"
+            f"    = {junction.ingredient_table.table_name}.{junction.ingredient_table.id_column}"
+            f"{order_clause}"
+        )
+        self._log_query(junc_query)
+        ingredients_by_id: dict[str, list[Ingredient]] = {}
+        try:
+            junc_cursor = connection.cursor()
+            junc_cursor.execute(junc_query)
+            for junc_row in junc_cursor:
+                rid = self._safe_str(junc_row['_rid'])
+                qty_id = self._safe_str(junc_row['_qty_id'])
+                unit = self._safe_str(junc_row['_unit'])
+                name = self._safe_str(junc_row['_ing_name'])
+                # Resolve quantity from pre-loaded table (O(1)) or use value directly
+                qty = qty_lookup.get(qty_id, qty_id) if junction.quantity_table else qty_id
+                ing_str = " ".join(part for part in (qty, unit, name) if part)
+                if ing_str:
+                    ingredients_by_id.setdefault(rid, []).append(
+                        self.ingredient_parser.parse(ing_str)
+                    )
+        except Exception as e:
+            logger.warning(f"Failed to pre-fetch junction ingredients: {e}")
+
+        recipe_query = f"SELECT * FROM {self.schema.recipes_table}"
+        self._log_query(recipe_query)
+        cursor = connection.cursor()
+        cursor.execute(recipe_query)
+
+        col_names = {desc[0] for desc in cursor.description} if cursor.description else set()
+        has_inst_field = bool(self.schema.instructions_field and self.schema.instructions_field in col_names)
 
         for row in cursor:
             recipe = Recipe(source_file="sqlite", source_format=self.source_format)
             recipe.sqlite_table = self.sqlite_table
             recipe.source_file = self.sqlite_db_path
 
-            # Extract title - either directly or from lookup table
-            title_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'title'), None)
-            recipe_id_col = next((col.name for col in self.schema.recipe_columns if col.attribute == 'id'), None)
+            recipe_id = None
+            if id_col:
+                recipe.sqlite_id = self._safe_str(row[id_col])
+                recipe_id = row[id_col]
 
-            if recipe_id_col:
-                recipe.sqlite_id = self._safe_str(row[recipe_id_col])
-                recipe_id = row[recipe_id_col]
+            # Try to get title from lookup table if configured
+            if self.schema.recipe_title_source and recipe_id is not None:
+                try:
+                    title_cursor = connection.cursor()
+                    title_query = (
+                        f"SELECT {self.schema.recipe_title_source.title_column}"
+                        f" FROM {self.schema.recipe_title_source.table_name}"
+                        f" WHERE {self.schema.recipe_title_source.key_column} = ?"
+                    )
+                    self._log_query(title_query + f"; ? = {recipe_id}")
+                    title_cursor.execute(title_query, (recipe_id,))
+                    title_row = title_cursor.fetchone()
+                    if title_row:
+                        recipe.title = self._safe_str(title_row[0])
+                except Exception as e:
+                    logger.warning(f"Failed to get title for recipe {recipe_id}: {e}")
 
-                # Try to get title from lookup table if configured
-                if self.schema.recipe_title_source and recipe_id is not None:
-                    try:
-                        title_cursor = connection.cursor()
-                        title_query = f"""
-                            SELECT {self.schema.recipe_title_source.title_column}
-                            FROM {self.schema.recipe_title_source.table_name}
-                            WHERE {self.schema.recipe_title_source.key_column} = ?
-                        """
-                        self._log_query(title_query.strip() + f"; ? = {recipe_id}")
-                        title_cursor.execute(title_query, (recipe_id,))
-                        title_row = title_cursor.fetchone()
-                        if title_row:
-                            recipe.title = self._safe_str(title_row[0])
-                    except Exception as e:
-                        logger.warning(f"Failed to get title for recipe {recipe_id}: {e}")
-
-            # If no title from lookup, try direct column
             if not recipe.title and title_col:
                 recipe.title = self._safe_str(row[title_col])
 
-            # Get ingredients from junction table
+            # O(1) dict lookup instead of per-recipe query
             if recipe_id is not None:
-                # Build order by clause if specified
-                order_clause = ""
-                if junction.order_by:
-                    order_clause = f" ORDER BY {junction.junction_table}.{junction.order_by}"
+                recipe.ingredients = ingredients_by_id.get(self._safe_str(recipe_id), [])
 
-                # Query junction table for ingredients
-                query = f"""
-                    SELECT
-                        {junction.quantity_column} as qty_id,
-                        {junction.unit_column or "''" } as unit,
-                        {junction.ingredient_table.name_column} as ing_name
-                    FROM {junction.junction_table}
-                    JOIN {junction.ingredient_table.table_name}
-                        ON {junction.junction_table}.{junction.ingredient_id_column} =
-                           {junction.ingredient_table.table_name}.{junction.ingredient_table.id_column}
-                    WHERE {junction.junction_table}.{junction.recipe_id_column} = ?
-                    {order_clause}
-                """
-                self._log_query(query.strip() + f"; ? = {recipe_id}")
-
-                try:
-                    ing_cursor = connection.cursor()
-                    ing_cursor.execute(query, (recipe_id,))
-
-                    for ing_row in ing_cursor:
-                        qty_id = ing_row['qty_id']
-                        unit = self._safe_str(ing_row['unit'])
-                        name = self._safe_str(ing_row['ing_name'])
-
-                        # Lookup quantity from quantita table if configured
-                        qty = ""
-                        if junction.quantity_table and qty_id is not None:
-                            try:
-                                qty_cursor = connection.cursor()
-                                qty_query = f"""
-                                    SELECT {junction.quantity_table.name_column}
-                                    FROM {junction.quantity_table.table_name}
-                                    WHERE {junction.quantity_table.id_column} = ?
-                                """
-                                self._log_query(qty_query.strip() + f"; ? = {qty_id}")
-                                qty_cursor.execute(qty_query, (qty_id,))
-                                qty_row = qty_cursor.fetchone()
-                                if qty_row:
-                                    qty = self._safe_str(qty_row[0])
-                            except Exception as e:
-                                logger.warning(f"Failed to get quantity for id {qty_id}: {e}")
-                        else:
-                            qty = self._safe_str(qty_id)
-
-                        # Build ingredient string
-                        ing_str = ""
-                        if qty:
-                            ing_str += qty
-                        if unit:
-                            ing_str += f" {unit}" if ing_str else unit
-                        if name:
-                            ing_str += f" {name}" if ing_str else name
-
-                        if ing_str:
-                            recipe.ingredients.append(self.ingredient_parser.parse(ing_str))
-                except Exception as e:
-                    logger.warning(f"Failed to get ingredients for recipe {recipe_id}: {e}")
-
-            # Extract instructions
-            if self.schema.instructions_field and self.schema.instructions_field in row.keys():
+            if has_inst_field:
                 inst_text = self._safe_str(row[self.schema.instructions_field])
                 if inst_text:
                     recipe.instructions = [
@@ -398,13 +404,12 @@ class SqliteRecipeParser(BaseRecipeParser):
             return ""
 
         if isinstance(value, bytes):
-            # Try UTF-8 first, then latin-1, then replace invalid chars
+            # Fallback path — normally handled by _sqlite_text_factory at connection level
             for encoding in ['utf-8', 'latin-1', 'iso-8859-1', 'cp1252']:
                 try:
                     return value.decode(encoding)
                 except (UnicodeDecodeError, LookupError):
                     continue
-            # Last resort: replace invalid bytes
             return value.decode('utf-8', errors='replace')
 
         return str(value)

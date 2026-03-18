@@ -89,14 +89,11 @@ class MealMasterParser(BaseRecipeParser):
         current_instruction_paragraph = []
         current_ingredient_raw = []
 
-        logger.debug("_parse_single_mealmaster: start")
         lines = content.split('\n')
 
         for line in lines:
             line_str = line.rstrip()
-            logger.debug("Processing: [%s]", line_str)
             if (line_str.startswith('MMMMM') or line_str.startswith('-----')) and 'Recipe via' in line_str:
-                logger.debug("  - got header, stopping")
                 break
 
             if line_str.startswith('MMMMM') and '-' in line_str and 'Recipe via' not in line_str:

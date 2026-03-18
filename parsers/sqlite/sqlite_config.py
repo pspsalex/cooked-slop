@@ -253,7 +253,6 @@ class SqliteRecipeSchema:
 
         return schema
 
-from pprint import pp
 class SchemaValidator:
     """Validates if a database matches a schema configuration."""
 
@@ -379,7 +378,7 @@ class SchemaValidator:
             return True, 1.0  # Schema with no optional fields matches by default
 
         except Exception as e:
-            print(f"Error validating schema: {e}")
+            logger.warning("Error validating schema: %s", e)
             return False, 0.0
 
 
@@ -407,7 +406,7 @@ class SqliteSchemaRegistry:
                         schema = SqliteRecipeSchema.from_dict(data)
                         self._schemas[schema.name] = schema
             except Exception as e:
-                print(f"Warning: Failed to load SQLite schema from {yaml_file}: {e}")
+                logger.warning("Failed to load SQLite schema from %s: %s", yaml_file, e)
 
     def detect_schema(self, db_path: Path) -> Optional[SqliteRecipeSchema]:
         """
@@ -436,7 +435,7 @@ class SqliteSchemaRegistry:
             return best_schema
 
         except Exception as e:
-            print(f"Error detecting schema for {db_path}: {e}")
+            logger.warning("Error detecting schema for %s: %s", db_path, e)
             return None
 
     def get_schema(self, name: str) -> Optional[SqliteRecipeSchema]:
