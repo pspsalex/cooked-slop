@@ -246,3 +246,15 @@ These are known bugs and inconsistencies. Fix them if you encounter them, but do
 5. **`compuchef.py` line 88**: Production `print()` statement — should be `logger.debug()`.
 
 6. **`nyc.py`**: Missing `# SPDX-License-Identifier: MIT` header.
+
+## Working on Tasks (`tasks.json`)
+
+When the user asks to "work on a task" or "work on tasks.json":
+
+1. **Pick a random task** from the `"not done"` tasks in `tasks.json` (prefer higher priority: P0 > P1 > P2)
+2. **Implement** the fix/feature following all subtasks
+3. **Code review** — review the changes for correctness, style, edge cases, and regressions
+4. **Fix any issues** found during review
+5. **Run tests** — `./venv/bin/python3 -m pytest tests/test_conversion.py -v`
+6. **Commit** — stage changed files and commit with a conventional-commit message (`fix:`, `feat:`, `refactor:`, etc.)
+7. **Update `tasks.json`** — mark the task and all its subtasks as `"done"`
