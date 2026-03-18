@@ -43,13 +43,13 @@
       "title": "Fix convert_recipe_file() multi-recipe mode -- output never written",
       "priority": "P0",
       "category": "Critical Bugs",
-      "status": "not done",
+      "status": "done",
       "description": "The 'multiple recipes per file' fallback path in convert_recipe_file() converts recipes but never writes them to the output file. Recipes are discarded.",
       "files": ["convert.py"],
       "subtasks": [
-        { "id": "BUG-002a", "title": "Locate the multi-recipe fallback branch in convert_recipe_file()", "status": "not done" },
-        { "id": "BUG-002b", "title": "Wire converted recipes into JSONStreamWriter output (match single-recipe path behavior)", "status": "not done" },
-        { "id": "BUG-002c", "title": "Add a test sample with multiple recipes and verify output is written", "status": "not done" }
+        { "id": "BUG-002a", "title": "Locate the multi-recipe fallback branch in convert_recipe_file()", "status": "done" },
+        { "id": "BUG-002b", "title": "Wire converted recipes into JSONStreamWriter output (match single-recipe path behavior)", "status": "done" },
+        { "id": "BUG-002c", "title": "Add a test sample with multiple recipes and verify output is written", "status": "done" }
       ]
     },
     {
