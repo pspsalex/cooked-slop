@@ -18,30 +18,38 @@ from parsers.units import normalize_unit
 # --- Logging setup ---
 TRACE_LEVEL = 5
 logging.addLevelName(TRACE_LEVEL, "TRACE")
+
+
 def trace(self, message, *args, **kws):
     if self.isEnabledFor(TRACE_LEVEL):
         self._log(TRACE_LEVEL, message, args, **kws)
+
+
 logging.Logger.trace = trace
 logger = logging.getLogger(__name__)
 
+
 # --- UI Colors ---
 class Colors:
-    HEADER = '\001\033[95m\002'
-    BLUE = '\001\033[94m\002'
-    CYAN = '\001\033[96m\002'
-    GREEN = '\001\033[92m\002'
-    YELLOW = '\001\033[93m\002'
-    RED = '\001\033[91m\002'
-    ENDC = '\001\033[0m\002'
-    BOLD = '\001\033[1m\002'
-    DIM = '\001\033[2m\002'
+    HEADER = "\001\033[95m\002"
+    BLUE = "\001\033[94m\002"
+    CYAN = "\001\033[96m\002"
+    GREEN = "\001\033[92m\002"
+    YELLOW = "\001\033[93m\002"
+    RED = "\001\033[91m\002"
+    ENDC = "\001\033[0m\002"
+    BOLD = "\001\033[1m\002"
+    DIM = "\001\033[2m\002"
 
-def print_progress_bar(iteration, total, prefix='', suffix='', length=40, fill='█'):
+
+def print_progress_bar(iteration, total, prefix="", suffix="", length=40, fill="█"):
     percent = ("{0:.1f}").format(100 * (iteration / float(total)))
     filled_length = int(length * iteration // total)
-    bar = fill * filled_length + '-' * (length - filled_length)
-    print(f'\r{Colors.CYAN}{prefix}{Colors.ENDC} |{bar}| {percent}% {suffix}', end='\r')
-    if iteration == total: print()
+    bar = fill * filled_length + "-" * (length - filled_length)
+    print(f"\r{Colors.CYAN}{prefix}{Colors.ENDC} |{bar}| {percent}% {suffix}", end="\r")
+    if iteration == total:
+        print()
+
 
 # --- Output Conversion ---
 class SchemaOrgConverter:
@@ -54,13 +62,14 @@ class SchemaOrgConverter:
         if parse_ingredients:
             for ing in recipe.ingredients:
                 if ing.quantity or ing.unit:
-                    prop_value = {
-                        "@type": "PropertyValue",
-                        "name": ing.name or ing.raw
-                    }
+                    prop_value = {"@type": "PropertyValue", "name": ing.name or ing.raw}
                     if ing.quantity:
                         try:
-                            prop_value["value"] = float(ing.quantity) if '/' not in ing.quantity and '.' in ing.quantity else int(ing.quantity)
+                            prop_value["value"] = (
+                                float(ing.quantity)
+                                if "/" not in ing.quantity and "." in ing.quantity
+                                else int(ing.quantity)
+                            )
                         except ValueError:
                             prop_value["value"] = ing.quantity
                     if ing.unit:
@@ -77,40 +86,47 @@ class SchemaOrgConverter:
         schema_recipe = {
             "@context": "https://schema.org",
             "@type": "Recipe",
-            "name": recipe.title or 'Untitled Recipe',
+            "name": recipe.title or "Untitled Recipe",
             "recipeIngredient": recipe_ingredients,
             "recipeInstructions": instructions,
         }
 
         if recipe.yield_amount:
-            schema_recipe['recipeYield'] = recipe.yield_amount
+            schema_recipe["recipeYield"] = recipe.yield_amount
 
         if recipe.categories:
-            schema_recipe['recipeCategory'] = recipe.categories[0]
-            schema_recipe['keywords'] = ', '.join(recipe.categories)
+            schema_recipe["recipeCategory"] = recipe.categories[0]
+            schema_recipe["keywords"] = ", ".join(recipe.categories)
 
         if recipe.source_file:
-            schema_recipe['comment'] = f"Imported from {recipe.source_file}"
+            schema_recipe["comment"] = f"Imported from {recipe.source_file}"
             if recipe.url:
-                schema_recipe['url'] = recipe.url
+                schema_recipe["url"] = recipe.url
             elif recipe.sqlite_table and recipe.sqlite_id:
-                schema_recipe['url'] = f"file://{recipe.source_file}#{recipe.sqlite_table},{recipe.sqlite_id}"
+                schema_recipe["url"] = (
+                    f"file://{recipe.source_file}#{recipe.sqlite_table},{recipe.sqlite_id}"
+                )
             else:
-                schema_recipe['url'] = f"file://{recipe.source_file}"
+                schema_recipe["url"] = f"file://{recipe.source_file}"
 
-        schema_recipe['datePublished'] = datetime.now().isoformat()
-        schema_recipe['description'] = f"Recipe converted from {recipe.source_format} format"
+        schema_recipe["datePublished"] = datetime.now().isoformat()
+        schema_recipe["description"] = (
+            f"Recipe converted from {recipe.source_format} format"
+        )
 
         return schema_recipe
 
     @staticmethod
     def _build_instructions(instructions: List[str]) -> List:
-        if not instructions: return []
-        if len(instructions) == 1: return [instructions[0]]
+        if not instructions:
+            return []
+        if len(instructions) == 1:
+            return [instructions[0]]
         return [
             {"@type": "HowToStep", "position": position, "text": instruction}
             for position, instruction in enumerate(instructions, 1)
         ]
+
 
 class JSONStreamWriter:
     """Writes a JSON array to one or multiple files in a streaming fashion."""
@@ -133,14 +149,17 @@ class JSONStreamWriter:
     def _get_current_path(self) -> Path:
         if not self.chunk:
             return self.base_path
-        return self.base_path.parent / f"{self.base_path.stem}_part{self.current_chunk_num:03d}{self.base_path.suffix}"
+        return (
+            self.base_path.parent
+            / f"{self.base_path.stem}_part{self.current_chunk_num:03d}{self.base_path.suffix}"
+        )
 
     def _open_new_file(self):
         dest = self._get_current_path()
-        self.current_f = open(dest, 'w', encoding='utf-8')
+        self.current_f = open(dest, "w", encoding="utf-8")
         self.current_f.write("[\n")
         self.current_recipe_count = 0
-        self.current_size_bytes = 2 # "[" and "\n"
+        self.current_size_bytes = 2  # "[" and "\n"
 
     def _close_current_file(self):
         if self.current_f:
@@ -152,12 +171,14 @@ class JSONStreamWriter:
     def write_recipe(self, recipe: dict):
         # Calculate size if needed for chunking
         recipe_json = json.dumps(recipe, indent=self.indent, ensure_ascii=False)
-        recipe_size = len(recipe_json.encode('utf-8'))
+        recipe_size = len(recipe_json.encode("utf-8"))
 
         # Check if we need to rotate
         if self.chunk and self.current_f:
-            if self.current_recipe_count >= self.max_recipes_per_chunk or \
-               (self.current_recipe_count > 0 and self.current_size_bytes + recipe_size > self.max_chunk_size_bytes):
+            if self.current_recipe_count >= self.max_recipes_per_chunk or (
+                self.current_recipe_count > 0
+                and self.current_size_bytes + recipe_size > self.max_chunk_size_bytes
+            ):
                 self._close_current_file()
 
         if not self.current_f:
@@ -178,27 +199,77 @@ class JSONStreamWriter:
             self._open_new_file()
             self._close_current_file()
 
+
 # --- CLI and Processing Logic ---
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description='Convert Recipes (MealMaster, MasterCook, PDF, HTML, CSV) to schema.org JSON-LD format',
+        description="Convert Recipes (MealMaster, MasterCook, PDF, HTML, CSV) to schema.org JSON-LD format",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('input', type=Path, help='Input file or directory containing recipe files')
-    parser.add_argument('-o', '--output', type=Path, default=Path('./converted_recipes'),
-                        help='Output directory or file (default: ./converted_recipes)')
-    parser.add_argument('-r', '--recursive', action='store_true', help='Scan directories recursively')
-    parser.add_argument('--multiple-per-file', action='store_true', help='Save all recipes from a file into a single JSON file')
-    parser.add_argument('--no-parse-ingredients', action='store_true', help='Keep ingredients as plain text')
-    parser.add_argument('--no-nlp', action='store_true', help='Disable NLP ingredient parsing even if installed')
-    parser.add_argument('--chunk', action='store_true', help='Split output into chunks')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Show verbose output')
-    parser.add_argument('--debug-sql', action='store_true', help='Show SQL queries at TRACE level (must be explicitly enabled, -v does not imply this)')
-    parser.add_argument('-f', '--format', type=str, choices=['mealmaster', 'mastercook', 'compuchef', 'edna', 'ricette', 'ricette_md', 'nyc', 'recipeml', '20krecipes', 'ricette_json', 'cookware'],
-                        help='Override auto-detection and specify input format')
-    parser.add_argument('--llm-config', type=Path, default=None, metavar='CONFIG',
-                        help='Path to LLM provider YAML config. When set, all files are parsed '
-                             'via the configured LLM instead of the auto-detected parser.')
+    parser.add_argument(
+        "input", type=Path, help="Input file or directory containing recipe files"
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        default=Path("./converted_recipes"),
+        help="Output directory or file (default: ./converted_recipes)",
+    )
+    parser.add_argument(
+        "-r", "--recursive", action="store_true", help="Scan directories recursively"
+    )
+    parser.add_argument(
+        "--multiple-per-file",
+        action="store_true",
+        help="Save all recipes from a file into a single JSON file",
+    )
+    parser.add_argument(
+        "--no-parse-ingredients",
+        action="store_true",
+        help="Keep ingredients as plain text",
+    )
+    parser.add_argument(
+        "--no-nlp",
+        action="store_true",
+        help="Disable NLP ingredient parsing even if installed",
+    )
+    parser.add_argument("--chunk", action="store_true", help="Split output into chunks")
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Show verbose output"
+    )
+    parser.add_argument(
+        "--debug-sql",
+        action="store_true",
+        help="Show SQL queries at TRACE level (must be explicitly enabled, -v does not imply this)",
+    )
+    parser.add_argument(
+        "-f",
+        "--format",
+        type=str,
+        choices=[
+            "mealmaster",
+            "mastercook",
+            "compuchef",
+            "edna",
+            "ricette",
+            "ricette_md",
+            "nyc",
+            "recipeml",
+            "20krecipes",
+            "ricette_json",
+            "cookware",
+        ],
+        help="Override auto-detection and specify input format",
+    )
+    parser.add_argument(
+        "--llm-config",
+        type=Path,
+        default=None,
+        metavar="CONFIG",
+        help="Path to LLM provider YAML config. When set, all files are parsed "
+        "via the configured LLM instead of the auto-detected parser.",
+    )
     return parser.parse_args()
 
 
@@ -212,21 +283,29 @@ def convert_recipe_file(
     format_name: Optional[str] = None,
     stream_writer: Optional[JSONStreamWriter] = None,
     debug_sql: bool = False,
-    llm_parser: Optional['LLMRecipeParser'] = None,
+    llm_parser: Optional["LLMRecipeParser"] = None,
 ) -> int:
     if llm_parser is not None:
         parser = llm_parser
     else:
-        parser = ParserRegistry.get_parser(input_path, ingredient_parser, format_name, debug=debug_sql)
+        parser = ParserRegistry.get_parser(
+            input_path, ingredient_parser, format_name, debug=debug_sql
+        )
 
     if not parser:
-        if verbose: print(f"{Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}")
+        if verbose:
+            print(
+                f"{Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}"
+            )
         return 0
 
     try:
         recipe_count = 0
         converter = SchemaOrgConverter()
         output_dir.mkdir(parents=True, exist_ok=True)
+
+        # Collect recipes when writing multiple recipes per file (no stream_writer, not one_file_per_recipe)
+        collected_recipes: List[dict] = []
 
         # Process recipes as they're yielded from the parser
         for recipe in parser.parse_file(str(input_path)):
@@ -235,35 +314,54 @@ def convert_recipe_file(
 
             if stream_writer:
                 stream_writer.write_recipe(schema_recipe)
-                if verbose: print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')}")
+                if verbose:
+                    print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')}")
             elif one_file_per_recipe:
-                safe_name = re.sub(r'[^\w\s-]', '', schema_recipe.get('name', 'Untitled')).strip()
-                safe_name = re.sub(r'[-\s]+', '_', safe_name)
+                safe_name = re.sub(
+                    r"[^\w\s-]", "", schema_recipe.get("name", "Untitled")
+                ).strip()
+                safe_name = re.sub(r"[-\s]+", "_", safe_name)
                 output_file = output_dir / f"{safe_name}.json"
                 counter = 1
                 while output_file.exists():
                     output_file = output_dir / f"{safe_name}_{counter}.json"
                     counter += 1
-                with open(output_file, 'w', encoding='utf-8') as f:
+                with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(schema_recipe, f, indent=2, ensure_ascii=False)
-                if verbose: print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')} → {output_file.name}")
+                if verbose:
+                    print(
+                        f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')} → {output_file.name}"
+                    )
+            else:
+                collected_recipes.append(schema_recipe)
+                if verbose:
+                    print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')}")
 
         if recipe_count == 0:
-            if verbose: print(f"{Colors.YELLOW}No recipes found in {input_path}{Colors.ENDC}")
+            if verbose:
+                print(f"{Colors.YELLOW}No recipes found in {input_path}{Colors.ENDC}")
             return 0
 
-        # For multiple recipes per file mode, collect and write at end
-        if not stream_writer and not one_file_per_recipe:
-            # Note: This mode requires collecting all recipes, as it needs to write them all at once
-            # For true streaming of this mode, recipes would need to be collected first
-            if verbose: print(f"{Colors.GREEN}Converted {recipe_count} recipes{Colors.ENDC}")
+        # For multiple recipes per file mode, write all collected recipes to a single JSON file
+        if collected_recipes:
+            output_file = output_dir / f"{input_path.stem}.json"
+            with open(output_file, "w", encoding="utf-8") as f:
+                json.dump(collected_recipes, f, indent=2, ensure_ascii=False)
+            if verbose:
+                print(
+                    f"{Colors.GREEN}Converted {recipe_count} recipes → {output_file.name}{Colors.ENDC}"
+                )
 
         return input_path.stat().st_size
     except Exception as e:
-        if verbose: print(f"{Colors.RED}Error parsing {input_path}: {e}{Colors.ENDC}")
+        if verbose:
+            print(f"{Colors.RED}Error parsing {input_path}: {e}{Colors.ENDC}")
         import traceback
-        if verbose: traceback.print_exc()
+
+        if verbose:
+            traceback.print_exc()
         return 0
+
 
 def process_directory(
     input_dir: Path,
@@ -276,17 +374,37 @@ def process_directory(
     format_name: Optional[str] = None,
     stream_writer: Optional[JSONStreamWriter] = None,
     debug_sql: bool = False,
-    llm_parser: Optional['LLMRecipeParser'] = None,
+    llm_parser: Optional["LLMRecipeParser"] = None,
 ) -> None:
     # Updated extensions to include stubs explicitly supported by ParserFactory.
-    extensions = {'.mca', '.mmf', '.mm', '.mxp', '.mx2', '.mz2', '.txt', '.html', '.htm', '.pdf', '.jpg', '.png', '.sqlite', '.db', '.csv', '.ccf', '.md'}
+    extensions = {
+        ".mca",
+        ".mmf",
+        ".mm",
+        ".mxp",
+        ".mx2",
+        ".mz2",
+        ".txt",
+        ".html",
+        ".htm",
+        ".pdf",
+        ".jpg",
+        ".png",
+        ".sqlite",
+        ".db",
+        ".csv",
+        ".ccf",
+        ".md",
+    }
     extensions.update([e.upper() for e in extensions])
 
     recipe_files = []
     if recursive:
-        for ext in extensions: recipe_files.extend(input_dir.rglob(f'*{ext}'))
+        for ext in extensions:
+            recipe_files.extend(input_dir.rglob(f"*{ext}"))
     else:
-        for ext in extensions: recipe_files.extend(input_dir.glob(f'*{ext}'))
+        for ext in extensions:
+            recipe_files.extend(input_dir.glob(f"*{ext}"))
 
     if not recipe_files:
         print(f"{Colors.RED}No recipe files found in {input_dir}{Colors.ENDC}")
@@ -296,20 +414,48 @@ def process_directory(
     processed_bytes = 0
 
     print(f"\n{Colors.BOLD}{Colors.CYAN}🍳 Modular Recipe Converter{Colors.ENDC}")
-    print(f"{Colors.DIM}Found {len(recipe_files)} file(s) ({total_bytes:,} bytes){Colors.ENDC}\n")
+    print(
+        f"{Colors.DIM}Found {len(recipe_files)} file(s) ({total_bytes:,} bytes){Colors.ENDC}\n"
+    )
 
     for file_idx, recipe_file in enumerate(recipe_files, 1):
         if verbose:
-            rel_path = recipe_file.relative_to(input_dir) if input_dir in recipe_file.parents else recipe_file
-            print(f"\n{Colors.BOLD}[{file_idx}/{len(recipe_files)}]{Colors.ENDC} {Colors.CYAN}{rel_path}{Colors.ENDC}")
+            rel_path = (
+                recipe_file.relative_to(input_dir)
+                if input_dir in recipe_file.parents
+                else recipe_file
+            )
+            print(
+                f"\n{Colors.BOLD}[{file_idx}/{len(recipe_files)}]{Colors.ENDC} {Colors.CYAN}{rel_path}{Colors.ENDC}"
+            )
 
-        bytes_processed = convert_recipe_file(recipe_file, output_dir, one_file_per_recipe, verbose, parse_ingredients, ingredient_parser, format_name, stream_writer, debug_sql=debug_sql, llm_parser=llm_parser)
-        processed_bytes += recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
+        bytes_processed = convert_recipe_file(
+            recipe_file,
+            output_dir,
+            one_file_per_recipe,
+            verbose,
+            parse_ingredients,
+            ingredient_parser,
+            format_name,
+            stream_writer,
+            debug_sql=debug_sql,
+            llm_parser=llm_parser,
+        )
+        processed_bytes += (
+            recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
+        )
 
         if not verbose:
-            print_progress_bar(processed_bytes, total_bytes, prefix='Converting', suffix=recipe_file.name)
+            print_progress_bar(
+                processed_bytes,
+                total_bytes,
+                prefix="Converting",
+                suffix=recipe_file.name,
+            )
 
-    if not verbose: print()
+    if not verbose:
+        print()
+
 
 def main():
     args = parse_arguments()
@@ -325,20 +471,26 @@ def main():
         log_level = logging.INFO
 
     logging.basicConfig(
-        level=log_level,
-        format='%(name)s - %(levelname)s - %(message)s'
+        level=log_level, format="%(name)s - %(levelname)s - %(message)s"
     )
 
     print("")
-    print(f"{Colors.BOLD}{Colors.HEADER}╔══════════════════════════════════════╗{Colors.ENDC}")
-    print(f"{Colors.BOLD}{Colors.HEADER}║   🍳 Recipe Format Converter 🍳      ║{Colors.ENDC}")
-    print(f"{Colors.BOLD}{Colors.HEADER}╚══════════════════════════════════════╝{Colors.ENDC}\n")
+    print(
+        f"{Colors.BOLD}{Colors.HEADER}╔══════════════════════════════════════╗{Colors.ENDC}"
+    )
+    print(
+        f"{Colors.BOLD}{Colors.HEADER}║   🍳 Recipe Format Converter 🍳      ║{Colors.ENDC}"
+    )
+    print(
+        f"{Colors.BOLD}{Colors.HEADER}╚══════════════════════════════════════╝{Colors.ENDC}\n"
+    )
 
     parse_ingredients = not args.no_parse_ingredients
     use_nlp = not args.no_nlp
     ingredient_parser = get_ingredient_parser(use_nlp=use_nlp)
 
     from parsers.ingredients import HAS_NLP_PARSER
+
     if HAS_NLP_PARSER and use_nlp:
         print(f"{Colors.GREEN}✓ Using NLP Ingredient Parser{Colors.ENDC}")
     else:
@@ -348,12 +500,18 @@ def main():
     llm_parser = None
     if args.llm_config:
         if not args.llm_config.exists():
-            print(f"{Colors.RED}Error: LLM config not found: {args.llm_config}{Colors.ENDC}")
+            print(
+                f"{Colors.RED}Error: LLM config not found: {args.llm_config}{Colors.ENDC}"
+            )
             return 1
-        print(f"{Colors.CYAN}✓ LLM mode enabled — config: {args.llm_config}{Colors.ENDC}")
-        llm_parser = LLMRecipeParser(ingredient_parser, config_path=str(args.llm_config))
+        print(
+            f"{Colors.CYAN}✓ LLM mode enabled — config: {args.llm_config}{Colors.ENDC}"
+        )
+        llm_parser = LLMRecipeParser(
+            ingredient_parser, config_path=str(args.llm_config)
+        )
 
-    output_is_file = args.output.suffix != ''
+    output_is_file = args.output.suffix != ""
     stream_writer = None
     if output_is_file:
         stream_writer = JSONStreamWriter(args.output, chunk=args.chunk)
@@ -362,21 +520,48 @@ def main():
         if args.input.is_file():
             if not args.verbose:
                 print(f"{Colors.CYAN}Converting:{Colors.ENDC} {args.input.name}")
-                print_progress_bar(0, args.input.stat().st_size, prefix='Processing', suffix=args.input.name)
+                print_progress_bar(
+                    0,
+                    args.input.stat().st_size,
+                    prefix="Processing",
+                    suffix=args.input.name,
+                )
 
-            convert_recipe_file(args.input, args.output.parent if output_is_file else args.output,
-                               not args.multiple_per_file, args.verbose, parse_ingredients,
-                               ingredient_parser, args.format, stream_writer, debug_sql=args.debug_sql,
-                               llm_parser=llm_parser)
+            convert_recipe_file(
+                args.input,
+                args.output.parent if output_is_file else args.output,
+                not args.multiple_per_file,
+                args.verbose,
+                parse_ingredients,
+                ingredient_parser,
+                args.format,
+                stream_writer,
+                debug_sql=args.debug_sql,
+                llm_parser=llm_parser,
+            )
 
             if not args.verbose:
-                print_progress_bar(args.input.stat().st_size, args.input.stat().st_size, prefix='Processing', suffix='Complete!')
+                print_progress_bar(
+                    args.input.stat().st_size,
+                    args.input.stat().st_size,
+                    prefix="Processing",
+                    suffix="Complete!",
+                )
 
         elif args.input.is_dir():
-            process_directory(args.input, args.output.parent if output_is_file else args.output,
-                             not args.multiple_per_file, args.verbose, args.recursive,
-                             parse_ingredients, ingredient_parser, args.format, stream_writer,
-                             debug_sql=args.debug_sql, llm_parser=llm_parser)
+            process_directory(
+                args.input,
+                args.output.parent if output_is_file else args.output,
+                not args.multiple_per_file,
+                args.verbose,
+                args.recursive,
+                parse_ingredients,
+                ingredient_parser,
+                args.format,
+                stream_writer,
+                debug_sql=args.debug_sql,
+                llm_parser=llm_parser,
+            )
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
             return 1
@@ -391,5 +576,6 @@ def main():
         print(f"\n\n{Colors.RED}Forced exit - data may be incomplete{Colors.ENDC}\n")
         return 1
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     exit(main())
