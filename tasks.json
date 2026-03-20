@@ -171,13 +171,13 @@
       "title": "Remove unnecessary re-imports inside detect() methods",
       "priority": "P2",
       "category": "Code Quality",
-      "status": "not done",
+      "status": "done",
       "description": "Seven parsers re-import re/csv/io inside detect() even though they're already imported at module level.",
       "files": ["parsers/compuchef.py", "parsers/nyc.py", "parsers/recipeml.py", "parsers/ricette_md.py", "parsers/ricette_json.py", "parsers/vitt.py", "parsers/twentykrecipes.py"],
       "subtasks": [
-        { "id": "QUAL-003a", "title": "Remove redundant 'import re' from detect() in compuchef.py, nyc.py, recipeml.py, ricette_md.py, ricette_json.py", "status": "not done" },
-        { "id": "QUAL-003b", "title": "Remove redundant 'import csv' and 'import io' from detect() in vitt.py and twentykrecipes.py", "status": "not done" },
-        { "id": "QUAL-003c", "title": "Verify module-level imports cover all usages; run tests", "status": "not done" }
+        { "id": "QUAL-003a", "title": "Remove redundant 'import re' from detect() in compuchef.py, nyc.py, recipeml.py, ricette_md.py, ricette_json.py", "status": "done" },
+        { "id": "QUAL-003b", "title": "Remove redundant 'import csv' and 'import io' from detect() in vitt.py and twentykrecipes.py", "status": "done" },
+        { "id": "QUAL-003c", "title": "Verify module-level imports cover all usages; run tests", "status": "done" }
       ]
     },
     {
@@ -213,12 +213,12 @@
       "title": "Remove unused variable in twentykrecipes.py",
       "priority": "P2",
       "category": "Code Quality",
-      "status": "not done",
+      "status": "done",
       "description": "Line 149: 'lines' variable is computed but never used -- csv_reader reads from io.StringIO(content) directly.",
       "files": ["parsers/twentykrecipes.py"],
       "subtasks": [
-        { "id": "QUAL-006a", "title": "Remove the unused 'lines' variable", "status": "not done" },
-        { "id": "QUAL-006b", "title": "Run tests", "status": "not done" }
+        { "id": "QUAL-006a", "title": "Remove the unused 'lines' variable", "status": "done" },
+        { "id": "QUAL-006b", "title": "Run tests", "status": "done" }
       ]
     },
     {

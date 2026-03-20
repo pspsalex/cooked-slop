@@ -19,6 +19,7 @@ Expected JSON structure:
 
 import json
 import logging
+import re
 from typing import List, Iterator
 
 from .base import BaseRecipeParser, BaseIngredientParser
@@ -102,7 +103,6 @@ class RicetteJsonParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        import re
         if not content_sample:
             return 0.0
         if re.match(r'^\s*[\{\[]', content_sample):

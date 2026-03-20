@@ -137,8 +137,6 @@ class TwentyKRecipesParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        import csv
-        import io
         if not content_sample:
             return 0.0
         try:
@@ -153,8 +151,7 @@ class TwentyKRecipesParser(BaseRecipeParser):
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         """Parse CSV content and yield Recipe objects."""
-        lines = content.strip().split('\n')
-        if not lines:
+        if not content.strip():
             return
 
         # Parse as CSV

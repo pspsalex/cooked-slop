@@ -26,7 +26,6 @@ class RicetteMdParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        import re
         if not content_sample:
             return 0.0
         if re.search(r'^#\s+', content_sample, re.MULTILINE):

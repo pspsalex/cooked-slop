@@ -68,8 +68,6 @@ class VittRecipesParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        import csv
-        import io
         if not content_sample:
             return 0.0
         try:

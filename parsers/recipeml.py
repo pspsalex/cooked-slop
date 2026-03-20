@@ -4,6 +4,7 @@ RecipeML (XML) parser - converts RecipeML format to internal Recipe model
 """
 
 import logging
+import re
 from pathlib import Path
 from typing import Iterator, Optional
 from xml.etree import ElementTree as ET
@@ -205,7 +206,6 @@ class RecipeMLParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        import re
         if not content_sample:
             return 0.0
         if re.search(r'<recipeml|<recipe[^a-zA-Z]', content_sample, re.IGNORECASE):

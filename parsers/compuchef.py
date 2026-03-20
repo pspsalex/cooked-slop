@@ -52,7 +52,6 @@ class CompuChefParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        import re
         if not content_sample:
             return 0.0
         if re.search(r'Recipe Via Compu-Chef', content_sample, re.IGNORECASE):
