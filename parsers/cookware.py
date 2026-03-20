@@ -25,6 +25,10 @@ class CookwareCSVParser(BaseRecipeParser):
         return "csv_cookware"
 
     @classmethod
+    def aliases(cls) -> list[str]:
+        return ["cookware"]
+
+    @classmethod
     def priority(cls) -> int:
         return 20
 

@@ -17,6 +17,15 @@ class ParserRegistry:
         return parser_cls
 
     @classmethod
+    def all_format_names(cls) -> list[str]:
+        """Return sorted list of all format_ids and aliases across registered parsers."""
+        names: set[str] = set()
+        for p in cls._parsers:
+            names.add(p.format_id())
+            names.update(p.aliases())
+        return sorted(names)
+
+    @classmethod
     def get_parser(
         cls,
         filepath: Path,

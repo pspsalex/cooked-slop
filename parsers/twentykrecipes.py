@@ -125,6 +125,10 @@ class TwentyKRecipesParser(BaseRecipeParser):
         return "csv_20krecipes"
 
     @classmethod
+    def aliases(cls) -> list[str]:
+        return ["20krecipes"]
+
+    @classmethod
     def priority(cls) -> int:
         return 20
 

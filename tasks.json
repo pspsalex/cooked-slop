@@ -86,14 +86,14 @@
       "title": "Fix -f flag: dynamically populate choices from ParserRegistry",
       "priority": "P1",
       "category": "Critical Bugs",
-      "status": "not done",
+      "status": "done",
       "description": "convert.py line 197 hardcodes only 11 of 20+ format_ids. '20krecipes' doesn't match actual format_id 'csv_20krecipes'. Users cannot force-select most parsers.",
       "files": ["convert.py", "parsers/registry.py"],
       "subtasks": [
-        { "id": "BUG-005a", "title": "Add a method to ParserRegistry that returns all format_ids + aliases", "status": "not done" },
-        { "id": "BUG-005b", "title": "Replace hardcoded choices list in convert.py argparse with dynamic call to registry", "status": "not done" },
-        { "id": "BUG-005c", "title": "Add aliases to parsers that are missing them (e.g., TwentyKRecipesParser should alias '20krecipes')", "status": "not done" },
-        { "id": "BUG-005d", "title": "Test: ./venv/bin/python3 convert.py -f csv_20krecipes tests/samples/sample_20krecipes.csv -o /tmp/test.json", "status": "not done" }
+        { "id": "BUG-005a", "title": "Add a method to ParserRegistry that returns all format_ids + aliases", "status": "done" },
+        { "id": "BUG-005b", "title": "Replace hardcoded choices list in convert.py argparse with dynamic call to registry", "status": "done" },
+        { "id": "BUG-005c", "title": "Add aliases to parsers that are missing them (e.g., TwentyKRecipesParser should alias '20krecipes')", "status": "done" },
+        { "id": "BUG-005d", "title": "Test: ./venv/bin/python3 convert.py -f csv_20krecipes tests/samples/sample_20krecipes.csv -o /tmp/test.json", "status": "done" }
       ]
     },
     {

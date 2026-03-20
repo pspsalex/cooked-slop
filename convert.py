@@ -247,19 +247,7 @@ def parse_arguments() -> argparse.Namespace:
         "-f",
         "--format",
         type=str,
-        choices=[
-            "mealmaster",
-            "mastercook",
-            "compuchef",
-            "edna",
-            "ricette",
-            "ricette_md",
-            "nyc",
-            "recipeml",
-            "20krecipes",
-            "ricette_json",
-            "cookware",
-        ],
+        choices=ParserRegistry.all_format_names(),
         help="Override auto-detection and specify input format",
     )
     parser.add_argument(

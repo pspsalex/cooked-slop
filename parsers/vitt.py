@@ -56,6 +56,10 @@ class VittRecipesParser(BaseRecipeParser):
         return "csv_vitt"
 
     @classmethod
+    def aliases(cls) -> list[str]:
+        return ["vitt"]
+
+    @classmethod
     def priority(cls) -> int:
         return 19
 
