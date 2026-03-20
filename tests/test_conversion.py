@@ -1,5 +1,6 @@
 import json
 import subprocess
+import sys
 import pytest
 from pathlib import Path
 
@@ -11,7 +12,7 @@ EXPECTED_DIR = Path(__file__).parent / "expected"
 def run_conversion(input_path: Path, output_path: Path):
     """Runs the convert.py script on a single file."""
     cmd = [
-        "python3",
+        sys.executable,
         str(CONVERT_SCRIPT),
         str(input_path),
         "--output", str(output_path),

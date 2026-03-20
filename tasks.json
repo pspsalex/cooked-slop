@@ -239,12 +239,12 @@
       "title": "Fix test_conversion.py to use venv Python",
       "priority": "P1",
       "category": "Test Coverage",
-      "status": "not done",
+      "status": "done",
       "description": "Known Issue #3: test_conversion.py line 14 uses bare 'python3' instead of './venv/bin/python3'. Tests may use wrong Python / miss dependencies.",
       "files": ["tests/test_conversion.py"],
       "subtasks": [
-        { "id": "TEST-001a", "title": "Change subprocess call to use sys.executable (the Python running pytest) instead of bare 'python3'", "status": "not done" },
-        { "id": "TEST-001b", "title": "Run tests via ./venv/bin/python3 -m pytest tests/test_conversion.py -v", "status": "not done" }
+        { "id": "TEST-001a", "title": "Change subprocess call to use sys.executable (the Python running pytest) instead of bare 'python3'", "status": "done" },
+        { "id": "TEST-001b", "title": "Run tests via ./venv/bin/python3 -m pytest tests/test_conversion.py -v", "status": "done" }
       ]
     },
     {
