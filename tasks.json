@@ -379,14 +379,14 @@
       "title": "Improve CSV/JSON format detection heuristics",
       "priority": "P2",
       "category": "New Features",
-      "status": "not done",
+      "status": "done",
       "description": "From parsers/todo/README.md: improve auto-detection for CSV and JSON files to better distinguish between cookware, vitt, 20krecipes, ricette_json, and generic formats.",
       "files": ["parsers/stubs.py", "parsers/cookware.py", "parsers/vitt.py", "parsers/twentykrecipes.py", "parsers/ricette_json.py"],
       "subtasks": [
-        { "id": "FEAT-002a", "title": "Audit detect() confidence scores across all CSV parsers for consistency", "status": "not done" },
-        { "id": "FEAT-002b", "title": "Ensure specific CSV parsers always outscore generic CsvParser", "status": "not done" },
-        { "id": "FEAT-002c", "title": "Add column-header detection to CsvParser.detect() for better fallback scoring", "status": "not done" },
-        { "id": "FEAT-002d", "title": "Test with ambiguous CSV inputs", "status": "not done" }
+        { "id": "FEAT-002a", "title": "Audit detect() confidence scores across all CSV parsers for consistency", "status": "done" },
+        { "id": "FEAT-002b", "title": "Ensure specific CSV parsers always outscore generic CsvParser", "status": "done" },
+        { "id": "FEAT-002c", "title": "Add column-header detection to CsvParser.detect() for better fallback scoring", "status": "done" },
+        { "id": "FEAT-002d", "title": "Test with ambiguous CSV inputs", "status": "done" }
       ]
     },
     {
