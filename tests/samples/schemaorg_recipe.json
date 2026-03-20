@@ -1,0 +1,34 @@
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    "name": "Greek Salad",
+    "recipeCategory": "Salad",
+    "recipeYield": "4 servings",
+    "description": "A fresh and simple Greek salad.",
+    "recipeIngredient": [
+      "2 large tomatoes, diced",
+      "1 cucumber, sliced",
+      "1/2 red onion, thinly sliced",
+      "200g feta cheese, crumbled",
+      "1/4 cup kalamata olives",
+      "3 tablespoons olive oil",
+      "1 tablespoon red wine vinegar",
+      "Salt and pepper to taste"
+    ],
+    "recipeInstructions": [
+      {
+        "@type": "HowToStep",
+        "text": "Combine tomatoes, cucumber, onion, feta, and olives in a large bowl."
+      },
+      {
+        "@type": "HowToStep",
+        "text": "Drizzle with olive oil and red wine vinegar."
+      },
+      {
+        "@type": "HowToStep",
+        "text": "Season with salt and pepper. Toss gently and serve."
+      }
+    ]
+  }
+]

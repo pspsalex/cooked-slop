@@ -17,6 +17,7 @@ from .vitt import VittRecipesParser
 from .nyc import NYCParser
 from .sqlite import SqliteRecipeParser
 from .html_parser import HtmlParser
+from .schemaorg import SchemaOrgParser
 from .llm_parser import LLMRecipeParser
 from .microcook import MicroCookParser
 from .cookware import CookwareCSVParser
@@ -49,6 +50,7 @@ __all__ = [
     'NYCParser',
     'SqliteRecipeParser',
     'HtmlParser',
+    'SchemaOrgParser',
     'LLMRecipeParser',
     'MicroCookParser',
     'CookwareCSVParser',

@@ -363,15 +363,15 @@
       "title": "Implement schema.org pass-through parser",
       "priority": "P2",
       "category": "New Features",
-      "status": "not done",
+      "status": "done",
       "description": "From parsers/todo/README.md: detect JSON-LD files that already contain Schema.org Recipe objects and pass them through with minimal transformation.",
       "files": ["parsers/schemaorg.py", "parsers/__init__.py"],
       "subtasks": [
-        { "id": "FEAT-001a", "title": "Create parsers/schemaorg.py with detect() checking for '@type: Recipe' in JSON-LD", "status": "not done" },
-        { "id": "FEAT-001b", "title": "Implement parse_content() to extract and yield Recipe objects from existing schema.org JSON", "status": "not done" },
-        { "id": "FEAT-001c", "title": "Register in parsers/__init__.py", "status": "not done" },
-        { "id": "FEAT-001d", "title": "Add test sample and expected output", "status": "not done" },
-        { "id": "FEAT-001e", "title": "Run tests", "status": "not done" }
+        { "id": "FEAT-001a", "title": "Create parsers/schemaorg.py with detect() checking for '@type: Recipe' in JSON-LD", "status": "done" },
+        { "id": "FEAT-001b", "title": "Implement parse_content() to extract and yield Recipe objects from existing schema.org JSON", "status": "done" },
+        { "id": "FEAT-001c", "title": "Register in parsers/__init__.py", "status": "done" },
+        { "id": "FEAT-001d", "title": "Add test sample and expected output", "status": "done" },
+        { "id": "FEAT-001e", "title": "Run tests", "status": "done" }
       ]
     },
     {

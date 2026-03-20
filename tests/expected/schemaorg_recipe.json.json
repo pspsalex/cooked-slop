@@ -1,0 +1,70 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Greek Salad",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "tomatoes, diced",
+      "value": 2,
+      "unitText": "large"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cucumber, sliced",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "onion, thinly sliced",
+      "value": "1/2",
+      "unitText": "red"
+    },
+    "200g feta cheese, crumbled",
+    {
+      "@type": "PropertyValue",
+      "name": "kalamata olives",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "olive oil",
+      "value": 3,
+      "unitText": "tablespoons"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "red wine vinegar",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    "Salt and pepper to taste"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Combine tomatoes, cucumber, onion, feta, and olives in a large bowl."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Drizzle with olive oil and red wine vinegar."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Season with salt and pepper. Toss gently and serve."
+    }
+  ],
+  "recipeYield": "4 servings",
+  "recipeCategory": "Salad",
+  "keywords": "Salad",
+  "comment": "Imported from tests/samples/schemaorg_recipe.json",
+  "url": "file://tests/samples/schemaorg_recipe.json",
+  "datePublished": "2026-03-20T23:40:58.467246",
+  "description": "Recipe converted from Schema.org JSON-LD format"
+}
+]
