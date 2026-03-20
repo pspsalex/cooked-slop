@@ -322,14 +322,14 @@
       "title": "Add CI/CD workflow for automated testing",
       "priority": "P1",
       "category": "Architecture",
-      "status": "not done",
+      "status": "done",
       "description": "No CI/CD exists. Add a GitHub Actions workflow that runs pytest on push/PR.",
       "files": [".github/workflows/"],
       "subtasks": [
-        { "id": "ARCH-001a", "title": "Create .github/workflows/test.yml with Python 3.10+ matrix", "status": "not done" },
-        { "id": "ARCH-001b", "title": "Install dependencies from requirements.txt in workflow", "status": "not done" },
-        { "id": "ARCH-001c", "title": "Run pytest with --no-nlp to match expected outputs", "status": "not done" },
-        { "id": "ARCH-001d", "title": "Test workflow locally or on push", "status": "not done" }
+        { "id": "ARCH-001a", "title": "Create .github/workflows/test.yml with Python 3.10+ matrix", "status": "done" },
+        { "id": "ARCH-001b", "title": "Install dependencies from requirements.txt in workflow", "status": "done" },
+        { "id": "ARCH-001c", "title": "Run pytest with --no-nlp to match expected outputs", "status": "done" },
+        { "id": "ARCH-001d", "title": "Test workflow locally or on push", "status": "done" }
       ]
     },
     {
