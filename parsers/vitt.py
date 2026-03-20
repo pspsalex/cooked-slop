@@ -21,6 +21,7 @@ Strategy:
 """
 
 import csv
+import logging
 import re
 import io
 import textwrap
@@ -30,6 +31,8 @@ from enum import Enum
 
 from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
+
+logger = logging.getLogger(__name__)
 
 
 class BlockType(Enum):
@@ -94,8 +97,7 @@ class VittRecipesParser(BaseRecipeParser):
                     yield recipe
                 row_number += 1
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).warning(f"Error parsing CSV: {e}")
+            logger.warning("Error parsing CSV: %s", e)
             return
 
     def _parse_csv_row(self, row: dict, filepath: str, row_number: int) -> Recipe:

@@ -10,6 +10,7 @@ Ingredient format per line:
 """
 
 import csv
+import logging
 import re
 import io
 from typing import Iterator, List
@@ -17,6 +18,8 @@ from pathlib import Path
 
 from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
+
+logger = logging.getLogger(__name__)
 
 
 # Category mapping
@@ -164,8 +167,7 @@ class TwentyKRecipesParser(BaseRecipeParser):
                     yield recipe
                 row_number += 1
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).warning(f"Error parsing CSV: {e}")
+            logger.warning("Error parsing CSV: %s", e)
             return
 
     def _parse_csv_row(self, row: dict, filepath: str, row_number: int) -> Recipe:

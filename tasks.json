@@ -185,14 +185,14 @@
       "title": "Add module-level loggers to parsers missing them",
       "priority": "P1",
       "category": "Code Quality",
-      "status": "not done",
+      "status": "done",
       "description": "Several parsers lack 'logger = logging.getLogger(__name__)' at module level, which is required by project standards.",
       "files": ["parsers/compuchef.py", "parsers/nyc.py", "parsers/vitt.py", "parsers/twentykrecipes.py"],
       "subtasks": [
-        { "id": "QUAL-004a", "title": "Add 'import logging' and 'logger = logging.getLogger(__name__)' to compuchef.py", "status": "not done" },
+        { "id": "QUAL-004a", "title": "Add 'import logging' and 'logger = logging.getLogger(__name__)' to compuchef.py", "status": "done" },
         { "id": "QUAL-004b", "title": "Add logger to nyc.py", "status": "done" },
-        { "id": "QUAL-004c", "title": "Add logger to vitt.py (replace lazy import logging inside parse_content)", "status": "not done" },
-        { "id": "QUAL-004d", "title": "Add logger to twentykrecipes.py (replace lazy import logging inside except block)", "status": "not done" }
+        { "id": "QUAL-004c", "title": "Add logger to vitt.py (replace lazy import logging inside parse_content)", "status": "done" },
+        { "id": "QUAL-004d", "title": "Add logger to twentykrecipes.py (replace lazy import logging inside except block)", "status": "done" }
       ]
     },
     {
