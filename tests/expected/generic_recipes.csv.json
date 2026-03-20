@@ -1,0 +1,55 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Scrambled Eggs",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 3
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    "salt",
+    "pepper"
+  ],
+  "recipeInstructions": [
+    "Beat eggs in a bowl. Melt butter in a pan over medium heat. Pour in eggs and stir gently until set."
+  ],
+  "comment": "Imported from tests/samples/generic_recipes.csv",
+  "url": "file:///home/alex/junk/Recipes/scripts/tests/samples/generic_recipes.csv",
+  "datePublished": "2026-03-20T23:30:24.080608",
+  "description": "Recipe converted from CSV format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Toast with Jam",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "bread",
+      "value": 2,
+      "unitText": "slices"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "strawberry jam",
+      "value": 2,
+      "unitText": "tablespoons"
+    }
+  ],
+  "recipeInstructions": [
+    "Toast bread until golden brown. Spread jam evenly on each slice."
+  ],
+  "comment": "Imported from tests/samples/generic_recipes.csv",
+  "url": "file:///home/alex/junk/Recipes/scripts/tests/samples/generic_recipes.csv",
+  "datePublished": "2026-03-20T23:30:24.080995",
+  "description": "Recipe converted from CSV format"
+}
+]

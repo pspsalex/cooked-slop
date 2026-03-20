@@ -280,13 +280,13 @@
       "title": "Add generic CSV parser test sample",
       "priority": "P2",
       "category": "Test Coverage",
-      "status": "not done",
+      "status": "done",
       "description": "CsvParser (generic fallback for CSVs not claimed by cookware/vitt/20k) has no test sample.",
       "files": ["tests/samples/", "tests/expected/"],
       "subtasks": [
-        { "id": "TEST-004a", "title": "Create a generic CSV recipe file not matching any specific CSV parser (tests/samples/generic_recipes.csv)", "status": "not done" },
-        { "id": "TEST-004b", "title": "Generate expected output with --no-nlp", "status": "not done" },
-        { "id": "TEST-004c", "title": "Run tests", "status": "not done" }
+        { "id": "TEST-004a", "title": "Create a generic CSV recipe file not matching any specific CSV parser (tests/samples/generic_recipes.csv)", "status": "done" },
+        { "id": "TEST-004b", "title": "Generate expected output with --no-nlp", "status": "done" },
+        { "id": "TEST-004c", "title": "Run tests", "status": "done" }
       ]
     },
     {
