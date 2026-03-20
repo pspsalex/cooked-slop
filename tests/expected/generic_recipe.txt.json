@@ -1,0 +1,92 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Classic Banana Bread",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "bananas, mashed",
+      "value": 3,
+      "unitText": "ripe"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "melted butter",
+      "value": "1/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": "3/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "egg, beaten",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "vanilla extract",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "baking soda",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "all-purpose flour",
+      "value": "1 1/2",
+      "unitText": "cups"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "A simple and delicious banana bread recipe that uses ripe bananas for natural sweetness."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Preheat oven to 350 degrees F. Mix the mashed bananas and melted butter in a large bowl."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Mix in the sugar, beaten egg, and vanilla extract. Sprinkle the baking soda and salt over the mixture and stir to combine."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Add the flour and mix until just combined. Do not overmix."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Pour the batter into a greased 4x8 inch loaf pan. Bake for 60 to 65 minutes, until a toothpick inserted in the center comes out clean."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "text": "Let cool in the pan for 10 minutes before removing to a wire rack."
+    }
+  ],
+  "comment": "Imported from tests/samples/generic_recipe.txt",
+  "url": "file://tests/samples/generic_recipe.txt",
+  "datePublished": "2026-03-20T23:29:04.056004",
+  "description": "Recipe converted from Raw Text format"
+}
+]

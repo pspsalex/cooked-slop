@@ -266,13 +266,13 @@
       "title": "Add generic text parser test sample",
       "priority": "P2",
       "category": "Test Coverage",
-      "status": "not done",
+      "status": "done",
       "description": "GenericTextParser (fallback, priority 100) has no dedicated test sample.",
       "files": ["tests/samples/", "tests/expected/"],
       "subtasks": [
-        { "id": "TEST-003a", "title": "Create a plain-text recipe file that no specific parser claims (tests/samples/generic_recipe.txt)", "status": "not done" },
-        { "id": "TEST-003b", "title": "Generate expected output with --no-nlp", "status": "not done" },
-        { "id": "TEST-003c", "title": "Run tests", "status": "not done" }
+        { "id": "TEST-003a", "title": "Create a plain-text recipe file that no specific parser claims (tests/samples/generic_recipe.txt)", "status": "done" },
+        { "id": "TEST-003b", "title": "Generate expected output with --no-nlp", "status": "done" },
+        { "id": "TEST-003c", "title": "Run tests", "status": "done" }
       ]
     },
     {
