@@ -309,12 +309,12 @@
       "title": "Verify update_expected.py --no-nlp consistency",
       "priority": "P1",
       "category": "CLI / UX",
-      "status": "not done",
+      "status": "done",
       "description": "Ensure all expected test outputs are consistently generated with --no-nlp for deterministic results. Review update_expected.py to confirm it passes --no-nlp.",
       "files": ["update_expected.py", "tests/test_conversion.py"],
       "subtasks": [
-        { "id": "CLI-001a", "title": "Read update_expected.py and verify it passes --no-nlp when regenerating", "status": "not done" },
-        { "id": "CLI-001b", "title": "Run ./venv/bin/python3 update_expected.py and verify all 18 expected files are unchanged (git diff)", "status": "not done" }
+        { "id": "CLI-001a", "title": "Read update_expected.py and verify it passes --no-nlp when regenerating", "status": "done" },
+        { "id": "CLI-001b", "title": "Run ./venv/bin/python3 update_expected.py and verify all 18 expected files are unchanged (git diff)", "status": "done" }
       ]
     },
     {
