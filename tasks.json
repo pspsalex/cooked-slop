@@ -350,12 +350,12 @@
       "title": "Add nux/ to .gitignore or integrate properly",
       "priority": "P2",
       "category": "Architecture",
-      "status": "not done",
+      "status": "done",
       "description": "nux/ is an experimental directory with its own venv, test scripts, and extracted data. Not integrated with main project. Should be gitignored or formally integrated.",
       "files": [".gitignore"],
       "subtasks": [
-        { "id": "ARCH-003a", "title": "Add 'nux/' to .gitignore if it should remain experimental", "status": "not done" },
-        { "id": "ARCH-003b", "title": "Or: plan integration of PDF extraction pipeline into main parsers/ (separate HLD needed)", "status": "not done" }
+        { "id": "ARCH-003a", "title": "Add 'nux/' to .gitignore if it should remain experimental", "status": "done" },
+        { "id": "ARCH-003b", "title": "Or: plan integration of PDF extraction pipeline into main parsers/ (separate HLD needed)", "status": "done" }
       ]
     },
     {
