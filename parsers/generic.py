@@ -12,6 +12,14 @@ logger = logging.getLogger(__name__)
 
 @ParserRegistry.register
 class GenericTextParser(BaseRecipeParser):
+    """Fallback plain-text recipe parser (priority 100).
+
+    Attempts to extract a single recipe from unstructured text by splitting
+    on blank lines and using heuristics to classify each block as title,
+    description, ingredients, or instructions. Only used when no
+    format-specific parser claims the file with higher confidence.
+    """
+
     def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "Raw Text"
@@ -27,13 +35,21 @@ class GenericTextParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content: str) -> float:
-        # This parser is a generic fallback and should always be able to
-        # attempt parsing, as long as the file is not empty.
-        # More specific parsers should have higher priority and detect
-        # their formats first.
+        """Return a minimal confidence score for any non-empty file.
+
+        Always returns 0.01 so that format-specific parsers with higher
+        scores take precedence.
+        """
         return 0.01 if content.strip() else 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
+        """Parse plain text into a single Recipe using block heuristics.
+
+        Splits the text on blank lines and classifies blocks as:
+        - First block: title and description
+        - Blocks where most lines start with a quantity: ingredients
+        - Remaining blocks: instruction steps
+        """
         recipe = Recipe(source_file=filepath, source_format=self.source_format)
         recipe.title = Path(filepath).stem
 

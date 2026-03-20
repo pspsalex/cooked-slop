@@ -226,12 +226,12 @@
       "title": "Add docstrings to generic.py class and methods",
       "priority": "P2",
       "category": "Code Quality",
-      "status": "not done",
+      "status": "done",
       "description": "GenericTextParser has no docstrings on the class or its methods. Project standard requires Google-style docstrings on classes and non-trivial methods.",
       "files": ["parsers/generic.py"],
       "subtasks": [
-        { "id": "QUAL-007a", "title": "Add class-level docstring explaining fallback parser purpose and priority 100 behavior", "status": "not done" },
-        { "id": "QUAL-007b", "title": "Add docstrings to detect(), parse_content(), and helper methods", "status": "not done" }
+        { "id": "QUAL-007a", "title": "Add class-level docstring explaining fallback parser purpose and priority 100 behavior", "status": "done" },
+        { "id": "QUAL-007b", "title": "Add docstrings to detect(), parse_content(), and helper methods", "status": "done" }
       ]
     },
     {
