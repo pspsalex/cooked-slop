@@ -394,13 +394,13 @@
       "title": "Add ricette_md.py detection guard -- reduce false positives",
       "priority": "P2",
       "category": "New Features",
-      "status": "not done",
+      "status": "done",
       "description": "ricette_md.py detect() returns 0.60 for any file with a '# ' heading. This is too aggressive and will false-positive on non-recipe Markdown files.",
       "files": ["parsers/ricette_md.py"],
       "subtasks": [
-        { "id": "FEAT-003a", "title": "Add additional heuristic checks (look for '## Ingredienti' or Italian keywords) before returning high confidence", "status": "not done" },
-        { "id": "FEAT-003b", "title": "Lower base confidence for bare '# ' heading to ~0.15", "status": "not done" },
-        { "id": "FEAT-003c", "title": "Test with non-recipe Markdown files to verify reduced false positives", "status": "not done" }
+        { "id": "FEAT-003a", "title": "Add additional heuristic checks (look for '## Ingredienti' or Italian keywords) before returning high confidence", "status": "done" },
+        { "id": "FEAT-003b", "title": "Lower base confidence for bare '# ' heading to ~0.15", "status": "done" },
+        { "id": "FEAT-003c", "title": "Test with non-recipe Markdown files to verify reduced false positives", "status": "done" }
       ]
     }
   ]

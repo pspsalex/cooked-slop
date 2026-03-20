@@ -28,9 +28,17 @@ class RicetteMdParser(BaseRecipeParser):
     def detect(cls, filepath: str, content_sample: str) -> float:
         if not content_sample:
             return 0.0
-        if re.search(r'^#\s+', content_sample, re.MULTILINE):
+        if not re.search(r'^#\s+', content_sample, re.MULTILINE):
+            return 0.0
+        # Look for Italian recipe keywords to distinguish from generic Markdown
+        if re.search(r'##\s+Ingredienti', content_sample):
+            return 0.90
+        if re.search(r'##\s+Ricetta\b', content_sample):
+            return 0.85
+        if re.search(r'\bpersone\b|\bricett[ae]\b', content_sample, re.IGNORECASE):
             return 0.60
-        return 0.0
+        # Bare Markdown heading with no Italian keywords — low confidence
+        return 0.15
 
     def _unescape(self, text: str) -> str:
         r"""Unescape common Markdown escapes like \( or \)."""
