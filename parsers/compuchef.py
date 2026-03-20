@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: MIT
+import logging
 import re
 from typing import Iterator, Optional
 from .models import Recipe, Ingredient
 from .base import BaseRecipeParser, BaseIngredientParser
 from .units import normalize_unit
+
+logger = logging.getLogger(__name__)
 
 
 from .registry import ParserRegistry
@@ -85,7 +88,7 @@ class CompuChefParser(BaseRecipeParser):
         if not recipe_text.strip():
             return (None, read_lines)
         
-        print(f"Parsing recipe from {f.name} {recipe_text}")
+        logger.debug("Parsing recipe from %s %s", f.name, recipe_text)
 
         recipe = self._parse_section(recipe_text, f.name)
         return (recipe, read_lines)

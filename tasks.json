@@ -71,14 +71,14 @@
       "title": "Replace print() statements with logger calls in parsers",
       "priority": "P0",
       "category": "Critical Bugs",
-      "status": "not done",
+      "status": "done",
       "description": "Production print() in compuchef.py:88 dumps full recipe text to stdout. ricette_json.py:66 prints to stderr instead of using logger.",
       "files": ["parsers/compuchef.py", "parsers/ricette_json.py"],
       "subtasks": [
-        { "id": "BUG-004a", "title": "Add 'logger = logging.getLogger(__name__)' to compuchef.py module level", "status": "not done" },
-        { "id": "BUG-004b", "title": "Replace compuchef.py:88 print() with logger.debug()", "status": "not done" },
-        { "id": "BUG-004c", "title": "Replace ricette_json.py:66 print(..., file=sys.stderr) with logger.warning(); remove unused 'import sys'", "status": "not done" },
-        { "id": "BUG-004d", "title": "Run tests to confirm no regressions", "status": "not done" }
+        { "id": "BUG-004a", "title": "Add 'logger = logging.getLogger(__name__)' to compuchef.py module level", "status": "done" },
+        { "id": "BUG-004b", "title": "Replace compuchef.py:88 print() with logger.debug()", "status": "done" },
+        { "id": "BUG-004c", "title": "Replace ricette_json.py:66 print(..., file=sys.stderr) with logger.warning(); remove unused 'import sys'", "status": "done" },
+        { "id": "BUG-004d", "title": "Run tests to confirm no regressions", "status": "done" }
       ]
     },
     {

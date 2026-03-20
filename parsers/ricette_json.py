@@ -18,11 +18,13 @@ Expected JSON structure:
 """
 
 import json
-import sys
+import logging
 from typing import List, Iterator
 
 from .base import BaseRecipeParser
 from .models import Recipe, Ingredient
+
+logger = logging.getLogger(__name__)
 
 
 def load_recipes_from_content(content: str) -> List[dict]:
@@ -63,7 +65,7 @@ def load_recipes_from_content(content: str) -> List[dict]:
             recipes.append(obj)
             pos = end_pos
         except json.JSONDecodeError as e:
-            print(f"Warning: Failed to parse JSON at position {pos}: {e}", file=sys.stderr)
+            logger.warning("Failed to parse JSON at position %d: %s", pos, e)
             break
 
     return recipes
