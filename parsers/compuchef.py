@@ -71,7 +71,7 @@ class CompuChefParser(BaseRecipeParser):
                 if recipe and recipe.title:
                     yield recipe
 
-    def parse_buffer(self, f, first_line: str) -> (Optional[Recipe], int):
+    def parse_buffer(self, f, first_line: str) -> tuple[Optional[Recipe], int]:
         """
         Parse a buffer (file stream) containing CompuChef recipes.
         Reads until the next recipe header or EOF.

@@ -101,12 +101,12 @@
       "title": "Fix compuchef.py parse_buffer() return type annotation",
       "priority": "P1",
       "category": "Critical Bugs",
-      "status": "not done",
+      "status": "done",
       "description": "Line 71: return type '(Optional[Recipe], int)' is invalid Python syntax -- evaluates to just 'int'. Should be 'tuple[Optional[Recipe], int]'.",
       "files": ["parsers/compuchef.py"],
       "subtasks": [
-        { "id": "BUG-006a", "title": "Change return annotation to 'tuple[Optional[Recipe], int]'", "status": "not done" },
-        { "id": "BUG-006b", "title": "Run tests", "status": "not done" }
+        { "id": "BUG-006a", "title": "Change return annotation to 'tuple[Optional[Recipe], int]'", "status": "done" },
+        { "id": "BUG-006b", "title": "Run tests", "status": "done" }
       ]
     },
     {
