@@ -200,12 +200,12 @@
       "title": "Add __init__.py to parsers/sqlite/ package",
       "priority": "P1",
       "category": "Code Quality",
-      "status": "not done",
+      "status": "done",
       "description": "parsers/sqlite/ has no __init__.py. While it works due to explicit imports, it's non-standard for a Python subpackage.",
       "files": ["parsers/sqlite/__init__.py"],
       "subtasks": [
-        { "id": "QUAL-005a", "title": "Create parsers/sqlite/__init__.py with appropriate imports (SqliteRecipeParser, SqliteConfig etc.)", "status": "not done" },
-        { "id": "QUAL-005b", "title": "Run tests to confirm no import regressions", "status": "not done" }
+        { "id": "QUAL-005a", "title": "Create parsers/sqlite/__init__.py with appropriate imports (SqliteRecipeParser, SqliteConfig etc.)", "status": "done" },
+        { "id": "QUAL-005b", "title": "Run tests to confirm no import regressions", "status": "done" }
       ]
     },
     {

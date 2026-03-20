@@ -9,13 +9,13 @@ from .compuchef import CompuChefParser
 from .recipeml import RecipeMLParser
 from .twentykrecipes import TwentyKRecipesParser
 from .ricette_json import RicetteJsonParser
-from .sqlite.sqlite_config import get_sqlite_schema_registry, SqliteRecipeSchema, SqliteSchemaRegistry
+from .sqlite import get_sqlite_schema_registry, SqliteRecipeSchema, SqliteSchemaRegistry
 from .ricette import RicetteParser
 from .edna import EdnaParser
 from .ricette_md import RicetteMdParser
 from .vitt import VittRecipesParser
 from .nyc import NYCParser
-from .sqlite.sqlite_parser import SqliteRecipeParser
+from .sqlite import SqliteRecipeParser
 from .html_parser import HtmlParser
 from .llm_parser import LLMRecipeParser
 from .microcook import MicroCookParser
