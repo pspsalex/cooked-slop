@@ -252,13 +252,13 @@
       "title": "Add HTML test sample and expected output",
       "priority": "P2",
       "category": "Test Coverage",
-      "status": "not done",
+      "status": "done",
       "description": "HtmlParser (using recipe-scrapers) has no test sample. Add a minimal HTML recipe page.",
       "files": ["tests/samples/", "tests/expected/"],
       "subtasks": [
-        { "id": "TEST-002a", "title": "Create a minimal HTML file with Schema.org Recipe markup at tests/samples/sample_recipe.html", "status": "not done" },
-        { "id": "TEST-002b", "title": "Generate expected output: ./venv/bin/python3 convert.py tests/samples/sample_recipe.html -o tests/expected/sample_recipe.html.json --no-nlp", "status": "not done" },
-        { "id": "TEST-002c", "title": "Run tests to verify", "status": "not done" }
+        { "id": "TEST-002a", "title": "Create a minimal HTML file with Schema.org Recipe markup at tests/samples/sample_recipe.html", "status": "done" },
+        { "id": "TEST-002b", "title": "Generate expected output: ./venv/bin/python3 convert.py tests/samples/sample_recipe.html -o tests/expected/sample_recipe.html.json --no-nlp", "status": "done" },
+        { "id": "TEST-002c", "title": "Run tests to verify", "status": "done" }
       ]
     },
     {

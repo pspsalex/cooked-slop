@@ -47,7 +47,11 @@ class HtmlParser(BaseRecipeParser):
             return
 
         try:
-            scraper = scrape_html(content, org_url="file://" + str(Path(filepath).absolute()))
+            scraper = scrape_html(
+                content,
+                org_url="https://localhost/" + Path(filepath).name,
+                supported_only=False,
+            )
             recipe = Recipe(source_file=filepath, source_format=self.source_format)
             try:
                 recipe.title = scraper.title()

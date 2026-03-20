@@ -1,0 +1,60 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Garlic Butter Pasta",
+  "recipeIngredient": [
+    "400g spaghetti",
+    {
+      "@type": "PropertyValue",
+      "name": "garlic, minced",
+      "value": 4,
+      "unitText": "cloves"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 3,
+      "unitText": "tablespoons"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "olive oil",
+      "value": 2,
+      "unitText": "tablespoons"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "red pepper flakes",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    "Salt and pepper to taste",
+    "Fresh parsley, chopped"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Cook spaghetti according to package directions. Reserve 1 cup pasta water before draining."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "In a large skillet, heat butter and olive oil over medium heat. Add garlic and red pepper flakes, cook for 1 minute."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Add drained pasta to the skillet. Toss with the garlic butter, adding pasta water as needed. Season with salt and pepper. Garnish with parsley."
+    }
+  ],
+  "recipeYield": "4 servings",
+  "recipeCategory": "Pasta",
+  "keywords": "Pasta",
+  "comment": "Imported from tests/samples/sample_recipe.html",
+  "url": "file://tests/samples/sample_recipe.html",
+  "datePublished": "2026-03-20T23:34:24.269957",
+  "description": "Recipe converted from HTML/URL format"
+}
+]
