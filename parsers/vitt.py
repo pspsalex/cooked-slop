@@ -50,7 +50,7 @@ from .registry import ParserRegistry
 class VittRecipesParser(BaseRecipeParser):
     """Parser for vitt CSV format."""
 
-    def __init__(self, ingredient_parser: BaseIngredientParser = None):
+    def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "vitt CSV"
 

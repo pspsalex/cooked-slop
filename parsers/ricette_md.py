@@ -1,14 +1,14 @@
 # SPDX-License-Identifier: MIT
 import re
 from typing import Iterator, Optional
-from .base import BaseRecipeParser
+from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
 
 from .registry import ParserRegistry
 
 @ParserRegistry.register
 class RicetteMdParser(BaseRecipeParser):
-    def __init__(self, ingredient_parser=None):
+    def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "RicetteMD"
 

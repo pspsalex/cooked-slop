@@ -153,17 +153,17 @@
       "title": "Fix missing/incomplete type hints across parsers",
       "priority": "P1",
       "category": "Code Quality",
-      "status": "not done",
+      "status": "done",
       "description": "Multiple parsers have untyped __init__ parameters. All should match: __init__(self, ingredient_parser: Optional[BaseIngredientParser] = None)",
       "files": ["parsers/nyc.py", "parsers/vitt.py", "parsers/ricette_md.py", "parsers/ricette_json.py", "parsers/twentykrecipes.py", "parsers/stubs.py"],
       "subtasks": [
         { "id": "QUAL-002a", "title": "Fix nyc.py __init__ type hint", "status": "done" },
-        { "id": "QUAL-002b", "title": "Fix vitt.py __init__ type hint (add Optional)", "status": "not done" },
-        { "id": "QUAL-002c", "title": "Fix ricette_md.py __init__ type hint", "status": "not done" },
-        { "id": "QUAL-002d", "title": "Fix ricette_json.py __init__ type hint", "status": "not done" },
-        { "id": "QUAL-002e", "title": "Fix twentykrecipes.py __init__ type hint", "status": "not done" },
-        { "id": "QUAL-002f", "title": "Add return type to stubs.py _detect_delimiter() -> str", "status": "not done" },
-        { "id": "QUAL-002g", "title": "Add type hints to recipeml.py helper functions (_text, _all_text, _inner_text)", "status": "not done" }
+        { "id": "QUAL-002b", "title": "Fix vitt.py __init__ type hint (add Optional)", "status": "done" },
+        { "id": "QUAL-002c", "title": "Fix ricette_md.py __init__ type hint", "status": "done" },
+        { "id": "QUAL-002d", "title": "Fix ricette_json.py __init__ type hint", "status": "done" },
+        { "id": "QUAL-002e", "title": "Fix twentykrecipes.py __init__ type hint", "status": "done" },
+        { "id": "QUAL-002f", "title": "Add return type to stubs.py _detect_delimiter() -> str", "status": "done" },
+        { "id": "QUAL-002g", "title": "Add type hints to recipeml.py helper functions (_text, _all_text, _inner_text)", "status": "done" }
       ]
     },
     {

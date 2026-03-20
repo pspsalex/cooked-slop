@@ -21,7 +21,7 @@ import json
 import logging
 from typing import List, Iterator
 
-from .base import BaseRecipeParser
+from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
 
 logger = logging.getLogger(__name__)
@@ -84,7 +84,7 @@ from .registry import ParserRegistry
 class RicetteJsonParser(BaseRecipeParser):
     """Parser for Ricette JSON format."""
 
-    def __init__(self, ingredient_parser=None):
+    def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "Ricette JSON"
 

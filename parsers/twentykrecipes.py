@@ -16,7 +16,7 @@ import io
 from typing import Iterator, List
 from pathlib import Path
 
-from .base import BaseRecipeParser
+from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
 
 logger = logging.getLogger(__name__)
@@ -119,7 +119,7 @@ from .registry import ParserRegistry
 class TwentyKRecipesParser(BaseRecipeParser):
     """Parser for 20krecipes CSV format."""
 
-    def __init__(self, ingredient_parser=None):
+    def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
         self.source_format = "20krecipes CSV"
 

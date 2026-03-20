@@ -5,7 +5,7 @@ RecipeML (XML) parser - converts RecipeML format to internal Recipe model
 
 import logging
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, Optional
 from xml.etree import ElementTree as ET
 
 from .base import BaseRecipeParser, BaseIngredientParser
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
-def _text(el, tag, default=None):
+def _text(el: Optional[ET.Element], tag: str, default: Optional[str] = None) -> Optional[str]:
     """Return stripped text of first child with given tag, or default."""
     if el is None:
         return default
@@ -27,12 +27,12 @@ def _text(el, tag, default=None):
     return default
 
 
-def _all_text(el, tag):
+def _all_text(el: ET.Element, tag: str) -> list[str]:
     """Return list of stripped text for all children with given tag."""
     return [c.text.strip() for c in el.findall(tag) if c is not None and c.text]
 
 
-def _inner_text(el):
+def _inner_text(el: Optional[ET.Element]) -> str:
     """Concatenate all text content inside an element (including tail text of children)."""
     if el is None:
         return ""
@@ -49,7 +49,7 @@ def _inner_text(el):
 
 # ── ingredient parsing ────────────────────────────────────────────────────────
 
-def parse_ingredient_element(ing_el):
+def parse_ingredient_element(ing_el: ET.Element) -> str:
     """
     Convert a RecipeML <ing> element to a human-readable string.
     <ing> may contain <amt>, <item>, <prep>, <alt-ing> etc.
