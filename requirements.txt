@@ -3,3 +3,8 @@ recipe-scrapers
 pytest
 requests
 pyyaml
+
+# Optional: dedup.py dependencies (install with: pip install -r requirements.txt)
+datasketch
+numpy
+unidecode

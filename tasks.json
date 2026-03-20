@@ -337,12 +337,12 @@
       "title": "Add dedup.py dependencies to requirements.txt (optional extras)",
       "priority": "P2",
       "category": "Architecture",
-      "status": "not done",
+      "status": "done",
       "description": "dedup.py requires datasketch, numpy, unidecode but they're not in requirements.txt. Add as optional dependency group or document separately.",
       "files": ["requirements.txt"],
       "subtasks": [
-        { "id": "ARCH-002a", "title": "Add a comment section or extras group in requirements.txt for dedup dependencies: datasketch, numpy, unidecode", "status": "not done" },
-        { "id": "ARCH-002b", "title": "Or create a separate requirements-dedup.txt", "status": "not done" }
+        { "id": "ARCH-002a", "title": "Add a comment section or extras group in requirements.txt for dedup dependencies: datasketch, numpy, unidecode", "status": "done" },
+        { "id": "ARCH-002b", "title": "Or create a separate requirements-dedup.txt", "status": "done" }
       ]
     },
     {
