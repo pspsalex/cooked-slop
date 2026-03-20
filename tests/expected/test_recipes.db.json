@@ -1,0 +1,54 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Simple Omelette",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 3
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    "salt"
+  ],
+  "recipeInstructions": [
+    "Beat eggs. Heat butter in pan. Pour eggs and cook until set. Fold and serve."
+  ],
+  "comment": "Imported from /home/alex/junk/Recipes/scripts/tests/samples/test_recipes.db",
+  "url": "file:///home/alex/junk/Recipes/scripts/tests/samples/test_recipes.db#RECIPE,1",
+  "datePublished": "2026-03-20T23:38:33.498427",
+  "description": "Recipe converted from SQLite format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Buttered Toast",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "bread",
+      "value": 2,
+      "unitText": "slices"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 1,
+      "unitText": "tablespoon"
+    }
+  ],
+  "recipeInstructions": [
+    "Toast bread until golden. Spread butter on top."
+  ],
+  "comment": "Imported from /home/alex/junk/Recipes/scripts/tests/samples/test_recipes.db",
+  "url": "file:///home/alex/junk/Recipes/scripts/tests/samples/test_recipes.db#RECIPE,2",
+  "datePublished": "2026-03-20T23:38:33.498661",
+  "description": "Recipe converted from SQLite format"
+}
+]

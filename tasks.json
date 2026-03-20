@@ -294,14 +294,14 @@
       "title": "Add SQLite parser test sample",
       "priority": "P2",
       "category": "Test Coverage",
-      "status": "not done",
+      "status": "done",
       "description": "SqliteRecipeParser has no test sample. Need a small .sqlite file with a matching YAML config.",
       "files": ["tests/samples/", "tests/expected/", "configs/"],
       "subtasks": [
-        { "id": "TEST-005a", "title": "Create a minimal SQLite database with recipe data (tests/samples/test_recipes.db)", "status": "not done" },
-        { "id": "TEST-005b", "title": "Ensure a YAML config in configs/ matches the test database schema", "status": "not done" },
-        { "id": "TEST-005c", "title": "Generate expected output with --no-nlp", "status": "not done" },
-        { "id": "TEST-005d", "title": "Run tests", "status": "not done" }
+        { "id": "TEST-005a", "title": "Create a minimal SQLite database with recipe data (tests/samples/test_recipes.db)", "status": "done" },
+        { "id": "TEST-005b", "title": "Ensure a YAML config in configs/ matches the test database schema", "status": "done" },
+        { "id": "TEST-005c", "title": "Generate expected output with --no-nlp", "status": "done" },
+        { "id": "TEST-005d", "title": "Run tests", "status": "done" }
       ]
     },
     {
