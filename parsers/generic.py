@@ -41,7 +41,7 @@ class GenericTextParser(BaseRecipeParser):
         blocks = re.split(r'\n\s*\n', content)
 
         title_re = re.compile(r'^[A-Z ]{5,}')
-        yield_re = re.compile(r'(?:Serves|Yield|Serving).*(\d+ \w)', flags = re.IGNORECASE)
+        yield_re = re.compile(r'(?:Serves|Yield|Serving).*(\d+\s*\w+)', flags = re.IGNORECASE)
         title_found = False
 
         is_description = True

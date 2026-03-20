@@ -114,12 +114,12 @@
       "title": "Fix generic.py yield regex -- too narrow capture",
       "priority": "P1",
       "category": "Critical Bugs",
-      "status": "not done",
+      "status": "done",
       "description": "Line 44: yield_re pattern '(\\d+ \\w)' captures only one word character after digit+space. Should be broader like '(\\d+\\s*\\w+)' to match 'Yield: 4 servings'.",
       "files": ["parsers/generic.py"],
       "subtasks": [
-        { "id": "BUG-007a", "title": "Fix regex to capture full yield string (e.g., '12 servings')", "status": "not done" },
-        { "id": "BUG-007b", "title": "Test with a sample that exercises the generic parser yield extraction", "status": "not done" }
+        { "id": "BUG-007a", "title": "Fix regex to capture full yield string (e.g., '12 servings')", "status": "done" },
+        { "id": "BUG-007b", "title": "Test with a sample that exercises the generic parser yield extraction", "status": "done" }
       ]
     },
     {
