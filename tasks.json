@@ -127,13 +127,13 @@
       "title": "Fix vitt.py character removal mismatch (\\u008d vs \\u200d)",
       "priority": "P1",
       "category": "Critical Bugs",
-      "status": "not done",
+      "status": "done",
       "description": "_extract_instructions() line 475 removes \\u008d (REVERSE LINE FEED) but docstring says 'Zero Width Joiner'. Other methods correctly remove \\u200d (ZWJ). Likely wrong hex code or wrong comment.",
       "files": ["parsers/vitt.py"],
       "subtasks": [
-        { "id": "BUG-008a", "title": "Determine correct behavior: should it remove \\u008d, \\u200d, or both?", "status": "not done" },
-        { "id": "BUG-008b", "title": "Fix code or docstring to match intended behavior", "status": "not done" },
-        { "id": "BUG-008c", "title": "Run tests and regenerate expected output if needed", "status": "not done" }
+        { "id": "BUG-008a", "title": "Determine correct behavior: should it remove \\u008d, \\u200d, or both?", "status": "done" },
+        { "id": "BUG-008b", "title": "Fix code or docstring to match intended behavior", "status": "done" },
+        { "id": "BUG-008c", "title": "Run tests and regenerate expected output if needed", "status": "done" }
       ]
     },
     {

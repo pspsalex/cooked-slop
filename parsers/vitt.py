@@ -476,7 +476,7 @@ class VittRecipesParser(BaseRecipeParser):
         block = block.strip()
         if block:
             # Remove Zero Width Joiner (U+200D) characters
-            block = block.replace('\u008d', '')
+            block = block.replace('\u200d', '')
             # Replace newlines and multiple spaces with single space
             block = re.sub(r'\s+', ' ', block)
             # Clean up any trailing/leading whitespace again

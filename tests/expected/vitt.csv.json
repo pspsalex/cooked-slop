@@ -76,19 +76,19 @@
     {
       "@type": "HowToStep",
       "position": 1,
-      "text": "Mix and press into 13 x 9 pan. Bake at 350 for 15 minutes or until light brown. Toast 1 small package of coconut. Cool crust and coconut."
+      "text": "Mix and press into 13 x 9 pan. Bake at 350 for 15 minutes or until light brown. Toast 1 small package of coconut. Cool crust and coconut."
     },
     {
       "@type": "HowToStep",
       "position": 2,
-      "text": "Beat cream cheese with sugar, peanut butter, vanilla. Add eggs, one at a time. Fold in topping. Spread over crust. In double boiler or microwave oven, melt chocolate chips. Drizzle chocolate in a thin stream over filling. With a knife, cut through to marble filling. Cover & freeze."
+      "text": "Beat cream cheese with sugar, peanut butter, vanilla. Add eggs, one at a time. Fold in topping. Spread over crust. In double boiler or microwave oven, melt chocolate chips. Drizzle chocolate in a thin stream over filling. With a knife, cut through to marble filling. Cover & freeze."
     }
   ],
   "recipeCategory": "peanut butter",
   "keywords": "peanut butter, chocolate, nuts",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-02-27T19:04:14.804977",
+  "datePublished": "2026-03-20T17:55:28.967153",
   "description": "Recipe converted from vitt CSV format"
 },
 {
@@ -115,12 +115,12 @@
     {
       "@type": "HowToStep",
       "position": 1,
-      "text": "1. Season the ground lamb to taste with salt and pepper, and divide the meat into 8 burgers."
+      "text": "1. Season the ground lamb to taste with salt and pepper, and divide the meat into 8 burgers."
     },
     {
       "@type": "HowToStep",
       "position": 2,
-      "text": "2. Shape about 1 ounce of the chevre into a round nugget and mold one part of the lamb around the chevre. Now, mold it into a thick burger. Repeat with all parts."
+      "text": "2. Shape about 1 ounce of the chevre into a round nugget and mold one part of the lamb around the chevre. Now, mold it into a thick burger. Repeat with all parts."
     },
     {
       "@type": "HowToStep",
@@ -130,14 +130,14 @@
     {
       "@type": "HowToStep",
       "position": 4,
-      "text": "4. Broil or grill the burgers. Serve with some of the sauce on the side."
+      "text": "4. Broil or grill the burgers. Serve with some of the sauce on the side."
     }
   ],
   "recipeCategory": "lamb",
   "keywords": "lamb, chevre",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-02-27T19:04:14.805380",
+  "datePublished": "2026-03-20T17:55:28.967687",
   "description": "Recipe converted from vitt CSV format"
 },
 {
@@ -178,13 +178,13 @@
     "salt and ground black pepper"
   ],
   "recipeInstructions": [
-    "Tear the mint leaves into coarse pieces and place in a shallow bowl. Add the vinegars and lemon juice. Stir in the sugar -- amount depends on desired sweetness -- and season to taste with salt and pepper. Store covered in refrigerator."
+    "Tear the mint leaves into coarse pieces and place in a shallow bowl. Add the vinegars and lemon juice. Stir in the sugar -- amount depends on desired sweetness -- and season to taste with salt and pepper. Store covered in refrigerator."
   ],
   "recipeCategory": "mint",
   "keywords": "mint, raspberry, lemon, vinegar",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-02-27T19:04:14.805654",
+  "datePublished": "2026-03-20T17:55:28.967971",
   "description": "Recipe converted from vitt CSV format"
 },
 {
@@ -199,7 +199,7 @@
   "keywords": "spaghetti, salad dressing, vegs",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-02-27T19:04:14.805753",
+  "datePublished": "2026-03-20T17:55:28.968090",
   "description": "Recipe converted from vitt CSV format"
 },
 {
@@ -215,12 +215,12 @@
     {
       "@type": "HowToStep",
       "position": 1,
-      "text": "You're right. The number given in the echo was wrong. I, too, called and got the other company..."
+      "text": "You're right. The number given in the echo was wrong. I, too, called and got the other company..."
     },
     {
       "@type": "HowToStep",
       "position": 2,
-      "text": "P.S. it was the second '7' that got me... I've corrected it above to show as a '4'..."
+      "text": "P.S. it was the second '7' that got me... I've corrected it above to show as a '4'..."
     },
     {
       "@type": "HowToStep",
@@ -232,7 +232,7 @@
   "keywords": "none",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-02-27T19:04:14.805936",
+  "datePublished": "2026-03-20T17:55:28.968332",
   "description": "Recipe converted from vitt CSV format"
 }
 ]
