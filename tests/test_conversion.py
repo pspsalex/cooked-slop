@@ -64,3 +64,34 @@ def test_regression(sample_path: Path, tmp_path: Path):
              recipe["url"] = "file://" + Path(recipe["url"].replace("file://", "")).name
 
     assert actual_json == expected_json
+
+
+def test_sharded_conversion(tmp_path: Path):
+    """Test that --shard places converted recipes into sharded directory paths."""
+    sample_files = get_samples()
+    if not sample_files:
+        pytest.skip("No sample files found")
+
+    sample_path = sample_files[0]
+    out_dir = tmp_path / "sharded_out"
+
+    cmd = [
+        sys.executable,
+        str(CONVERT_SCRIPT),
+        str(sample_path),
+        "-o",
+        str(out_dir),
+        "--shard",
+        "--no-nlp",
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    assert result.returncode == 0, f"STDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+
+    # Verify that at least one .json file exists in a sub-sub-directory under out_dir (e.g. out_dir/xx/yy/*.json)
+    json_files = list(out_dir.rglob("*.json"))
+    assert len(json_files) > 0, "No JSON files created"
+    for jf in json_files:
+        rel = jf.relative_to(out_dir)
+        # Should have structure bucket1/bucket2/filename.json (3 parts)
+        assert len(rel.parts) == 3, f"Expected 3 path components (xx/yy/file.json), got {rel.parts}"
+

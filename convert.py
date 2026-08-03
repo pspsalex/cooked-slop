@@ -6,14 +6,54 @@ import logging
 import os
 import re
 import sys
+import zlib
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Any, Iterator
+from typing import List, Optional, Any, Iterator, Union
 
 # Import parsers
 from parsers import Recipe, BaseIngredientParser, ParserRegistry, get_ingredient_parser
 from parsers.llm_parser import LLMRecipeParser
 from parsers.units import normalize_unit
+
+# --- Sharding helpers ---
+def _get_tokens(text: str) -> set[str]:
+    """Extract lowercased word tokens (3+ chars) from text."""
+    return set(re.findall(r'\b[a-z]{3,}\b', text.lower().replace("_", " ")))
+
+
+def _minhash_bucket(text: str, num_perm: int = 16) -> str:
+    """
+    Computes a short, fast MinHash signature prefix.
+    Similar texts yield the same bucket string.
+    """
+    tokens = _get_tokens(text)
+    if not tokens:
+        tokens = {"default"}
+
+    sig = []
+    for i in range(num_perm):
+        min_val = float('inf')
+        for token in tokens:
+            val = zlib.crc32(f"{i}:{token}".encode('utf-8'))
+            if val < min_val:
+                min_val = val
+        sig.append(min_val)
+
+    bucket_1 = f"{sig[0] % 256:02x}"
+    bucket_2 = f"{sig[1] % 256:02x}"
+    return f"{bucket_1}/{bucket_2}"
+
+
+def _get_recipe_sharded_path(
+    url: str,
+    title: str,
+    base_dir: Union[str, Path] = "recipes",
+) -> Path:
+    """Returns a MinHash-based sharded path for a recipe."""
+    bucket_dir = _minhash_bucket(f"{title}")
+    return Path(base_dir) / bucket_dir
+
 
 # --- Logging setup ---
 TRACE_LEVEL = 5
@@ -258,6 +298,11 @@ def parse_arguments() -> argparse.Namespace:
         help="Path to LLM provider YAML config. When set, all files are parsed "
         "via the configured LLM instead of the auto-detected parser.",
     )
+    parser.add_argument(
+        "--shard",
+        action="store_true",
+        help="Shard output into subdirectories based on recipe title MinHash bucket",
+    )
     return parser.parse_args()
 
 
@@ -272,6 +317,7 @@ def convert_recipe_file(
     stream_writer: Optional[JSONStreamWriter] = None,
     debug_sql: bool = False,
     llm_parser: Optional["LLMRecipeParser"] = None,
+    shard: bool = False,
 ) -> int:
     if llm_parser is not None:
         parser = llm_parser
@@ -305,20 +351,29 @@ def convert_recipe_file(
                 if verbose:
                     print(f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')}")
             elif one_file_per_recipe:
+                title = schema_recipe.get("name", "Untitled")
+                url = schema_recipe.get("url", "")
+                target_dir = (
+                    _get_recipe_sharded_path(url, title, base_dir=output_dir)
+                    if shard
+                    else output_dir
+                )
+                target_dir.mkdir(parents=True, exist_ok=True)
+
                 safe_name = re.sub(
-                    r"[^\w\s-]", "", schema_recipe.get("name", "Untitled")
+                    r"[^\w\s-]", "", title
                 ).strip()
                 safe_name = re.sub(r"[-\s]+", "_", safe_name)
-                output_file = output_dir / f"{safe_name}.json"
+                output_file = target_dir / f"{safe_name}.json"
                 counter = 1
                 while output_file.exists():
-                    output_file = output_dir / f"{safe_name}_{counter}.json"
+                    output_file = target_dir / f"{safe_name}_{counter}.json"
                     counter += 1
                 with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(schema_recipe, f, indent=2, ensure_ascii=False)
                 if verbose:
                     print(
-                        f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')} → {output_file.name}"
+                        f"  {Colors.GREEN}✓{Colors.ENDC} {schema_recipe.get('name')} → {output_file}"
                     )
             else:
                 collected_recipes.append(schema_recipe)
@@ -363,6 +418,7 @@ def process_directory(
     stream_writer: Optional[JSONStreamWriter] = None,
     debug_sql: bool = False,
     llm_parser: Optional["LLMRecipeParser"] = None,
+    shard: bool = False,
 ) -> None:
     # Updated extensions to include stubs explicitly supported by ParserFactory.
     extensions = {
@@ -428,6 +484,7 @@ def process_directory(
             stream_writer,
             debug_sql=debug_sql,
             llm_parser=llm_parser,
+            shard=shard,
         )
         processed_bytes += (
             recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
@@ -526,6 +583,7 @@ def main():
                 stream_writer,
                 debug_sql=args.debug_sql,
                 llm_parser=llm_parser,
+                shard=args.shard,
             )
 
             if not args.verbose:
@@ -549,6 +607,7 @@ def main():
                 stream_writer,
                 debug_sql=args.debug_sql,
                 llm_parser=llm_parser,
+                shard=args.shard,
             )
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
