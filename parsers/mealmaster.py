@@ -145,7 +145,7 @@ class MealMasterParser(BaseRecipeParser):
 
 
     def _is_ingredient_separator(self, line: str) -> bool:
-        return (len(line) >= 40) and (line[0:5] == '-----') and not self.SECTION_RE.search(line[int(len(line)/2)-1:int(len(line)/2)+2])
+        return (len(line) >= 40) and ((line[0:5] == '-----') or (line[0:5].lower() == 'mmmmm')) and not self.SECTION_RE.search(line[int(len(line)/2)-1:int(len(line)/2)+2])
 
     def _parse_single_mealmaster(self, lines: list[str], filepath: str, start_line: int) -> Optional[Recipe]:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)
@@ -215,6 +215,8 @@ class MealMasterParser(BaseRecipeParser):
                                 is_continuation = True
 
                     if is_continuation and current_raw:
+                        # TODO: Continuation with "-" is not really used properly in the sample files.
+                        # raise Exception(f"is continuation: {recipe.title} in {recipe.source_file}")
                         current_raw.append(stripped.lstrip('-').strip())
                     else:
                         self._flush_ingredient(recipe, current_raw, parser)
@@ -259,18 +261,18 @@ class MealMasterParser(BaseRecipeParser):
                     continue
 
             if state == RecipeSection.IN_INSTRUCTIONS:
-                if not len(stripped):
-                    if not len(instruction_lines):
-                        if not len(recipe.instructions) and self._is_ingredient_separator(line):
-                            state = RecipeSection.IN_INGREDIENTS
-                        else:
-                            continue
-                    else:
-                        recipe.instructions.append(' '.join(instruction_lines))
-                        instruction_lines = []
+                if not len(instruction_lines) and not len(recipe.instructions) and self._is_ingredient_separator(line):
+                    state = RecipeSection.IN_INGREDIENTS
                 else:
-                    instruction_lines.append(line)
-                    continue
+                    if not stripped:
+                        instruction_para = ' '.join(instruction_lines).strip()
+                        if len(instruction_para):
+                            recipe.instructions.append(instruction_para)
+                        instruction_lines = []
+                        continue
+                    else:
+                        instruction_lines.append(stripped)
+                        continue
 
             if state == RecipeSection.IN_INGREDIENTS:
                 if self._is_ingredient_separator(line):
