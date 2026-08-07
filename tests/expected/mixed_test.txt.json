@@ -37,13 +37,13 @@
       "@type": "PropertyValue",
       "name": "Yeast",
       "value": 1,
-      "unitText": "pk"
+      "unitText": "package"
     },
     {
       "@type": "PropertyValue",
       "name": "Flour",
       "value": 3,
-      "unitText": "c"
+      "unitText": "cup"
     }
   ],
   "recipeInstructions": [],
@@ -52,7 +52,7 @@
   "keywords": "Test Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
   "url": "file://tests/samples/mixed_test.txt#18",
-  "datePublished": "2026-03-18T23:47:44.273878",
+  "datePublished": "2026-08-07T22:20:36.800946",
   "description": "Recipe converted from MealMaster format"
 },
 {
@@ -80,8 +80,8 @@
   "recipeCategory": "Test",
   "keywords": "Test, Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
-  "url": "file://tests/samples/mixed_test.txt#29",
-  "datePublished": "2026-03-18T23:47:44.275288",
+  "url": "file://tests/samples/mixed_test.txt#30",
+  "datePublished": "2026-08-07T22:20:36.801512",
   "description": "Recipe converted from CompuChef format"
 },
 {
@@ -115,8 +115,8 @@
   "recipeCategory": "Test Mixed",
   "keywords": "Test Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
-  "url": "file://tests/samples/mixed_test.txt#44",
-  "datePublished": "2026-03-18T23:47:44.276503",
+  "url": "file://tests/samples/mixed_test.txt#45",
+  "datePublished": "2026-08-07T22:20:36.801939",
   "description": "Recipe converted from NYC format"
 }
 ]

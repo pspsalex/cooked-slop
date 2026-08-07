@@ -71,7 +71,7 @@ class MixedFormatParser(BaseRecipeParser):
                         continue
 
                     logger.debug("Mixed format parser detected at line %d: %s", line_number, parser.format_id())
-                    recipe, lines_read = parser.parse_buffer(f, line)
+                    recipe, lines_read = parser.parse_buffer(f, line, line_number)
                     if recipe:
                         if not recipe.description:
                             recipe.description = f"Imported from {self.source_format}"

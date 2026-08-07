@@ -74,7 +74,7 @@ class MasterCookParser(BaseRecipeParser):
                 recipe.source_file = filepath
                 yield recipe
 
-    def parse_buffer(self, f, first_line: str) -> tuple[Optional[Recipe], int]:
+    def parse_buffer(self, f, first_line: str, line_number: int) -> tuple[Optional[Recipe], int]:
         """
         Parse a buffer (file stream) containing MasterCook recipes.
         Reads until the next recipe header or EOF.

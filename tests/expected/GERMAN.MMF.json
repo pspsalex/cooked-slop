@@ -8,13 +8,13 @@
       "@type": "PropertyValue",
       "name": "Butter (Or Margarine)",
       "value": "3/4",
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Sugar",
       "value": "1/2",
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
@@ -25,55 +25,55 @@
       "@type": "PropertyValue",
       "name": "Rum",
       "value": 1,
-      "unitText": "T"
+      "unitText": "Tbsp"
     },
     {
       "@type": "PropertyValue",
       "name": "Vanilla Extract",
       "value": 1,
-      "unitText": "t"
+      "unitText": "ts"
     },
     {
       "@type": "PropertyValue",
       "name": "Milk",
       "value": 3,
-      "unitText": "T"
+      "unitText": "Tbsp"
     },
     {
       "@type": "PropertyValue",
       "name": "Cinnamon",
       "value": "1/2",
-      "unitText": "t"
+      "unitText": "ts"
     },
     {
       "@type": "PropertyValue",
       "name": "Baking Powder",
       "value": 2,
-      "unitText": "t"
+      "unitText": "ts"
     },
     {
       "@type": "PropertyValue",
       "name": "Flour,Unbleached",
       "value": "2 1/4",
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Almonds,Ground",
       "value": "1/4",
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Orange Rind,Grated",
       "value": 1,
-      "unitText": "T"
+      "unitText": "Tbsp"
     },
     {
       "@type": "PropertyValue",
       "name": "Raisins,If Desired",
       "value": "1/4",
-      "unitText": "c"
+      "unitText": "cup"
     }
   ],
   "recipeInstructions": [
@@ -93,7 +93,7 @@
   "keywords": "German Breads D",
   "comment": "Imported from tests/samples/GERMAN.MMF",
   "url": "file://tests/samples/GERMAN.MMF",
-  "datePublished": "2026-02-27T19:04:02.774629",
+  "datePublished": "2026-08-07T22:20:39.182501",
   "description": "Recipe converted from MealMaster format"
 },
 {
@@ -105,19 +105,19 @@
       "@type": "PropertyValue",
       "name": "Flour,Unbleached, Unsifted",
       "value": "2/3",
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Sugar",
       "value": 2,
-      "unitText": "t"
+      "unitText": "ts"
     },
     {
       "@type": "PropertyValue",
       "name": "Salt",
       "value": "1/4",
-      "unitText": "t"
+      "unitText": "ts"
     },
     {
       "@type": "PropertyValue",
@@ -128,31 +128,31 @@
       "@type": "PropertyValue",
       "name": "Milk",
       "value": "1/2",
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Apple,Slices",
       "value": 2,
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Butter (Or Margarine)",
       "value": "3/4",
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Sugar",
       "value": 2,
-      "unitText": "T"
+      "unitText": "Tbsp"
     },
     {
       "@type": "PropertyValue",
       "name": "Cinnamon",
       "value": "1/4",
-      "unitText": "t"
+      "unitText": "ts"
     }
   ],
   "recipeInstructions": [
@@ -172,21 +172,137 @@
   "keywords": "German Fruits P",
   "comment": "Imported from tests/samples/GERMAN.MMF",
   "url": "file://tests/samples/GERMAN.MMF",
-  "datePublished": "2026-02-27T19:04:02.774857",
+  "datePublished": "2026-08-07T22:20:39.182842",
   "description": "Recipe converted from MealMaster format"
 },
 {
   "@context": "https://schema.org",
   "@type": "Recipe",
   "name": "Apfelquarkkuchen (Apple And Cream Kuchen)",
-  "recipeIngredient": [],
-  "recipeInstructions": [],
+  "recipeIngredient": [
+    "----- CAKE -----",
+    {
+      "@type": "PropertyValue",
+      "name": "Yeast,Dry, Active",
+      "value": 1,
+      "unitText": "package"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": "1/2",
+      "unitText": "ts"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": 4,
+      "unitText": "Tbsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Flour,Unbleached, Unsifted",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Butter (or Margarine)",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Milk",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Egg,Large",
+      "value": 1
+    },
+    "----- FILLING -----",
+    {
+      "@type": "PropertyValue",
+      "name": "Apples,Tart, Sliced",
+      "value": 3,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Lemon Juice",
+      "value": 1,
+      "unitText": "Tbsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cinnamon",
+      "value": 1,
+      "unitText": "ts"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": "3/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Flour,Unbleached",
+      "value": 2,
+      "unitText": "Tbsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cream Cheese,Softened",
+      "value": 8,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Egg,Large",
+      "value": 1
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "CAKE:"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Mix yeast, salt, 4 T sugar, and 3/4 cup flour.  Add butter to milk. Heat until very warm (120-130 degrees F.).  Gradually add milk to flour mixture.  Beat for 2 minutes.  Add egg and 1/2 cup flour.  Beat with an electric mixer on high speed for 2 minutes.  Mix in enough flour to form a soft dough.  Knead for 5 to 10 minutes, until dough is shiny and elastic. Place in greased bowl and let rise for 1 hour or until doubled in bulk. Pat dough into well-greased 10-inch springform pan pressing the dough 1 1/2 inches up the sides of the pan."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "FILLING:"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Toss apples with lemon juice, cinnamon, 1/4 cup sugar, and 2 T of flour."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Arrange in rows on top of the dough.  Beat together cream cheese, 1/2 cup sugar, and egg.  Spread over apples.  Let rise in warm place for 1 hour."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "text": "Bake at 350 degrees F. for 30 minutes.  Best when served warm."
+    }
+  ],
   "recipeYield": "4 Servings",
   "recipeCategory": "German Cakes De",
   "keywords": "German Cakes De",
   "comment": "Imported from tests/samples/GERMAN.MMF",
   "url": "file://tests/samples/GERMAN.MMF",
-  "datePublished": "2026-02-27T19:04:02.774908",
+  "datePublished": "2026-08-07T22:20:39.183148",
   "description": "Recipe converted from MealMaster format"
 }
 ]

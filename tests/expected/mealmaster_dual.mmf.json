@@ -1,0 +1,70 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Dual Column Below Format Test",
+  "recipeIngredient": [
+    "-----  CAKE  --------------------------",
+    {
+      "@type": "PropertyValue",
+      "name": "Flour, Unbleached",
+      "value": "1 1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar, Granulated",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Eggs, Large Beaten",
+      "value": 2
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Butter, Softened -----  FROSTING  ----------------------",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar, Powdered",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cocoa Powder",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Milk",
+      "value": 3,
+      "unitText": "Tbsp"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Mix flour and sugar. Beat eggs and butter. Bake at 350F for 30 minutes."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Frost with powdered sugar and cocoa mixture."
+    }
+  ],
+  "recipeYield": "6 Servings",
+  "recipeCategory": "Test",
+  "keywords": "Test, Baking",
+  "comment": "Imported from tests/samples/mealmaster_dual.mmf",
+  "url": "file://tests/samples/mealmaster_dual.mmf",
+  "datePublished": "2026-08-07T22:21:00.662071",
+  "description": "Recipe converted from MealMaster format"
+}
+]

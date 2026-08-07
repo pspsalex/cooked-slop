@@ -34,7 +34,7 @@ class NYCParser(BaseRecipeParser):
             return 0.95
         return 0.0
 
-    def parse_buffer(self, f, first_line: str) -> tuple[Optional[Recipe], int]:
+    def parse_buffer(self, f, first_line: str, line_number: int) -> tuple[Optional[Recipe], int]:
         """Read a single NYC recipe from a file buffer for mixed-format parsing.
 
         Reads lines until the NYC footer ('** Exported from Now You're Cooking!...')

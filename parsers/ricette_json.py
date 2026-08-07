@@ -28,7 +28,7 @@ from .models import Recipe, Ingredient
 logger = logging.getLogger(__name__)
 
 
-def load_recipes_from_content(content: str) -> List[dict]:
+def load_recipes_from_content(content: str, filepath: str = "") -> List[dict]:
     """
     Load recipes from a string containing newline-delimited JSON objects or JSON array.
     Handles:
@@ -66,7 +66,7 @@ def load_recipes_from_content(content: str) -> List[dict]:
             recipes.append(obj)
             pos = end_pos
         except json.JSONDecodeError as e:
-            logger.warning("Failed to parse JSON at position %d: %s", pos, e)
+            logger.warning("Failed to parse JSON in %s at position %d: %s", filepath, pos, e)
             break
 
     return recipes
@@ -113,7 +113,7 @@ class RicetteJsonParser(BaseRecipeParser):
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         """Parse JSON content and yield Recipe objects."""
-        json_recipes = load_recipes_from_content(content)
+        json_recipes = load_recipes_from_content(content, filepath)
 
         for row_index, json_recipe in enumerate(json_recipes):
             recipe = self._parse_json_recipe(json_recipe, filepath, row_index)

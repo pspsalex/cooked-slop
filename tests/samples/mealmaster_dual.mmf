@@ -1,0 +1,19 @@
+MMMMM----- Recipe via Meal-Master (tm) v8.06
+
+      Title: Test with separators
+ Categories: Cheese/eggs
+      Yield: 4 Servings
+
+MMMMM-----------------------HHELLO HEADING----------------------------
+    100 dr Water                             100 dr Uranium
+    100 dr Oil
+
+MMMMM------------------------NOT ANOTHER-----------------------------
+    100 dr Coca-Cola                           1 dr Nuka-Cola
+    100 dr Do it
+
+  In instructions already, next separator is plain text
+  MMMMM-----------------------I AM ANOTHER-----------------------------
+  some other stuff
+
+MMMMM

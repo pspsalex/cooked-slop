@@ -2,6 +2,7 @@
 import logging
 from typing import Iterator
 from .models import Ingredient, Recipe
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +52,7 @@ class BaseRecipeParser:
                 yield recipe
         except Exception as e:
             logger.error("Error reading %s: %s", filepath, e)
+            print(traceback.format_exc())
             return
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:

@@ -3,7 +3,7 @@
 A modular, high-performance toolkit for converting recipes from various formats (MealMaster, MasterCook, CompuChef, HTML, etc.) into modern **Schema.org JSON-LD** format.
 
 > [!IMPORTANT]
-> **AI Authorship Disclosure**: This entire codebase, including all scripts, parsers, and documentation, was authored by an Artificial Intelligence (AI) agent.
+> **AI Authorship Disclosure**: Most of this entire codebase, including all scripts, parsers, and documentation, was authored by an Artificial Intelligence (AI) agent. 
 
 ## ✨ Features
 

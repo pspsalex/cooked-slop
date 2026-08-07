@@ -14,7 +14,7 @@ from .registry import ParserRegistry
 @ParserRegistry.register
 class CompuChefParser(BaseRecipeParser):
     """Parser for Compu-Chef (tm) recipe files (.ccf).
-    
+
     Format structure:
         ***...***
         ***** Recipe Title *****
@@ -70,14 +70,14 @@ class CompuChefParser(BaseRecipeParser):
                 if recipe and recipe.title:
                     yield recipe
 
-    def parse_buffer(self, f, first_line: str) -> tuple[Optional[Recipe], int]:
+    def parse_buffer(self, f, first_line: str, line_number: int) -> tuple[Optional[Recipe], int]:
         """
         Parse a buffer (file stream) containing CompuChef recipes.
         Reads until the next recipe header or EOF.
         """
         read_lines = 0
         recipe_text = first_line
-        
+
         for line in f:
             read_lines += 1
             if self.end_re.match(line.strip()):
@@ -86,7 +86,7 @@ class CompuChefParser(BaseRecipeParser):
 
         if not recipe_text.strip():
             return (None, read_lines)
-        
+
         logger.debug("Parsing recipe from %s %s", f.name, recipe_text)
 
         recipe = self._parse_section(recipe_text, f.name)
