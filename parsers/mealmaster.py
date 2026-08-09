@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: MIT
 import logging
 import re
-from typing import Iterator, List, Optional
+from collections.abc import Iterator
+from enum import Enum
 from pathlib import Path
 
-from .models import Recipe, Ingredient
-from .base import BaseRecipeParser, BaseIngredientParser
+from .base import BaseIngredientParser, BaseRecipeParser
+from .models import Ingredient, Recipe
 from .registry import ParserRegistry
-from enum import Enum
 
 logger = logging.getLogger(__name__)
 
@@ -51,10 +51,12 @@ UNIT_MAP = {
 
 @ParserRegistry.register
 class MealMasterParser(BaseRecipeParser):
-    HEADER_RE = re.compile(r'^(?:MMMMM|-----).*(?:Meal-Master|Recipe via)', re.IGNORECASE)
-    TRAILER_RE = re.compile(r'^(?:MMMMM|-----*)\s*$', re.IGNORECASE)
-    TITLE_RE = re.compile(r'^.{0,6}Title: ', re.IGNORECASE)
-    SECTION_RE = re.compile(r'[ -]{3}', re.IGNORECASE)
+    HEADER_RE = re.compile(
+        r"^(?:MMMMM|-----).*(?:Meal-Master|Recipe via)", re.IGNORECASE
+    )
+    TRAILER_RE = re.compile(r"^(?:MMMMM|-----*)\s*$", re.IGNORECASE)
+    TITLE_RE = re.compile(r"^.{0,6}Title: ", re.IGNORECASE)
+    SECTION_RE = re.compile(r"[ -]{3}", re.IGNORECASE)
 
     def __init__(self, ingredient_parser: BaseIngredientParser):
         super().__init__(ingredient_parser)
@@ -70,7 +72,7 @@ class MealMasterParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        if Path(filepath).suffix.lower() == '.mmf':
+        if Path(filepath).suffix.lower() == ".mmf":
             return 1.0
         if not content_sample:
             return 0.0
@@ -91,13 +93,21 @@ class MealMasterParser(BaseRecipeParser):
             line_number = line_number + 1
             if self.HEADER_RE.match(line):
                 if in_recipe and current:
-                    logger.warning("MealMaster parser: Missing recipe trailer line before next recipe header in %s at %d", filepath, line_number)
+                    logger.warning(
+                        "MealMaster parser: Missing recipe trailer line before next recipe header in %s at %d",
+                        filepath,
+                        line_number,
+                    )
                     yield self._parse_single_mealmaster(current, filepath, line_number)
                     current = []
                 in_recipe = True
             elif self.TITLE_RE.match(line) and not in_recipe:
-                if current and '\n'.join(current).strip():
-                    logger.warning("MealMaster parser: Found Title: line without preceding recipe header in %s at %d. Dropping lines before title", filepath, line_number)
+                if current and "\n".join(current).strip():
+                    logger.warning(
+                        "MealMaster parser: Found Title: line without preceding recipe header in %s at %d. Dropping lines before title",
+                        filepath,
+                        line_number,
+                    )
                     current = []
                 in_recipe = True
                 current.append(line)
@@ -110,11 +120,12 @@ class MealMasterParser(BaseRecipeParser):
                 if in_recipe:
                     current.append(line)
 
-        if current and '\n'.join(current).strip():
+        if current and "\n".join(current).strip():
             yield self._parse_single_mealmaster(current, filepath, line_number)
 
-
-    def parse_buffer(self, f, first_line: str, start_line) -> tuple[Optional[Recipe], int]:
+    def parse_buffer(
+        self, f, first_line: str, start_line
+    ) -> tuple[Recipe|None, int]:
         """
         Parse a buffer (file stream) containing MealMaster recipes.
         Reads until the next recipe trailer or header EOF.
@@ -130,27 +141,34 @@ class MealMasterParser(BaseRecipeParser):
             if len(lines) > 1 and self.HEADER_RE.match(line):
                 break
 
-        recipe_text = ''.join(lines)
+        recipe_text = "".join(lines)
         if not recipe_text.strip():
             return (None, read_lines)
 
-        recipe = self._parse_single_mealmaster(lines, getattr(f, 'name', 'buffer'), start_line)
+        recipe = self._parse_single_mealmaster(
+            lines, getattr(f, "name", "buffer"), start_line
+        )
         return (recipe, read_lines)
 
-
-
-    def _parse_column_stream(self, stream: List[str], recipe: Recipe, filepath: str):
+    def _parse_column_stream(self, stream: list[str], recipe: Recipe, filepath: str):
         """Parse a single column stream of ingredient lines (top to bottom)."""
 
-
     def _is_ingredient_separator(self, line: str) -> bool:
-        return (len(line) >= 40) and ((line[0:5] == '-----') or (line[0:5].lower() == 'mmmmm')) and not self.SECTION_RE.search(line[int(len(line)/2)-1:int(len(line)/2)+2])
+        return (
+            (len(line) >= 40)
+            and ((line[0:5] == "-----") or (line[0:5].lower() == "mmmmm"))
+            and not self.SECTION_RE.search(
+                line[int(len(line) / 2) - 1 : int(len(line) / 2) + 2]
+            )
+        )
 
-    def _parse_single_mealmaster(self, lines: list[str], filepath: str, start_line: int) -> Optional[Recipe]:
+    def _parse_single_mealmaster(
+        self, lines: list[str], filepath: str, start_line: int
+    ) -> Recipe|None:
         recipe = Recipe(source_file=filepath, source_format=self.source_format)
 
         class RecipeSection(Enum):
-            BEFORE_HEADER = 1,
+            BEFORE_HEADER = (1,)
             IN_HEADER = 2
             IN_INGREDIENTS = 3
             IN_INSTRUCTIONS = 4
@@ -161,8 +179,7 @@ class MealMasterParser(BaseRecipeParser):
 
             def __init__(self) -> None:
                 self.Ingredients = []
-                self.Title = ''
-
+                self.Title = ""
 
             def _is_dual_column(self) -> bool:
                 """Check if ingredient lines contain a second column (pos 40+)."""
@@ -172,11 +189,10 @@ class MealMasterParser(BaseRecipeParser):
                         return True
                 return False
 
-
             def _flush_ingredient(self, recipe: Recipe, current_raw: list[str], parser):
                 if not current_raw:
                     return
-                raw_text = ' '.join(current_raw).strip()
+                raw_text = " ".join(current_raw).strip()
                 current_raw.clear()
                 if not raw_text:
                     return
@@ -189,7 +205,9 @@ class MealMasterParser(BaseRecipeParser):
 
             def parse(self, parser, recipe):
                 if self._is_dual_column():
-                    self.Ingredients = [line[:39] for line in self.Ingredients] + [line[39:] for line in self.Ingredients]
+                    self.Ingredients = [line[:39] for line in self.Ingredients] + [
+                        line[39:] for line in self.Ingredients
+                    ]
 
                 current_raw: list[str] = []
 
@@ -201,34 +219,37 @@ class MealMasterParser(BaseRecipeParser):
                     if not stripped:
                         self._flush_ingredient(recipe, current_raw, parser)
 
-                    if not re.search(r'[a-zA-Z0-9]', stripped):
+                    if not re.search(r"[a-zA-Z0-9]", stripped):
                         continue
 
                     is_continuation = False
                     if current_raw:
-                        if stripped.startswith('-'):
+                        if stripped.startswith("-"):
                             is_continuation = True
                         elif not stripped[0].isdigit():
-                            first_word = stripped.split()[0] if stripped.split() else ''
-                            if first_word and (first_word[0].islower() or stripped[0] in '(-' or first_word.lower() in ['or', 'and', 'to', 'for', 'with']):
+                            first_word = stripped.split()[0] if stripped.split() else ""
+                            if first_word and (
+                                first_word[0].islower()
+                                or stripped[0] in "(-"
+                                or first_word.lower()
+                                in ["or", "and", "to", "for", "with"]
+                            ):
                                 is_continuation = True
 
                     if is_continuation and current_raw:
                         # TODO: Continuation with "-" is not really used properly in the sample files.
                         # raise Exception(f"is continuation: {recipe.title} in {recipe.source_file}")
-                        current_raw.append(stripped.lstrip('-').strip())
+                        current_raw.append(stripped.lstrip("-").strip())
                     else:
                         self._flush_ingredient(recipe, current_raw, parser)
                         current_raw = [stripped]
 
                 self._flush_ingredient(recipe, current_raw, parser)
 
-
         state: RecipeSection = RecipeSection.BEFORE_HEADER
 
         instruction_lines: list[str] = []
-        ingredient_section: Section = Section();
-
+        ingredient_section: Section = Section()
         for line in lines:
             line_str = line.rstrip()
             stripped = line_str.strip()
@@ -242,17 +263,19 @@ class MealMasterParser(BaseRecipeParser):
                 continue
 
             if state == RecipeSection.IN_HEADER:
-                if stripped.startswith('Title:'):
-                    recipe.title = line_str.split(':', 1)[1].strip()
+                if stripped.startswith("Title:"):
+                    recipe.title = line_str.split(":", 1)[1].strip()
                     continue
 
-                if stripped.startswith('Categories:'):
-                    cats = line_str.split(':', 1)[1].strip()
-                    recipe.categories = [c.strip() for c in cats.split(',') if c.strip()]
+                if stripped.startswith("Categories:"):
+                    cats = line_str.split(":", 1)[1].strip()
+                    recipe.categories = [
+                        c.strip() for c in cats.split(",") if c.strip()
+                    ]
                     continue
 
-                if stripped.startswith(('Yield:', 'Servings:')):
-                    recipe.yield_amount = line_str.split(':', 1)[1].strip()
+                if stripped.startswith(("Yield:", "Servings:")):
+                    recipe.yield_amount = line_str.split(":", 1)[1].strip()
                     continue
 
                 if not stripped:
@@ -260,11 +283,15 @@ class MealMasterParser(BaseRecipeParser):
                     continue
 
             if state == RecipeSection.IN_INSTRUCTIONS:
-                if not len(instruction_lines) and not len(recipe.instructions) and self._is_ingredient_separator(line):
+                if (
+                    not len(instruction_lines)
+                    and not len(recipe.instructions)
+                    and self._is_ingredient_separator(line)
+                ):
                     state = RecipeSection.IN_INGREDIENTS
                 else:
                     if not stripped:
-                        instruction_para = ' '.join(instruction_lines).strip()
+                        instruction_para = " ".join(instruction_lines).strip()
                         if len(instruction_para):
                             recipe.instructions.append(instruction_para)
                         instruction_lines = []
@@ -276,8 +303,8 @@ class MealMasterParser(BaseRecipeParser):
             if state == RecipeSection.IN_INGREDIENTS:
                 if self._is_ingredient_separator(line):
                     if len(ingredient_section.Ingredients):
-                       ingredient_section.parse(self.ingredient_parser, recipe)
-                       ingredient_section = Section()
+                        ingredient_section.parse(self.ingredient_parser, recipe)
+                        ingredient_section = Section()
 
                     ingredient_section.Title = line[5:].strip("- =M\t")
                     continue
@@ -291,13 +318,27 @@ class MealMasterParser(BaseRecipeParser):
                 ingredient_section.Ingredients.append(line)
 
         if not recipe.title:
-            logger.warning("MealMaster parser: Recipe missing title in %s at %d", filepath,start_line)
+            logger.warning(
+                "MealMaster parser: Recipe missing title in %s at %d",
+                filepath,
+                start_line,
+            )
             return None
 
         if len(recipe.ingredients) == 0:
-            logger.warning("MealMaster parser: Recipe '%s' (%s at %d) has no ingredients", recipe.title, filepath, start_line)
+            logger.warning(
+                "MealMaster parser: Recipe '%s' (%s at %d) has no ingredients",
+                recipe.title,
+                filepath,
+                start_line,
+            )
 
         if len(recipe.instructions) == 0:
-            logger.warning("MealMaster parser: Recipe '%s' (%s at %d) has no instructions", recipe.title, filepath, start_line)
+            logger.warning(
+                "MealMaster parser: Recipe '%s' (%s at %d) has no instructions",
+                recipe.title,
+                filepath,
+                start_line,
+            )
 
         return recipe
