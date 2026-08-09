@@ -4,7 +4,6 @@ import re
 from typing import Iterator, List, Optional
 from pathlib import Path
 
-from parsers.todo.dedup import recipe_shingles
 from .models import Recipe, Ingredient
 from .base import BaseRecipeParser, BaseIngredientParser
 from .registry import ParserRegistry
