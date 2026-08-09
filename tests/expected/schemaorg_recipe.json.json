@@ -64,7 +64,6 @@
   "keywords": "Salad",
   "comment": "Imported from tests/samples/schemaorg_recipe.json",
   "url": "file://tests/samples/schemaorg_recipe.json",
-  "datePublished": "2026-03-20T23:40:58.467246",
   "description": "Recipe converted from Schema.org JSON-LD format"
 }
 ]

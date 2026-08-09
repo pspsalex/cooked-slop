@@ -22,7 +22,6 @@
   ],
   "comment": "Imported from /home/alex/junk/Recipes/scripts/tests/samples/test_recipes.db",
   "url": "file:///home/alex/junk/Recipes/scripts/tests/samples/test_recipes.db#RECIPE,1",
-  "datePublished": "2026-03-20T23:38:33.498427",
   "description": "Recipe converted from SQLite format"
 },
 {
@@ -48,7 +47,6 @@
   ],
   "comment": "Imported from /home/alex/junk/Recipes/scripts/tests/samples/test_recipes.db",
   "url": "file:///home/alex/junk/Recipes/scripts/tests/samples/test_recipes.db#RECIPE,2",
-  "datePublished": "2026-03-20T23:38:33.498661",
   "description": "Recipe converted from SQLite format"
 }
 ]

@@ -134,7 +134,6 @@
   "keywords": "Pizza, Meat",
   "comment": "Imported from tests/samples/edna.txt",
   "url": "file://tests/samples/edna.txt",
-  "datePublished": "2026-02-27T19:04:05.225431",
   "description": "Recipe converted from Edna format"
 },
 {
@@ -184,7 +183,6 @@
   "keywords": "Pizza, Meat",
   "comment": "Imported from tests/samples/edna.txt",
   "url": "file://tests/samples/edna.txt",
-  "datePublished": "2026-02-27T19:04:05.225640",
   "description": "Recipe converted from Edna format"
 }
 ]

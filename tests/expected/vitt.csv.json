@@ -88,7 +88,6 @@
   "keywords": "peanut butter, chocolate, nuts",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-03-20T17:55:28.967153",
   "description": "Recipe converted from vitt CSV format"
 },
 {
@@ -137,7 +136,6 @@
   "keywords": "lamb, chevre",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-03-20T17:55:28.967687",
   "description": "Recipe converted from vitt CSV format"
 },
 {
@@ -184,7 +182,6 @@
   "keywords": "mint, raspberry, lemon, vinegar",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-03-20T17:55:28.967971",
   "description": "Recipe converted from vitt CSV format"
 },
 {
@@ -199,7 +196,6 @@
   "keywords": "spaghetti, salad dressing, vegs",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-03-20T17:55:28.968090",
   "description": "Recipe converted from vitt CSV format"
 },
 {
@@ -232,7 +228,6 @@
   "keywords": "none",
   "comment": "Imported from tests/samples/vitt.csv",
   "url": "file://tests/samples/vitt.csv",
-  "datePublished": "2026-03-20T17:55:28.968332",
   "description": "Recipe converted from vitt CSV format"
 }
 ]

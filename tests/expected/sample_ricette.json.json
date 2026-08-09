@@ -39,7 +39,6 @@
   "keywords": "Pesce, Acciughe",
   "comment": "Imported from tests/samples/sample_ricette.json",
   "url": "file://tests/samples/sample_ricette.json",
-  "datePublished": "2026-02-27T19:04:13.460054",
   "description": "Recipe converted from Ricette JSON format"
 }
 ]

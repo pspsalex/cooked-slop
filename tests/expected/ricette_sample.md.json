@@ -29,7 +29,6 @@
   "recipeYield": "4",
   "comment": "Imported from tests/samples/ricette_sample.md",
   "url": "file://tests/samples/ricette_sample.md",
-  "datePublished": "2026-02-27T19:04:06.526999",
   "description": "Recipe converted from RicetteMD format"
 },
 {
@@ -82,7 +81,6 @@
   "recipeYield": "4",
   "comment": "Imported from tests/samples/ricette_sample.md",
   "url": "file://tests/samples/ricette_sample.md",
-  "datePublished": "2026-02-27T19:04:06.527193",
   "description": "Recipe converted from RicetteMD format"
 }
 ]

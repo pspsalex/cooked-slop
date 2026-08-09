@@ -95,7 +95,7 @@ def print_progress_bar(iteration, total, prefix="", suffix="", length=40, fill="
 class SchemaOrgConverter:
     """Converter to schema.org Recipe JSON-LD format"""
 
-    def convert(self, recipe: Recipe, parse_ingredients: bool = True) -> dict:
+    def convert(self, recipe: Recipe, parse_ingredients: bool = True, add_date: bool = False) -> dict:
         instructions = self._build_instructions(recipe.instructions)
         recipe_ingredients = []
 
@@ -149,7 +149,9 @@ class SchemaOrgConverter:
             else:
                 schema_recipe["url"] = f"file://{recipe.source_file}"
 
-        schema_recipe["datePublished"] = datetime.now().isoformat()
+        if add_date:
+            schema_recipe["datePublished"] = datetime.now().isoformat()
+
         schema_recipe["description"] = (
             f"Recipe converted from {recipe.source_format} format"
         )
@@ -303,6 +305,11 @@ def parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="Shard output into subdirectories based on recipe title MinHash bucket",
     )
+    parser.add_argument(
+        "--add-date",
+        action="store_true",
+        help="Output publishing dates in the resulting json."
+    )
     return parser.parse_args()
 
 
@@ -318,6 +325,7 @@ def convert_recipe_file(
     debug_sql: bool = False,
     llm_parser: Optional["LLMRecipeParser"] = None,
     shard: bool = False,
+    add_date: bool = False,
 ) -> int:
     if llm_parser is not None:
         parser = llm_parser
@@ -344,7 +352,7 @@ def convert_recipe_file(
         # Process recipes as they're yielded from the parser
         for recipe in parser.parse_file(str(input_path)):
             recipe_count += 1
-            schema_recipe = converter.convert(recipe, parse_ingredients)
+            schema_recipe = converter.convert(recipe, parse_ingredients, add_date)
 
             if stream_writer:
                 stream_writer.write_recipe(schema_recipe)
@@ -419,6 +427,7 @@ def process_directory(
     debug_sql: bool = False,
     llm_parser: Optional["LLMRecipeParser"] = None,
     shard: bool = False,
+    add_date: bool = False,
 ) -> None:
     # Updated extensions to include stubs explicitly supported by ParserFactory.
     extensions = {
@@ -584,6 +593,7 @@ def main():
                 debug_sql=args.debug_sql,
                 llm_parser=llm_parser,
                 shard=args.shard,
+                add_date=args.add_date
             )
 
             if not args.verbose:
@@ -608,6 +618,7 @@ def main():
                 debug_sql=args.debug_sql,
                 llm_parser=llm_parser,
                 shard=args.shard,
+                add_date=args.add_date,
             )
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")

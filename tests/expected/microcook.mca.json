@@ -43,7 +43,6 @@
   "keywords": "Cyberealm, Vegetables, Appetizers",
   "comment": "Imported from tests/samples/microcook.mca",
   "url": "file://tests/samples/microcook.mca",
-  "datePublished": "2026-02-28T23:39:53.355896",
   "description": "Recipe converted from MicroCook format"
 },
 {
@@ -95,7 +94,6 @@
   "keywords": "Cyberealm, Casseroles",
   "comment": "Imported from tests/samples/microcook.mca",
   "url": "file://tests/samples/microcook.mca",
-  "datePublished": "2026-02-28T23:39:53.356226",
   "description": "Recipe converted from MicroCook format"
 }
 ]

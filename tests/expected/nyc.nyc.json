@@ -53,7 +53,6 @@
   "keywords": "cookies",
   "comment": "Imported from tests/samples/nyc.nyc",
   "url": "file://tests/samples/nyc.nyc",
-  "datePublished": "2026-02-28T19:42:23.812281",
   "description": "Recipe converted from NYC format"
 },
 {
@@ -116,7 +115,6 @@
   "keywords": "cookies, deserts",
   "comment": "Imported from tests/samples/nyc.nyc",
   "url": "file://tests/samples/nyc.nyc",
-  "datePublished": "2026-02-28T19:42:23.812587",
   "description": "Recipe converted from NYC format"
 }
 ]

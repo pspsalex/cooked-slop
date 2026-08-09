@@ -31,7 +31,6 @@
   "keywords": "Bevande, Aperol",
   "comment": "Imported from tests/samples/ricette_sample.txt",
   "url": "file://tests/samples/ricette_sample.txt",
-  "datePublished": "2026-02-27T19:04:01.570051",
   "description": "Recipe converted from Ricette format"
 },
 {
@@ -73,7 +72,6 @@
   "keywords": "Antipasto, Acciughe",
   "comment": "Imported from tests/samples/ricette_sample.txt",
   "url": "file://tests/samples/ricette_sample.txt",
-  "datePublished": "2026-02-27T19:04:01.570207",
   "description": "Recipe converted from Ricette format"
 }
 ]
