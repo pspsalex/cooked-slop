@@ -32,6 +32,7 @@ UNIT_MAP: dict[str, str] = {
     "teaspoon":  "teaspoon",
     "teaspoons": "teaspoon",
     # Fluid ounce
+    "fl":        "fluid ounce",
     "fl oz":     "fluid ounce",
     "fl. oz":    "fluid ounce",
     "fl. oz.":   "fluid ounce",
@@ -47,27 +48,31 @@ UNIT_MAP: dict[str, str] = {
     "qts":       "quart",
     "quart":     "quart",
     "quarts":    "quart",
+    "ga":        "gallon",
     "gal":       "gallon",
     "gallon":    "gallon",
     "gallons":   "gallon",
     # Milliliter / liter
-    "ml":        "milliliter",
-    "ml.":       "milliliter",
-    "milliliter": "milliliter",
-    "milliliters": "milliliter",
-    "millilitre": "milliliter",
-    "millilitres": "milliliter",
+    "ml":        "ml",
+    "ml.":       "ml",
+    "milliliter": "ml",
+    "milliliters": "ml",
+    "millilitre": "ml",
+    "millilitres": "ml",
     "l":         "liter",
     "liter":     "liter",
     "liters":    "liter",
     "litre":     "liter",
     "litres":    "liter",
+    "cc":        "cubic cm",
     # Pinch / dash / drop
     "pn":        "pinch",
     "pinch":     "pinch",
     "pinches":   "pinch",
+    "ds":        "dash",
     "dash":      "dash",
     "dashes":    "dash",
+    "dr":        "drop",
     "drop":      "drop",
     "drops":     "drop",
     # Splash / spray
@@ -85,13 +90,13 @@ UNIT_MAP: dict[str, str] = {
     "lbs.":      "pound",
     "pound":     "pound",
     "pounds":    "pound",
-    "g":         "gram",
-    "gr":        "gram",
-    "gram":      "gram",
-    "grams":     "gram",
-    "kg":        "kilogram",
-    "kilogram":  "kilogram",
-    "kilograms": "kilogram",
+    "g":         "gr",
+    "gr":        "gr",
+    "gram":      "gr",
+    "grams":     "gr",
+    "kg":        "kg",
+    "kilogram":  "kg",
+    "kilograms": "kg",
 
     # --- Count / size descriptors ---
     "sm":        "small",
@@ -116,6 +121,7 @@ UNIT_MAP: dict[str, str] = {
     "can":       "can",
     "cans":      "can",
     "cn":        "can",
+    "pk":        "package",
     "pkg":       "package",
     "pkg.":      "package",
     "pkgs":      "package",
@@ -160,12 +166,25 @@ UNIT_MAP: dict[str, str] = {
     "servings":  "serving",
     "serving":   "serving",
     "recipe":    "recipe",
+    "x":         "per serving",
+
+
+    "cl": "cl",
+    "ct": "carton",
+    "dl": "dl",
+    "bn": "bunch",
+    "sl": "slice",
+    "mg": "mg",
+    "ea": "each",
+    "cg": "centigram",
+    "dg": "decigram",
+
 }
 
 
 def normalize_unit(raw: str | None) -> str | None:
     """Return the canonical unit string for *raw*, or *raw* unchanged if unknown.
-    
+
     Case-sensitive lookup runs first to preserve distinctions like:
       'T'  (uppercase) = tablespoon
       't'  (lowercase) = teaspoon

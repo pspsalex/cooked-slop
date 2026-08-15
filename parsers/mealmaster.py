@@ -8,53 +8,16 @@ from pathlib import Path
 from .base import BaseIngredientParser, BaseRecipeParser
 from .models import Ingredient, Recipe
 from .registry import ParserRegistry
+from .units import normalize_unit
 
 logger = logging.getLogger(__name__)
-
-UNIT_MAP = {
-    "fl": "fl. oz",
-    "x": "per serving",
-    "c": "cup",
-    "sm": "small",
-    "pt": "pint",
-    "md": "medium",
-    "qt": "quart",
-    "lg": "large",
-    "ga": "gallon",
-    "cn": "can",
-    "oz": "ounce",
-    "pk": "package",
-    "lb": "pound",
-    "pn": "pinch",
-    "ml": "ml",
-    "dr": "drop",
-    "cc": "cubiccm",
-    "ds": "dash",
-    "cl": "cl",
-    "ct": "carton",
-    "dl": "dl",
-    "bn": "bunch",
-    "l": "l",
-    "sl": "slice",
-    "mg": "mg",
-    "ea": "each",
-    "cg": "cg",
-    "t": "ts",
-    "dg": "decigram",
-    "ts": "ts",
-    "g": "gram",
-    "T": "Tbsp",
-    "kg": "kg",
-    "tb": "Tbsp",
-}
-
 
 @ParserRegistry.register
 class MealMasterParser(BaseRecipeParser):
     HEADER_RE = re.compile(
-        r"^(?:MMMMM|-----).*(?:Meal-Master|Recipe via)", re.IGNORECASE
+        r"^.*(?:MMMMM|-----).*(?:Meal-Master|Recipe via)", re.IGNORECASE
     )
-    TRAILER_RE = re.compile(r"^(?:MMMMM|-----*)\s*$", re.IGNORECASE)
+    TRAILER_RE = re.compile(r"^\s*(?:MMMMM|-----*)\s*$", re.IGNORECASE)
     TITLE_RE = re.compile(r"^.{0,6}Title: ", re.IGNORECASE)
     SECTION_RE = re.compile(r"[ -]{3}", re.IGNORECASE)
 
@@ -88,6 +51,7 @@ class MealMasterParser(BaseRecipeParser):
         in_recipe = False
 
         line_number = 0
+        recipe_start = 0
 
         for line in lines:
             line_number = line_number + 1
@@ -98,22 +62,24 @@ class MealMasterParser(BaseRecipeParser):
                         filepath,
                         line_number,
                     )
-                    yield self._parse_single_mealmaster(current, filepath, line_number)
+                    yield self._parse_single_mealmaster(current, filepath, recipe_start)
                     current = []
                 in_recipe = True
+                recipe_start = line_number
             elif self.TITLE_RE.match(line) and not in_recipe:
                 if current and "\n".join(current).strip():
                     logger.warning(
                         "MealMaster parser: Found Title: line without preceding recipe header in %s at %d. Dropping lines before title",
                         filepath,
-                        line_number,
+                        recipe_start,
                     )
                     current = []
                 in_recipe = True
+                recipe_start = line_number
                 current.append(line)
             elif self.TRAILER_RE.match(line):
                 if in_recipe:
-                    yield self._parse_single_mealmaster(current, filepath, line_number)
+                    yield self._parse_single_mealmaster(current, filepath, recipe_start)
                     current = []
                     in_recipe = False
             else:
@@ -121,7 +87,7 @@ class MealMasterParser(BaseRecipeParser):
                     current.append(line)
 
         if current and "\n".join(current).strip():
-            yield self._parse_single_mealmaster(current, filepath, line_number)
+            yield self._parse_single_mealmaster(current, filepath, recipe_start)
 
     def parse_buffer(
         self, f, first_line: str, start_line
@@ -182,12 +148,9 @@ class MealMasterParser(BaseRecipeParser):
                 self.Title = ""
 
             def _is_dual_column(self) -> bool:
-                """Check if ingredient lines contain a second column (pos 40+)."""
+                """Check if ingredient lines contain a second column (pos 40+). This must be true for first line at least."""
 
-                for line in self.Ingredients:
-                    if len(line) > 39 and line[39:].strip():
-                        return True
-                return False
+                return len(self.Ingredients) and len(self.Ingredients[0]) and (self.Ingredients[0][39:].strip())
 
             def _flush_ingredient(self, recipe: Recipe, current_raw: list[str], parser):
                 if not current_raw:
@@ -198,8 +161,8 @@ class MealMasterParser(BaseRecipeParser):
                     return
 
                 parsed = parser.parse(raw_text)
-                if parsed.unit and parsed.unit.strip() in UNIT_MAP:
-                    parsed.unit = UNIT_MAP[parsed.unit.strip()]
+                if parsed.unit:
+                    parsed.unit = normalize_unit(parsed.unit.strip())
 
                 recipe.ingredients.append(parsed)
 
@@ -262,7 +225,7 @@ class MealMasterParser(BaseRecipeParser):
                 state = RecipeSection.IN_HEADER
                 continue
 
-            if state == RecipeSection.IN_HEADER:
+            if state == RecipeSection.IN_HEADER or state == RecipeSection.BEFORE_HEADER:
                 if stripped.startswith("Title:"):
                     recipe.title = line_str.split(":", 1)[1].strip()
                     continue
@@ -341,4 +304,5 @@ class MealMasterParser(BaseRecipeParser):
                 start_line,
             )
 
+        recipe.url = f"file://{filepath}#{start_line}"
         return recipe

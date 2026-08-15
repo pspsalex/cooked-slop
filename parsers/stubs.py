@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 @ParserRegistry.register
 class PdfParser(BaseRecipeParser):
     """Stub for PDF recipe parsing."""
-    
+
     @classmethod
     def format_id(cls) -> str: return "pdf"
     @classmethod
@@ -33,7 +33,7 @@ class PdfParser(BaseRecipeParser):
 @ParserRegistry.register
 class ImageParser(BaseRecipeParser):
     """Stub for Image/OCR recipe parsing."""
-    
+
     @classmethod
     def format_id(cls) -> str: return "image"
     @classmethod
@@ -53,7 +53,7 @@ class ImageParser(BaseRecipeParser):
 @ParserRegistry.register
 class CsvParser(BaseRecipeParser):
     """CSV recipe parser with format detection."""
-    
+
     @classmethod
     def format_id(cls) -> str: return "csv_generic"
     @classmethod

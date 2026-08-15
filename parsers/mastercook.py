@@ -22,6 +22,11 @@ class MasterCookParser(BaseRecipeParser):
         self.yield_re = re.compile(r'^Serving Size\s+:(.*?)(?:\s+Preparation Time\s+:(.*))?$', re.IGNORECASE)
         self.end_re = re.compile(r'^(- ){16}-')
 
+        self.ingred_re = re.compile(r'^Amount\s+Measure\s+Ingredient\s+--\s+Preparation Method$')
+        self.ingred_line_re = re.compile(r'^[-]{4,}\s+[-]{8,}\s+[-]{12,}')
+
+        self.ingred_like_re = re.compile(r'^\s*[\d./-]+\s+[a-zA-Z.]+\s+')
+
     @classmethod
     def format_id(cls) -> str:
         return "mastercook"
@@ -110,7 +115,7 @@ class MasterCookParser(BaseRecipeParser):
         (see ``_CATEGORY_COL1`` / ``_CATEGORY_COL2``).
 
         Args:
-            text: Raw text for one recipe (everything after the ``* Exported``
+                text: Raw text for one recipe (everything after the ``* Exported``
                   header up to, but not including, the next header or EOF).
 
         Returns:
@@ -144,21 +149,21 @@ class MasterCookParser(BaseRecipeParser):
 
             if current_section == 'header':
                 author_match = self.author_re.match(stripped)
-                yield_match = self.yield_re.match(stripped)
                 if author_match:
                     continue
+
+                yield_match = self.yield_re.match(stripped)
                 if yield_match:
                     recipe.yield_amount = yield_match.group(1).strip()
                     continue
 
             # Section detection
-            if stripped == 'Amount  Measure       Ingredient -- Preparation Method':
-                current_section = 'ingredients'
+            if self.ingred_re.match(stripped) or self.ingred_line_re.match(stripped):
+                if current_section == 'instructions':
+                    raise Exception("Ingredient after instruction")
+                current_section = 'ingredients_header'
                 continue
-            elif stripped == '--------  ------------  --------------------------------':
-                current_section = 'ingredients'
-                continue
-            elif stripped.startswith('Directions') or stripped.startswith('Instructions'):
+            elif stripped.startswith(('Directions', 'Instructions')):
                 current_section = 'instructions'
                 instruction_block = []
                 continue
@@ -182,10 +187,8 @@ class MasterCookParser(BaseRecipeParser):
                 continue
 
             # Heuristic for ingredient start even without header
-            if current_section == 'header' and stripped:
-                # MasterCook ingredients usually have numbers at fixed positions or start with spaces
-                if re.match(r'^\s*[\d./-]+\s+[a-zA-Z.]+\s+', line) or re.match(r'^\s+\d+\s+', line):
-                    current_section = 'ingredients'
+            if ((current_section == 'header' and stripped) and self.ingred_like_re.match(line)) or (current_section == "ingredients_header" and stripped):
+                current_section = 'ingredients'
 
             # Handle sections
             if current_section == 'ingredients':
@@ -194,35 +197,22 @@ class MasterCookParser(BaseRecipeParser):
                     instruction_block = []
                     continue
 
-                # MasterCook format is fixed width — see _AMOUNT_COL/_MEASURE_COL/_INGREDIENT_COL
-                amount = line[self._AMOUNT_COL].strip()
-                measure = line[self._MEASURE_COL].strip()
-                ingredient_part = line[self._INGREDIENT_COL].strip()
+                is_continuation = False
 
-                if ingredient_part:
-                    # Check if this is a continuation
-                    is_continuation = False
+                if recipe.ingredients and stripped and stripped.startswith('-'):
+                    stripped = stripped[1:].strip()
+                    is_continuation = True
 
-                    if not amount and not measure:
-                        if stripped and stripped[0].startswith('-'):
-                            stripped = stripped[1:].strip()
-                            is_continuation = True
+                parsed = self.ingredient_parser.parse(((recipe.ingredients[-1].raw + " ") if is_continuation else "") + stripped.replace(" -- ", ", "))
 
-                    if is_continuation and recipe.ingredients:
-                        recipe.ingredients[-1].raw += " " + stripped
+                if parsed.name:
+                    # Normalize unit
+                    parsed.unit = normalize_unit(parsed.unit)
+                    if is_continuation:
+                        recipe.ingredients[-1] = parsed
                     else:
-                        # Normalize unit
-                        measure = normalize_unit(measure)
+                        recipe.ingredients.append(parsed)
 
-                        # Check for preparation method at end of ingredient
-                        if " -- " in ingredient_part:
-                            ingredient_part = ingredient_part.replace(" -- ", ", ")
-
-                        ing = Ingredient(ingredient_part)
-                        if amount: ing.quantity = amount
-                        if measure: ing.unit = measure
-                        # if ingredient_part: ing.name = ingredient_part
-                        recipe.ingredients.append(ing)
 
             elif current_section == 'instructions' or current_section == 'header':
                 if stripped:

@@ -11,8 +11,9 @@
     },
     {
       "@type": "PropertyValue",
-      "name": "green pepper, chopped",
-      "value": 1
+      "name": "pepper, chopped",
+      "value": 1,
+      "unitText": "green"
     },
     {
       "@type": "PropertyValue",
@@ -94,8 +95,9 @@
     },
     {
       "@type": "PropertyValue",
-      "name": "Green ball pepper, cut into 1/2-inch squares",
-      "value": 1
+      "name": "ball pepper, cut into 1/2-inch squares",
+      "value": 1,
+      "unitText": "Green"
     },
     {
       "@type": "PropertyValue",

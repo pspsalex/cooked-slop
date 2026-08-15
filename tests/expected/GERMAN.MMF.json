@@ -25,31 +25,31 @@
       "@type": "PropertyValue",
       "name": "Rum",
       "value": 1,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Vanilla Extract",
       "value": 1,
-      "unitText": "ts"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Milk",
       "value": 3,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Cinnamon",
       "value": "1/2",
-      "unitText": "ts"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Baking Powder",
       "value": 2,
-      "unitText": "ts"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
@@ -67,7 +67,7 @@
       "@type": "PropertyValue",
       "name": "Orange Rind,Grated",
       "value": 1,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
@@ -92,7 +92,7 @@
   "recipeCategory": "German Breads D",
   "keywords": "German Breads D",
   "comment": "Imported from tests/samples/GERMAN.MMF",
-  "url": "file://tests/samples/GERMAN.MMF",
+  "url": "file://tests/samples/GERMAN.MMF#2",
   "description": "Recipe converted from MealMaster format"
 },
 {
@@ -110,13 +110,13 @@
       "@type": "PropertyValue",
       "name": "Sugar",
       "value": 2,
-      "unitText": "ts"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Salt",
       "value": "1/4",
-      "unitText": "ts"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
@@ -145,13 +145,13 @@
       "@type": "PropertyValue",
       "name": "Sugar",
       "value": 2,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Cinnamon",
       "value": "1/4",
-      "unitText": "ts"
+      "unitText": "teaspoon"
     }
   ],
   "recipeInstructions": [
@@ -170,7 +170,7 @@
   "recipeCategory": "German Fruits P",
   "keywords": "German Fruits P",
   "comment": "Imported from tests/samples/GERMAN.MMF",
-  "url": "file://tests/samples/GERMAN.MMF",
+  "url": "file://tests/samples/GERMAN.MMF#35",
   "description": "Recipe converted from MealMaster format"
 },
 {
@@ -189,13 +189,13 @@
       "@type": "PropertyValue",
       "name": "Salt",
       "value": "1/2",
-      "unitText": "ts"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Sugar",
       "value": 4,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
@@ -231,13 +231,13 @@
       "@type": "PropertyValue",
       "name": "Lemon Juice",
       "value": 1,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Cinnamon",
       "value": 1,
-      "unitText": "ts"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
@@ -249,7 +249,7 @@
       "@type": "PropertyValue",
       "name": "Flour,Unbleached",
       "value": 2,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
@@ -299,7 +299,7 @@
   "recipeCategory": "German Cakes De",
   "keywords": "German Cakes De",
   "comment": "Imported from tests/samples/GERMAN.MMF",
-  "url": "file://tests/samples/GERMAN.MMF",
+  "url": "file://tests/samples/GERMAN.MMF#68",
   "description": "Recipe converted from MealMaster format"
 }
 ]

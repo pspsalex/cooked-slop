@@ -8,13 +8,13 @@
       "@type": "PropertyValue",
       "name": "chicken breast",
       "value": 4,
-      "unitText": "ea"
+      "unitText": "each"
     },
     {
       "@type": "PropertyValue",
       "name": "garlic clove - quartered",
       "value": 1,
-      "unitText": "ea"
+      "unitText": "each"
     },
     {
       "@type": "PropertyValue",
@@ -121,7 +121,7 @@
       "@type": "PropertyValue",
       "name": "Eggs",
       "value": 2,
-      "unitText": "ea"
+      "unitText": "each"
     },
     {
       "@type": "PropertyValue",
@@ -164,7 +164,7 @@
       "@type": "PropertyValue",
       "name": "Chicken breast/boned/skinned",
       "value": 3,
-      "unitText": "ea"
+      "unitText": "each"
     },
     {
       "@type": "PropertyValue",
@@ -200,19 +200,19 @@
       "@type": "PropertyValue",
       "name": "Salt & freshly ground pepper",
       "value": 1,
-      "unitText": "x"
+      "unitText": "per serving"
     },
     {
       "@type": "PropertyValue",
       "name": "Prosciutto slices/paper thin",
       "value": 6,
-      "unitText": "ea"
+      "unitText": "each"
     },
     {
       "@type": "PropertyValue",
       "name": "Shallots - finely chopped",
       "value": 3,
-      "unitText": "ea"
+      "unitText": "each"
     },
     {
       "@type": "PropertyValue",
