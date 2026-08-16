@@ -2,10 +2,15 @@
 import logging
 import re
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, Optional
 from .models import Recipe
 from .base import BaseRecipeParser, BaseIngredientParser
 from .registry import ParserRegistry
+from .html_config import (
+    get_html_schema_registry,
+    parse_html_with_schema,
+    HAS_LXML,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +20,10 @@ try:
 except ImportError:
     HAS_RECIPE_SCRAPERS = False
 
+
 @ParserRegistry.register
 class HtmlParser(BaseRecipeParser):
-    """Parse recipes from HTML pages using recipe-scrapers."""
+    """Parse recipes from HTML pages using configurable XPath YAML schemas or recipe-scrapers."""
 
     @classmethod
     def format_id(cls) -> str:
@@ -29,21 +35,46 @@ class HtmlParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        # Path is already imported at the top
-        # re is already imported at the top
         if Path(filepath).suffix.lower() in {'.html', '.htm'}:
             return 0.99
         if re.search(r'<html|<body|<div|<p>', content_sample, re.IGNORECASE):
             return 0.8
         return 0.0
 
-    def __init__(self, ingredient_parser: BaseIngredientParser):
+    def __init__(
+        self,
+        ingredient_parser: BaseIngredientParser,
+        config_path: Optional[str] = None,
+    ):
         super().__init__(ingredient_parser)
         self.source_format = "HTML/URL"
+        self.config_path = config_path
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
+        registry = get_html_schema_registry()
+        schema = None
+
+        if self.config_path:
+            schema = registry.load_schema_from_file(Path(self.config_path))
+        if not schema:
+            schema = registry.detect_schema(content[:5000], filepath)
+
+        if schema and HAS_LXML:
+            try:
+                recipe = parse_html_with_schema(
+                    content, schema, self.ingredient_parser, filepath
+                )
+                if recipe.title or recipe.ingredients:
+                    yield recipe
+                    return
+            except Exception as e:
+                logger.debug("XPath HTML schema parsing failed for %s: %s", filepath, e)
+
         if not HAS_RECIPE_SCRAPERS:
-            logger.warning("recipe-scrapers library not installed. Skipping %s.", filepath)
+            logger.warning(
+                "recipe-scrapers library not installed and no valid XPath schema matched. Skipping %s.",
+                filepath,
+            )
             return
 
         try:

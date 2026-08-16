@@ -402,7 +402,7 @@ class SqliteSchemaRegistry:
             try:
                 with open(yaml_file, 'r') as f:
                     data = yaml.safe_load(f)
-                    if data:
+                    if data and isinstance(data, dict) and 'recipes_table' in data:
                         schema = SqliteRecipeSchema.from_dict(data)
                         self._schemas[schema.name] = schema
             except Exception as e:

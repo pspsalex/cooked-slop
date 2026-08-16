@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: MIT
+name: bbc_food
+description: "XPath configuration for BBC Food HTML recipes"
+version: "1.0"
+
+detection:
+  path_pattern: ".*\\.html$"
+  content_patterns:
+    - "recipe-ingredients__list-item"
+    - "recipe-method__list-item"
+
+fields:
+  title:
+    xpath: "//h1[contains(@class, 'content-title__text')]/text() | //*[@itemprop='name']/text()"
+  yield_amount:
+    xpath: "//*[@itemprop='recipeYield']/text() | //p[contains(@class, 'recipe-metadata__serving')]/text()"
+  categories:
+    xpath: "//p[contains(@class, 'recipe-metadata__dietary-vegetarian-text')]/text()"
+  description:
+    xpath: "//a[contains(@class, 'chef__link') and @itemprop='author']/text()"
+  ingredients:
+    xpath: "//li[contains(@class, 'recipe-ingredients__list-item')]"
+  instructions:
+    xpath: "//li[contains(@class, 'recipe-method__list-item')]"

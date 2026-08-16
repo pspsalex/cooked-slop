@@ -26,6 +26,7 @@ class MasterCookParser(BaseRecipeParser):
         self.ingred_line_re = re.compile(r'^[-]{4,}\s+[-]{8,}\s+[-]{12,}')
 
         self.ingred_like_re = re.compile(r'^\s*[\d./-]+\s+[a-zA-Z.]+\s+')
+        self.categories_re = re.compile(r"(?:Categories\s*:\s*)?([^\s](?:(?!\s{3,}).)*)")
 
     @classmethod
     def format_id(cls) -> str:
@@ -178,12 +179,10 @@ class MasterCookParser(BaseRecipeParser):
                 if not stripped:
                     current_section = 'header'
                     continue
-                first_column = line[self._CATEGORY_COL1].strip()
-                second_column = line[self._CATEGORY_COL2].strip()
-                if first_column:
-                    recipe.categories.append(first_column)
-                if second_column:
-                    recipe.categories.append(second_column)
+
+                for category in self.categories_re.findall(stripped):
+                    recipe.categories.append(category)
+
                 continue
 
             # Heuristic for ingredient start even without header

@@ -10,6 +10,7 @@ from .recipeml import RecipeMLParser
 from .twentykrecipes import TwentyKRecipesParser
 from .ricette_json import RicetteJsonParser
 from .sqlite import get_sqlite_schema_registry, SqliteRecipeSchema, SqliteSchemaRegistry
+from .html_config import get_html_schema_registry, HtmlRecipeSchema, HtmlConfigRegistry
 from .ricette import RicetteParser
 from .edna import EdnaParser
 from .ricette_md import RicetteMdParser
@@ -45,6 +46,9 @@ __all__ = [
     'get_sqlite_schema_registry',
     'SqliteRecipeSchema',
     'SqliteSchemaRegistry',
+    'get_html_schema_registry',
+    'HtmlRecipeSchema',
+    'HtmlConfigRegistry',
     'RicetteParser',
     'VittRecipesParser',
     'NYCParser',

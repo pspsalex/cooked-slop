@@ -301,6 +301,13 @@ def parse_arguments() -> argparse.Namespace:
         "via the configured LLM instead of the auto-detected parser.",
     )
     parser.add_argument(
+        "--html-config",
+        type=Path,
+        default=None,
+        metavar="CONFIG",
+        help="Path to HTML XPath layout YAML config.",
+    )
+    parser.add_argument(
         "--shard",
         action="store_true",
         help="Shard output into subdirectories based on recipe title MinHash bucket",
@@ -326,6 +333,7 @@ def convert_recipe_file(
     llm_parser: Optional["LLMRecipeParser"] = None,
     shard: bool = False,
     add_date: bool = False,
+    html_config: Optional[Path] = None,
 ) -> int:
     if llm_parser is not None:
         parser = llm_parser
@@ -333,6 +341,8 @@ def convert_recipe_file(
         parser = ParserRegistry.get_parser(
             input_path, ingredient_parser, format_name, debug=debug_sql
         )
+        if parser is not None and hasattr(parser, "config_path") and html_config is not None:
+            parser.config_path = str(html_config)
 
     if not parser:
         if verbose:
@@ -428,6 +438,7 @@ def process_directory(
     llm_parser: Optional["LLMRecipeParser"] = None,
     shard: bool = False,
     add_date: bool = False,
+    html_config: Optional[Path] = None,
 ) -> None:
     # Updated extensions to include stubs explicitly supported by ParserFactory.
     extensions = {
@@ -494,6 +505,8 @@ def process_directory(
             debug_sql=debug_sql,
             llm_parser=llm_parser,
             shard=shard,
+            add_date=add_date,
+            html_config=html_config,
         )
         processed_bytes += (
             recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
@@ -593,7 +606,8 @@ def main():
                 debug_sql=args.debug_sql,
                 llm_parser=llm_parser,
                 shard=args.shard,
-                add_date=args.add_date
+                add_date=args.add_date,
+                html_config=args.html_config,
             )
 
             if not args.verbose:
@@ -619,6 +633,7 @@ def main():
                 llm_parser=llm_parser,
                 shard=args.shard,
                 add_date=args.add_date,
+                html_config=args.html_config,
             )
         else:
             print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
