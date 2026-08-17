@@ -14,6 +14,7 @@ from .html_config import get_html_schema_registry, HtmlRecipeSchema, HtmlConfigR
 from .ricette import RicetteParser
 from .edna import EdnaParser
 from .ricette_md import RicetteMdParser
+from .generic_md import GenericMdParser
 from .vitt import VittRecipesParser
 from .nyc import NYCParser
 from .sqlite import SqliteRecipeParser
@@ -39,6 +40,7 @@ __all__ = [
     'MixedFormatParser',
     'CompuChefParser',
     'RicetteMdParser',
+    'GenericMdParser',
     'RecipeMLParser',
     'EdnaParser',
     'TwentyKRecipesParser',

@@ -1,0 +1,70 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Delicious Homemade Pizza",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "flour",
+      "value": 2,
+      "unitText": "cups"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "active dry yeast",
+      "value": 1,
+      "unitText": "tsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "warm water",
+      "value": "3/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "olive oil",
+      "value": 2,
+      "unitText": "tbsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": "1/2",
+      "unitText": "tsp"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "mozzarella cheese, shredded",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Combine flour, yeast, and salt in a bowl."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Add warm water and olive oil, stirring until a dough forms."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Knead for 5 minutes and let rise for 1 hour."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Top with cheese and bake at 450F for 15 minutes."
+    }
+  ],
+  "comment": "Imported from tests/samples/generic_md_recipe.md",
+  "url": "file://tests/samples/generic_md_recipe.md",
+  "description": "Recipe converted from Generic Markdown format"
+}
+]

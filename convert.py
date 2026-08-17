@@ -469,6 +469,13 @@ def process_directory(
     else:
         for ext in extensions:
             recipe_files.extend(input_dir.glob(f"*{ext}"))
+        if not recipe_files:
+            for ext in extensions:
+                recipe_files.extend(input_dir.rglob(f"*{ext}"))
+            if recipe_files:
+                print(
+                    f"{Colors.YELLOW}ℹ No recipe files found at root level of {input_dir}, but found {len(recipe_files)} file(s) in subdirectories (auto-enabling recursive scan).{Colors.ENDC}"
+                )
 
     if not recipe_files:
         print(f"{Colors.RED}No recipe files found in {input_dir}{Colors.ENDC}")

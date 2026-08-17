@@ -15,6 +15,7 @@ import yaml
 
 from .models import Recipe
 from .base import BaseIngredientParser
+from .units import normalize_unit
 
 logger = logging.getLogger(__name__)
 
@@ -270,7 +271,10 @@ def parse_html_with_schema(
     if ing_cfg:
         raw_ings = extract_xpath_values(tree, ing_cfg)
         for raw in raw_ings:
-            recipe.ingredients.append(ingredient_parser.parse(raw))
+            ingredient = ingredient_parser.parse(raw)
+            if ingredient.unit:
+                ingredient.unit = normalize_unit(ingredient.unit)
+            recipe.ingredients.append(ingredient)
 
     # Instructions
     inst_cfg = schema.fields.get("instructions")
