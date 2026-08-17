@@ -4,7 +4,7 @@
 import logging
 import re
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, Optional
 
 from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
@@ -24,7 +24,8 @@ class GenericMdParser(BaseRecipeParser):
     - Section header for Ingredients (e.g. "Ingredients:", "## Ingredients").
     - Ingredients list (one per line, optional empty lines or bullet points).
     - Section header for Preparation / Directions (e.g. "Preparation:", "Directions:").
-    - Preparation steps until end of file (lines without blank lines between them belong to the same step).
+    - Preparation steps until end of file / recipe separator.
+    - Multiple recipes per file separated by at least 12 dashes (--------------------).
     """
 
     def __init__(self, ingredient_parser: BaseIngredientParser):
@@ -105,8 +106,8 @@ class GenericMdParser(BaseRecipeParser):
         targets = ["preparation:", "directions:", "instructions:", "method:", "steps:"]
         return any(cleaned == t or cleaned.startswith(t) for t in targets)
 
-    def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
-        lines = content.splitlines()
+    def _parse_single_recipe_block(self, block_text: str, filepath: str = "") -> Optional[Recipe]:
+        lines = block_text.splitlines()
 
         title = "Untitled"
         start_idx = 0
@@ -116,7 +117,7 @@ class GenericMdParser(BaseRecipeParser):
             stripped = line.strip()
             if not stripped:
                 continue
-            # Skip explicit format tag if present at top
+            # Skip explicit format tag if present at top of block
             if re.match(
                 r"(?i)^\s*(?:\[format:|<!--\s*format:|#generic[-_]?md)", stripped
             ):
@@ -144,7 +145,6 @@ class GenericMdParser(BaseRecipeParser):
         for i in range(start_idx, len(lines)):
             line = lines[i]
             stripped = line.strip()
-            # print(f" [{state}] --> [{stripped}]")
 
             # Ignore explicit format tag lines
             if re.match(
@@ -165,7 +165,7 @@ class GenericMdParser(BaseRecipeParser):
             if state == "INGREDIENTS":
                 if not stripped:
                     continue
-                ing_text = self._clean_line(stripped.replace('--','-'))
+                ing_text = self._clean_line(stripped.replace("--", "-"))
                 if ing_text:
                     if self.ingredient_parser:
                         parsed_ing = self.ingredient_parser.parse(ing_text)
@@ -193,4 +193,15 @@ class GenericMdParser(BaseRecipeParser):
         flush_instruction()
 
         if recipe.title and (recipe.ingredients or recipe.instructions):
-            yield recipe
+            return recipe
+        return None
+
+    def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
+        # Split content into multiple recipe blocks separated by 12 or more dashes (with only whitespace around)
+        blocks = re.split(r"(?:^|\n)\s*-{12,}\s*(?:\n|$)", content)
+        for block in blocks:
+            if not block.strip():
+                continue
+            recipe = self._parse_single_recipe_block(block, filepath)
+            if recipe:
+                yield recipe

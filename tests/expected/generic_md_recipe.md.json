@@ -8,13 +8,13 @@
       "@type": "PropertyValue",
       "name": "flour",
       "value": 2,
-      "unitText": "cups"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "active dry yeast",
       "value": 1,
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
@@ -26,13 +26,13 @@
       "@type": "PropertyValue",
       "name": "olive oil",
       "value": 2,
-      "unitText": "tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "salt",
       "value": "1/2",
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",

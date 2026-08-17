@@ -1,0 +1,97 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Chocolate Fudge Brownies",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 2
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cocoa powder",
+      "value": "1/3",
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Melt butter and mix with sugar."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Stir in eggs and cocoa powder."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Bake at 350F for 20 minutes."
+    }
+  ],
+  "comment": "Imported from tests/samples/generic_md_multi.md",
+  "url": "file://tests/samples/generic_md_multi.md",
+  "description": "Recipe converted from Generic Markdown format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Simple Garlic Bread",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "French bread",
+      "value": 1,
+      "unitText": "loaf"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 4,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic, minced",
+      "value": 2,
+      "unitText": "clove"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Slice bread in half."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Spread garlic butter over bread."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Broil for 5 minutes until golden."
+    }
+  ],
+  "comment": "Imported from tests/samples/generic_md_multi.md",
+  "url": "file://tests/samples/generic_md_multi.md",
+  "description": "Recipe converted from Generic Markdown format"
+}
+]
