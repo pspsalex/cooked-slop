@@ -1,0 +1,77 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "SAMPLE ID CAPS RECIPE",
+  "recipeIngredient": [
+    "--CRUST:--",
+    {
+      "@type": "PropertyValue",
+      "name": "graham cracker crumbs",
+      "value": "1 1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "diet margarine",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    "--FILLING:--",
+    {
+      "@type": "PropertyValue",
+      "name": "unflavored gelatin",
+      "value": 1,
+      "unitText": "envelope"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "low-calorie whipped topping mix",
+      "value": 1,
+      "unitText": "packet"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "skim milk",
+      "value": "1 1/2",
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    "Combine crumbs with diet margarine. Press into pie pan and bake for 10 minutes. Prepare topping mix according to package directions. Spoon over crust and chill until set."
+  ],
+  "comment": "Imported from tests/samples/id_caps.txt",
+  "url": "file://tests/samples/id_caps.txt",
+  "description": "Recipe converted from ID Caps format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "SIMPLE SECOND RECIPE",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "eggs, beaten",
+      "value": 2
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "flour",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    "Mix all ingredients together in a large bowl. Pour into greased pan and bake at 350 degrees for 25 minutes."
+  ],
+  "comment": "Imported from tests/samples/id_caps.txt",
+  "url": "file://tests/samples/id_caps.txt",
+  "description": "Recipe converted from ID Caps format"
+}
+]

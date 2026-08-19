@@ -28,6 +28,7 @@ from .cookware import CookwareCSVParser
 from .mealmaster import MealMasterParser
 from .mastercook import MasterCookParser
 from .two_col import TwoColParser
+from .id_caps import IdCapsParser
 from .stubs import PdfParser, ImageParser, CsvParser
 
 __all__ = [
@@ -39,6 +40,7 @@ __all__ = [
     'ParserRegistry',
     'GenericTextParser',
     'TwoColParser',
+    'IdCapsParser',
     'MixedFormatParser',
     'CompuChefParser',
     'RicetteMdParser',

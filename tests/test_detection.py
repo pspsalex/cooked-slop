@@ -6,6 +6,7 @@ from parsers.mastercook import MasterCookParser
 from parsers.mealmaster import MealMasterParser
 from parsers.compuchef import CompuChefParser
 from parsers.nyc import NYCParser
+from parsers.id_caps import IdCapsParser
 from parsers.mixed import MixedFormatParser
 from parsers import get_ingredient_parser
 
@@ -179,4 +180,19 @@ def test_ingredient_unit_normalization(ingredient_parser):
 
     ing4 = Ingredient(raw="1 t salt", quantity="1", unit="t", name="salt")
     assert ing4.unit == "teaspoon"
+
+
+def test_id_caps_detection():
+    sample = """ 461559 -- DIABETIC DATE DAINTIES
+
+ 2 eggs
+1/2 c. flour
+
+ Beat eggs and flour together. Bake for 12 minutes.
+
+------------------------
+"""
+    score = IdCapsParser.detect("dummy.txt", sample)
+    assert score >= 0.90, f"Expected score >= 0.90 for ID Caps format, got {score}"
+
 
