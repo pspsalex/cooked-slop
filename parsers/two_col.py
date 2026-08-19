@@ -209,7 +209,7 @@ class TwoColParser(BaseRecipeParser):
         stripped = line.strip()
         if not stripped:
             return False
-        return line.startswith('\t') or (len(line) - len(line.lstrip(' '))) >= 2
+        return line.startswith('\t') or ((len(line) - len(line.lstrip(' '))) >= 2) or (':' not in line)
 
     def _split_two_columns(self, line: str) -> tuple[str, str]:
         """Split a line into two column strings (col1, col2)."""
