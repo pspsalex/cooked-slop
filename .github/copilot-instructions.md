@@ -1,10 +1,10 @@
 # GitHub Copilot Instructions
 
-**All project standards, architecture, and coding guidelines are in [`CLAUDE.md`](../CLAUDE.md).**
+**All project standards, architecture, and coding guidelines are in [`AGENTS.md`](../AGENTS.md).**
 Read it before making any changes.
 
 Key points summarized:
-- All parsers use `@ParserRegistry.register` — see CLAUDE.md for required methods
+- All parsers use `@ParserRegistry.register` — see AGENTS.md for required methods
 - Always use `./venv/bin/python3`, never bare `python3`
 - Always use `--no-nlp` when generating expected test output
 - Reference parser to copy from: `parsers/cookware.py`
@@ -25,4 +25,4 @@ Key points summarized:
 
 ---
 
-**Remember**: Code first, documentation only when asked. See [`CLAUDE.md`](../CLAUDE.md) for full details.
+**Remember**: Code first, documentation only when asked. See [`AGENTS.md`](../AGENTS.md) for full details.

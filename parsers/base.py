@@ -6,6 +6,11 @@ import traceback
 
 logger = logging.getLogger(__name__)
 
+def get_context_window(lines: list[str], start_idx: int, window_size: int = 15) -> str:
+    """Extract a sliding window of up to window_size lines starting at start_idx."""
+    end_idx = min(start_idx + window_size, len(lines))
+    return "\n".join(lines[start_idx:end_idx])
+
 class BaseIngredientParser:
     def parse(self, raw_line: str) -> Ingredient:
         raise NotImplementedError

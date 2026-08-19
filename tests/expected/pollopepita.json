@@ -1,0 +1,147 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "POLLO EN MOLE VERDE DE PEPITA (Breast of chicken in green pumpkin seed sauce)",
+  "recipeIngredient": [
+    "Step 1:",
+    {
+      "@type": "PropertyValue",
+      "name": "chicken breast",
+      "value": 6,
+      "unitText": "halves"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "onion, sliced",
+      "value": "1/2"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "parsley",
+      "value": 1,
+      "unitText": "sprig"
+    },
+    "pinch     thyme",
+    {
+      "@type": "PropertyValue",
+      "name": "water",
+      "value": 6,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic, peeled",
+      "value": 2,
+      "unitText": "clove"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "leaf",
+      "value": 1,
+      "unitText": "bay"
+    },
+    "salt to taste",
+    "Step 2:",
+    {
+      "@type": "PropertyValue",
+      "name": "hulled raw pumpkin seeds",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cumin seeds",
+      "value": "1/8",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "peppercorns",
+      "value": 6
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cloves",
+      "value": 2
+    },
+    "Step 3:",
+    {
+      "@type": "PropertyValue",
+      "name": "oz.can    tomato verde",
+      "value": 13
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "onion, coarsely chopped",
+      "value": "1/2"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "epazote",
+      "value": 3,
+      "unitText": "sprig"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cilantro",
+      "value": 3,
+      "unitText": "sprig"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "servanos, seeded & chopped",
+      "value": 4,
+      "unitText": "chile"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic, coarsely chopped",
+      "value": 2,
+      "unitText": "clove"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "lg.handful radish leaves",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "olive oil",
+      "value": 2,
+      "unitText": "T."
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Step 1: Put chicken and vegetables in large soup pot.  Add water and bring to boil.  Immediately lower heat, skimming off foam.  Add seasonings and simmer 10 minutes.  Cool.  Strain broth and remove fat."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Step 2: Heat a heavy, ungreased frying pan and add seeds, stirring until lightly toasted.  Be prepared for the pop!  Remove from heat and cool. Grind seeds, peppercorns, cloves and cumin very fine.  Put in small bowl with 1 cup broth, stirring until smooth."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Step 3: Blend vegetables together in food processor until very smooth.  In a large fireproof casserole, heat olive oil over medium high heat, add vegetable/herb mixture and cook, stirring regularly until thick - approx. 10 minutes.  Lower heat and add pumpkin seed mixture, stirring until well mixed.  Gradually add 2 cups broth, stirring gently with a wooden spoon about 20 minutes, over low heat."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "(Refrigerate, and reheat slowly if made in advance)"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Finishing: Add chicken and heat slowly until thoroughly warm.  Garnish with cilantro and radishes.  Serve with rice."
+    }
+  ],
+  "recipeYield": "6",
+  "comment": "Imported from tests/samples/pollopepita",
+  "url": "file://tests/samples/pollopepita",
+  "description": "Recipe converted from Two-Column Text format"
+}
+]

@@ -1,0 +1,146 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "GRILLED SALMON WITH HERB BUTTER",
+  "recipeIngredient": [
+    "Sauce:",
+    {
+      "@type": "PropertyValue",
+      "name": "olive oil",
+      "value": 1,
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "shallots, finely chopped",
+      "value": "2 1/2",
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tomatoes, seeded, peeled, cut into 1/4 inch cubes",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "fresh tarragon",
+      "value": 2,
+      "unitText": "sprig"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "heavy cream",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "dried thyme",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "fresh parsley",
+      "value": 4,
+      "unitText": "sprig"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic, finely minced",
+      "value": "3/4",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "rich chicken broth",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 16,
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "white wine",
+      "value": 2,
+      "unitText": "T."
+    },
+    "salt and pepper",
+    "Salmon:",
+    {
+      "@type": "PropertyValue",
+      "name": "skinless, boneless fillet of salmon (1 1/4 lbs.)",
+      "value": 1,
+      "unitText": "slab"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "parsley, finely chopped",
+      "value": 1,
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chives, finely chopped",
+      "value": 1,
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tarragon, finely chopped",
+      "value": 1,
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "baked, sun-dried tomatoes",
+      "value": 4,
+      "unitText": "oven"
+    },
+    "olive oil",
+    "salt to taste"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Preheat an outdoor grill to high.  Heat the 1 T. olive oil in a heavy saucepan and add the shallots and half teaspoon of garlic.  Cook over gentle heat without browning for 7-8 minutes.  Add tomatoes and salt and pepper to taste.  Tie sprigs of parsley and tarragon into a bundle, and add.  Add chicken broth and bring to a boil.  Cook about 30 seconds, then remove from heat."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Line a saucepan with a sieve and pour tomato sauce into it.  Drain, discard parsley/tarragon bundle, set aside tomato pulp.  Bring liquid to a boil, and add cream.  Cook over moderately high heat, stirring constantly, about 3 minutes."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Add butter fairly rapidly, 2-3 T. at a time, stirring constantly. Cook until butter is melted and sauce is smooth.  Add the tomato pulp, remaining garlic, thyme and wine.  Bring to simmer, then remove from heat."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Cut salmon cross-grain into four equal pieces.  Brush lightly on both sides with olive oil, and sprinkle with salt and pepper.  Brush grill with olive oil.  Cook about one minute.  Turn salmon a quarter-turn, and cook another minute.  Turn over, and repeat, extending cooking time to taste."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Reheat sauce and add chopped parsley, chives and tarragon.  Bring to a simmer, stirring."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "text": "Spoon portions of the sauce onto heated dinner plates.  Place salmon in center of the sauce, garnish with sun-dried tomatoes, and serve."
+    }
+  ],
+  "recipeYield": "4",
+  "comment": "Imported from tests/samples/herbsalmon",
+  "url": "file://tests/samples/herbsalmon",
+  "description": "Recipe converted from Two-Column Text format"
+}
+]

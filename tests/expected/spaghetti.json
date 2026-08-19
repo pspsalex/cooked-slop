@@ -1,0 +1,46 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "SPAGHETTI SAUCE",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "ground beef",
+      "value": "1 1/2",
+      "unitText": "pound"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tomato sauce",
+      "value": 24,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chili powder",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    "some water (to texture-taste)",
+    {
+      "@type": "PropertyValue",
+      "name": "onion, chopped",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tomato paste",
+      "value": 6,
+      "unitText": "ounce"
+    },
+    "oregano, salt, pepper, garlic powder"
+  ],
+  "recipeInstructions": [
+    "Brown onion and meat.  Drain.  Add tomato sauce and paste.  Simmer 15 minutes.  Add chili powder, salt, pepper, garlic powder, oregano, and water. Cook at least 3 hours."
+  ],
+  "comment": "Imported from tests/samples/spaghetti",
+  "url": "file://tests/samples/spaghetti",
+  "description": "Recipe converted from Two-Column Text format"
+}
+]

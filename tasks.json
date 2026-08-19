@@ -18,7 +18,7 @@
       "convert_sample": "./venv/bin/python3 convert.py tests/samples/cookware.csv -o /tmp/out.json --no-nlp",
       "regenerate_expected": "./venv/bin/python3 update_expected.py",
       "reference_parser": "parsers/cookware.py -- copy this when creating new parsers",
-      "key_docs": ["CLAUDE.md", "CONTRIBUTING.md"]
+      "key_docs": ["AGENTS.md", "CONTRIBUTING.md"]
     },
     "status_values": ["not done", "done"],
     "priority_values": ["P0 -- critical bug", "P1 -- important improvement", "P2 -- nice to have"]

@@ -27,6 +27,7 @@ from .cookware import CookwareCSVParser
 # imports mealmaster/mastercook but they must be listed here for clarity and __all__.
 from .mealmaster import MealMasterParser
 from .mastercook import MasterCookParser
+from .two_col import TwoColParser
 from .stubs import PdfParser, ImageParser, CsvParser
 
 __all__ = [
@@ -37,6 +38,7 @@ __all__ = [
     'get_ingredient_parser',
     'ParserRegistry',
     'GenericTextParser',
+    'TwoColParser',
     'MixedFormatParser',
     'CompuChefParser',
     'RicetteMdParser',

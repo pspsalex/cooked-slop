@@ -55,10 +55,26 @@ class MasterCookParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        header_sig = cls.HEADER_SIG
-
-        if re.search(header_sig, content_sample):
+        if not content_sample:
+            return 0.0
+        if re.search(cls.HEADER_SIG, content_sample):
             return 0.75
+
+        # Also check for structural markers within a context window
+        mc_markers = 0
+        if re.search(r'^Recipe By\s+:', content_sample, re.MULTILINE | re.IGNORECASE):
+            mc_markers += 1
+        if re.search(r'^Serving Size\s+:', content_sample, re.MULTILINE | re.IGNORECASE):
+            mc_markers += 1
+        if re.search(r'Amount\s+Measure\s+Ingredient\s+--', content_sample, re.MULTILINE):
+            mc_markers += 2
+        if re.search(r'^\s*[-]{4,}\s+[-]{8,}\s+[-]{12,}', content_sample, re.MULTILINE):
+            mc_markers += 2
+
+        if mc_markers >= 2:
+            return 0.85
+        elif mc_markers == 1:
+            return 0.60
 
         return 0.0
 
@@ -69,12 +85,19 @@ class MasterCookParser(BaseRecipeParser):
         # Split but keep the remainder of the line in the chunk
         parts = re.split(header_sig, content)
 
-        # The first part is usually preamble or empty
-        for recipe_text in parts[1:]:
-            if not recipe_text.strip():
-                continue
+        if len(parts) > 1:
+            # The first part is usually preamble or empty
+            for recipe_text in parts[1:]:
+                if not recipe_text.strip():
+                    continue
 
-            recipe = self._parse_single_mastercook(recipe_text)
+                recipe = self._parse_single_mastercook(recipe_text)
+                if recipe:
+                    recipe.source_format = self.source_format
+                    recipe.source_file = filepath
+                    yield recipe
+        elif content.strip():
+            recipe = self._parse_single_mastercook(content)
             if recipe:
                 recipe.source_format = self.source_format
                 recipe.source_file = filepath
@@ -86,13 +109,14 @@ class MasterCookParser(BaseRecipeParser):
         Reads until the next recipe header or EOF.
         """
         read_lines = 0
-        recipe_text = ""
+        recipe_text = first_line
 
         for line in f:
-            recipe_text += line
             read_lines += 1
             if re.search(self.end_re, line):
+                recipe_text += line
                 break
+            recipe_text += line
 
         if not recipe_text.strip():
             return (None, read_lines)
@@ -100,7 +124,7 @@ class MasterCookParser(BaseRecipeParser):
         recipe = self._parse_single_mastercook(recipe_text)
         if recipe:
             recipe.source_format = self.source_format
-            recipe.source_file = f.name
+            recipe.source_file = getattr(f, 'name', '')
             return (recipe, read_lines)
 
         return (None, read_lines)

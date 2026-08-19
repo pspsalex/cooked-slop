@@ -1,0 +1,69 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "BAKED LEMON CHICKEN WITH PEPPERS",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "olive oil",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "lemon juice",
+      "value": "1/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chopped Italian parsley",
+      "value": 2,
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "dried oregano",
+      "value": 1,
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "broiler/fryer chicken",
+      "value": "3-1/2",
+      "unitText": "pound"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "red peppers",
+      "value": 2,
+      "unitText": "large"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "green peppers",
+      "value": 2,
+      "unitText": "large"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": "3/4",
+      "unitText": "t."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "pepper",
+      "value": "1/8",
+      "unitText": "t."
+    }
+  ],
+  "recipeInstructions": [
+    "Combine all ingredients except chicken and vegetables.  Add chicken and marinate at room temperature for 1 hour, turning once.  Drain and bake chicken at 400 degrees for 35 minutes.  Cut peppers into 1/2-inch thick rings.  Saute 8 minutes.  Spoon peppers around chicken.  Makes 4 to 6 servings."
+  ],
+  "comment": "Imported from tests/samples/BAKEDLEM",
+  "url": "file://tests/samples/BAKEDLEM",
+  "description": "Recipe converted from Two-Column Text format"
+}
+]

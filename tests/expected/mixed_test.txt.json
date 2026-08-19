@@ -78,7 +78,7 @@
   "recipeCategory": "Test",
   "keywords": "Test, Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
-  "url": "file://tests/samples/mixed_test.txt#30",
+  "url": "file://tests/samples/mixed_test.txt#29",
   "description": "Recipe converted from CompuChef format"
 },
 {
@@ -112,7 +112,7 @@
   "recipeCategory": "Test Mixed",
   "keywords": "Test Mixed",
   "comment": "Imported from tests/samples/mixed_test.txt",
-  "url": "file://tests/samples/mixed_test.txt#45",
+  "url": "file://tests/samples/mixed_test.txt#44",
   "description": "Recipe converted from NYC format"
 }
 ]

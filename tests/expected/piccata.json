@@ -1,0 +1,74 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "VEAL PICCATA",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "boneless veal, cut 1/4 inch thick (or 4-6 cutlets)",
+      "value": "1 1/4",
+      "unitText": "pound"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "flour",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "pepper",
+      "value": "1/8",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "unsalted butter",
+      "value": 3,
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "grated lemon peel",
+      "value": 2,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "vegetable oil",
+      "value": 3,
+      "unitText": "T."
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "dry white wine",
+      "value": "2/3",
+      "unitText": "cup"
+    },
+    "lemon slices"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Cut meat into strips about 1 1/2 inches wide by 3 inches long. Mix together flour, salt and pepper, and lightly dust meat, shaking off excess.  Heat oil and 1 T. butter until melted.  Add meat and cook quickly, turning to brown both sides (about 4 minutes)."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Remove meat to warm platter.  To pan add wine and bring to boil, scraping occasionally.  Stir in lemon peel and remaining butter and heat until melted.  Spoon over meat and garnish with lemon slices."
+    }
+  ],
+  "recipeYield": "4",
+  "comment": "Imported from tests/samples/piccata",
+  "url": "file://tests/samples/piccata",
+  "description": "Recipe converted from Two-Column Text format"
+}
+]

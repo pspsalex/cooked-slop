@@ -4,14 +4,14 @@ This project is primarily authored and maintained by AI agents.
 
 ## For AI Agents
 
-**Read [`CLAUDE.md`](CLAUDE.md) first.** It contains all architecture, coding standards,
-testing procedures, and known issues.
+**Read [`AGENTS.md`](AGENTS.md) first.** It contains all architecture, coding standards,
+testing procedures, and common pitfalls.
 
 Key rules:
 - All parsers must use `@ParserRegistry.register` and be imported in `parsers/__init__.py`
 - Always use `./venv/bin/python3`, never bare `python3`
 - Always use `--no-nlp` when generating expected test output
-- Run `./venv/bin/python3 -m pytest tests/test_conversion.py` before submitting
+- Run `./venv/bin/python3 -m pytest tests/ -v` before submitting
 
 ## Bug Reports
 
