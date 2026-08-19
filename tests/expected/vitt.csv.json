@@ -15,7 +15,7 @@
       "@type": "PropertyValue",
       "name": "sugar",
       "value": 2,
-      "unitText": "tablespoons"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
@@ -34,25 +34,25 @@
       "@type": "PropertyValue",
       "name": "(8 oz.) cream cheese softened",
       "value": 1,
-      "unitText": "pkg."
+      "unitText": "package"
     },
     {
       "@type": "PropertyValue",
       "name": "sugar",
       "value": "1/2",
-      "unitText": "c."
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "peanut butter",
       "value": "1/4",
-      "unitText": "c."
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "vanilla",
       "value": 1,
-      "unitText": "tsp."
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
@@ -63,13 +63,13 @@
       "@type": "PropertyValue",
       "name": "frozen whipped topping, thawed",
       "value": 2,
-      "unitText": "c."
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "chocolate chips",
       "value": 1,
-      "unitText": "c."
+      "unitText": "cup"
     }
   ],
   "recipeInstructions": [
@@ -99,14 +99,14 @@
       "@type": "PropertyValue",
       "name": "of ground lean lamb",
       "value": 2,
-      "unitText": "pounds"
+      "unitText": "pound"
     },
     "salt and ground pepper",
     {
       "@type": "PropertyValue",
       "name": "of soft mild chevre",
       "value": 8,
-      "unitText": "ounces"
+      "unitText": "ounce"
     },
     "Raspberry-Mint sauce"
   ],
@@ -147,7 +147,7 @@
       "@type": "PropertyValue",
       "name": "mint leaves",
       "value": "1-1/2",
-      "unitText": "cups"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
@@ -159,7 +159,7 @@
       "@type": "PropertyValue",
       "name": "raspberry vinegar",
       "value": 2,
-      "unitText": "tablespoons"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
@@ -171,7 +171,7 @@
       "@type": "PropertyValue",
       "name": "superfine sugar",
       "value": "3-4",
-      "unitText": "tablespoons"
+      "unitText": "tablespoon"
     },
     "salt and ground black pepper"
   ],

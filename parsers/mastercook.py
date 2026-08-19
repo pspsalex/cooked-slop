@@ -4,7 +4,6 @@ import re
 from typing import Iterator, Optional
 from .models import Recipe, Ingredient
 from .base import BaseRecipeParser, BaseIngredientParser
-from .units import normalize_unit
 from .registry import ParserRegistry
 
 logger = logging.getLogger(__name__)
@@ -229,8 +228,6 @@ class MasterCookParser(BaseRecipeParser):
                 parsed = self.ingredient_parser.parse(((recipe.ingredients[-1].raw + " ") if is_continuation else "") + stripped.replace(" -- ", ", "))
 
                 if parsed.name:
-                    # Normalize unit
-                    parsed.unit = normalize_unit(parsed.unit)
                     if is_continuation:
                         recipe.ingredients[-1] = parsed
                     else:

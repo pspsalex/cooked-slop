@@ -4,7 +4,6 @@ import re
 from typing import Iterator, Optional
 from .models import Recipe, Ingredient
 from .base import BaseRecipeParser, BaseIngredientParser
-from .units import normalize_unit
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +162,7 @@ class CompuChefParser(BaseRecipeParser):
                         ing = Ingredient(
                             raw=line_stripped,
                             quantity=parts[0].strip(),
-                            unit=normalize_unit(parts[1].strip()),
+                            unit=parts[1].strip(),
                             name=' '.join(parts[2:]).strip()
                         )
                     recipe.ingredients.append(ing)

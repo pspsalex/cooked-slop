@@ -33,7 +33,7 @@
       "@type": "PropertyValue",
       "name": "bread",
       "value": 2,
-      "unitText": "slices"
+      "unitText": "slice"
     },
     {
       "@type": "PropertyValue",

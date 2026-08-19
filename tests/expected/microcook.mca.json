@@ -8,31 +8,31 @@
       "@type": "PropertyValue",
       "name": "Fresh mushrooms [med size]",
       "value": 2,
-      "unitText": "lb"
+      "unitText": "pound"
     },
     {
       "@type": "PropertyValue",
       "name": "PARKAY margerine",
       "value": 6,
-      "unitText": "tb"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Philadelphia Brand Cream Cheese [softened]",
       "value": 8,
-      "unitText": "oz"
+      "unitText": "ounce"
     },
     {
       "@type": "PropertyValue",
       "name": "Kraft Natural blue cheese [crumbled]",
       "value": "1/2",
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Onions [chopped]",
       "value": 2,
-      "unitText": "tb"
+      "unitText": "tablespoon"
     }
   ],
   "recipeInstructions": [
@@ -54,7 +54,7 @@
       "@type": "PropertyValue",
       "name": "Ground beef",
       "value": 1,
-      "unitText": "lb"
+      "unitText": "pound"
     },
     {
       "@type": "PropertyValue",
@@ -65,25 +65,25 @@
       "@type": "PropertyValue",
       "name": "Celery, diced",
       "value": 1,
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "#2 tomatoes",
       "value": 1,
-      "unitText": "cn"
+      "unitText": "can"
     },
     {
       "@type": "PropertyValue",
       "name": "Cabbage, shredded",
       "value": 4,
-      "unitText": "c"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Bread crumbs",
       "value": 1,
-      "unitText": "c"
+      "unitText": "cup"
     }
   ],
   "recipeInstructions": [

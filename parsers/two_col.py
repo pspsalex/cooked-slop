@@ -6,7 +6,6 @@ from typing import Iterator, List
 from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
 from .registry import ParserRegistry
-from .units import normalize_unit
 
 logger = logging.getLogger(__name__)
 
@@ -109,15 +108,9 @@ class TwoColParser(BaseRecipeParser):
         def flush_current_group():
             nonlocal col1_list, col2_list
             for text in col1_list:
-                parsed = self.ingredient_parser.parse(text)
-                if parsed.unit:
-                    parsed.unit = normalize_unit(parsed.unit)
-                recipe.ingredients.append(parsed)
+                recipe.ingredients.append(self.ingredient_parser.parse(text))
             for text in col2_list:
-                parsed = self.ingredient_parser.parse(text)
-                if parsed.unit:
-                    parsed.unit = normalize_unit(parsed.unit)
-                recipe.ingredients.append(parsed)
+                recipe.ingredients.append(self.ingredient_parser.parse(text))
             col1_list = []
             col2_list = []
 

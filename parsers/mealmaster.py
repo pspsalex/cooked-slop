@@ -8,7 +8,6 @@ from pathlib import Path
 from .base import BaseIngredientParser, BaseRecipeParser
 from .models import Ingredient, Recipe
 from .registry import ParserRegistry
-from .units import normalize_unit
 
 logger = logging.getLogger(__name__)
 
@@ -161,9 +160,6 @@ class MealMasterParser(BaseRecipeParser):
                     return
 
                 parsed = parser.parse(raw_text)
-                if parsed.unit:
-                    parsed.unit = normalize_unit(parsed.unit.strip())
-
                 recipe.ingredients.append(parsed)
 
             def parse(self, parser, recipe):

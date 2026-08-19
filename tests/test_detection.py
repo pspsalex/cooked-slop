@@ -158,3 +158,25 @@ Yield: 2 servings
     titles = [r.title for r in recipes]
     assert any("Alpha" in t for t in titles)
     assert any("Beta" in t for t in titles)
+
+
+def test_ingredient_unit_normalization(ingredient_parser):
+    # RegexIngredientParser unit normalization
+    ing1 = ingredient_parser.parse("2 Tbsp olive oil")
+    assert ing1.quantity == "2"
+    assert ing1.unit == "tablespoon"
+    assert ing1.name == "olive oil"
+
+    ing2 = ingredient_parser.parse("1 c sugar")
+    assert ing2.quantity == "1"
+    assert ing2.unit == "cup"
+    assert ing2.name == "sugar"
+
+    # Direct Ingredient instantiation unit normalization via __post_init__
+    from parsers.models import Ingredient
+    ing3 = Ingredient(raw="1 T sugar", quantity="1", unit="T", name="sugar")
+    assert ing3.unit == "tablespoon"
+
+    ing4 = Ingredient(raw="1 t salt", quantity="1", unit="t", name="salt")
+    assert ing4.unit == "teaspoon"
+

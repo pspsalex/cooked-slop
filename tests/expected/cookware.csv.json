@@ -14,7 +14,7 @@
       "@type": "PropertyValue",
       "name": "cream cheese, softened",
       "value": 8,
-      "unitText": "oz"
+      "unitText": "ounce"
     },
     {
       "@type": "PropertyValue",
@@ -26,31 +26,31 @@
       "@type": "PropertyValue",
       "name": "bacon",
       "value": 5,
-      "unitText": "slices"
+      "unitText": "slice"
     },
     {
       "@type": "PropertyValue",
       "name": "green onion, chopped",
       "value": 1,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "celery, chopped",
       "value": 1,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "green pepper, chopped",
       "value": 1,
-      "unitText": "Tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "dill weed",
       "value": "1/2",
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     "pepper to taste"
   ],

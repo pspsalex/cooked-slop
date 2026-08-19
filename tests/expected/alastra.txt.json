@@ -8,25 +8,25 @@
       "@type": "PropertyValue",
       "name": "ground lamb",
       "value": 1,
-      "unitText": "lb"
+      "unitText": "pound"
     },
     {
       "@type": "PropertyValue",
       "name": "chopped parsley",
       "value": 2,
-      "unitText": "tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "chopped fresh coriander",
       "value": 1,
-      "unitText": "tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "ground cumin",
       "value": "1/2",
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
@@ -37,20 +37,20 @@
       "@type": "PropertyValue",
       "name": "cayenne",
       "value": "1/4",
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     "salt to taste",
     {
       "@type": "PropertyValue",
       "name": "olive oil for pan frying",
       "value": 2,
-      "unitText": "tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "garlic, peeled",
       "value": 2,
-      "unitText": "cloves"
+      "unitText": "clove"
     },
     {
       "@type": "PropertyValue",
@@ -74,43 +74,43 @@
       "@type": "PropertyValue",
       "name": "tomatoes, chopped",
       "value": 2,
-      "unitText": "lbs"
+      "unitText": "pound"
     },
     {
       "@type": "PropertyValue",
       "name": "ground cumin",
       "value": 1,
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "freshly ground black pepper",
       "value": 1,
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "ground cinnamon",
       "value": "1/2",
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "fresh lemon juice",
       "value": 2,
-      "unitText": "tbsp"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "cayenne",
       "value": "1/4",
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "salt (or to taste)",
       "value": "1 1/2",
-      "unitText": "tsp"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",

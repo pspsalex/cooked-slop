@@ -4,7 +4,6 @@ import re
 from typing import Iterator
 from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
-from .units import normalize_unit
 from .registry import ParserRegistry
 
 @ParserRegistry.register
@@ -116,9 +115,9 @@ class RicetteParser(BaseRecipeParser):
                         if amount_words[0][0].isdigit() or amount_words[0].startswith('/'):
                             quantity = amount_words[0]
                             if len(amount_words) > 1:
-                                unit = normalize_unit(' '.join(amount_words[1:]))
+                                unit = ' '.join(amount_words[1:])
                         else:
-                            unit = normalize_unit(amount_part)
+                            unit = amount_part
 
                 recipe.ingredients.append(Ingredient(
                     raw=line.replace('====', '').strip(),

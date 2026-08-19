@@ -8,19 +8,19 @@
       "@type": "PropertyValue",
       "name": "Flour",
       "value": 2,
-      "unitText": "cups"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Sugar",
       "value": "1 3/4",
-      "unitText": "cups"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Baking soda",
       "value": "1 1/4",
-      "unitText": "teaspoons"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
@@ -32,19 +32,19 @@
       "@type": "PropertyValue",
       "name": "Cinnamon",
       "value": 2,
-      "unitText": "teaspoons"
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Olive oil",
       "value": "3/4",
-      "unitText": "cups"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Milk",
       "value": "1/2",
-      "unitText": "cups"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
@@ -56,7 +56,7 @@
       "@type": "PropertyValue",
       "name": "Finely grated raw carrots",
       "value": 3,
-      "unitText": "cups"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
@@ -68,25 +68,25 @@
       "@type": "PropertyValue",
       "name": "Cream cheese; softened",
       "value": 6,
-      "unitText": "ounces"
+      "unitText": "ounce"
     },
     {
       "@type": "PropertyValue",
       "name": "Butter; softened",
       "value": 6,
-      "unitText": "tablespoons"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "Powdered sugar",
       "value": "2 1/4",
-      "unitText": "cups"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",
       "name": "Vanilla extract",
       "value": "3/4",
-      "unitText": "teaspoons"
+      "unitText": "teaspoon"
     }
   ],
   "recipeInstructions": [

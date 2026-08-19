@@ -17,6 +17,7 @@ UNIT_MAP: dict[str, str] = {
     "cups":      "cup",
     # Tablespoon  (uppercase T = tablespoon is the culinary convention)
     "T":         "tablespoon",
+    "T.":         "tablespoon",
     "tb":        "tablespoon",
     "tbs":       "tablespoon",
     "tbs.":      "tablespoon",
@@ -26,6 +27,7 @@ UNIT_MAP: dict[str, str] = {
     "tablespoons": "tablespoon",
     # Teaspoon  (lowercase t = teaspoon is the culinary convention)
     "t":         "teaspoon",
+    "t.":         "teaspoon",
     "ts":        "teaspoon",
     "tsp":       "teaspoon",
     "tsp.":      "teaspoon",

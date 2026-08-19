@@ -2,6 +2,7 @@
 import re
 from .models import Ingredient
 from .base import BaseIngredientParser
+from .units import normalize_unit
 
 try:
     from ingredient_parser import parse_ingredient
@@ -15,26 +16,26 @@ except ImportError:
 class RegexIngredientParser(BaseIngredientParser):
     def parse(self, raw_line: str) -> Ingredient:
         stripped = raw_line.strip()
-        ingredient = Ingredient(raw=stripped)
         if not stripped or not any(c.isalnum() for c in stripped):
-            return ingredient
+            return Ingredient(raw=stripped)
 
         qty_pattern = r"^(\d+(?:\s+\d+/\d+|\.\d+|/\d+)?(?:\s*-\s*\d+(?:\s+\d+/\d+|\.\d+|/\d+)?)?)\s+"
         match = re.match(qty_pattern, stripped)
         if match:
-            ingredient.quantity = match.group(1).strip()
+            quantity = match.group(1).strip()
             remaining = stripped[match.end() :].lstrip()
             unit_pattern = r"^([a-zA-Z]+\.?)\s+"
             unit_match = re.match(unit_pattern, remaining)
 
             if unit_match:
-                ingredient.unit = unit_match.group(1).strip()
-                ingredient.name = remaining[unit_match.end() :].strip()
+                unit = normalize_unit(unit_match.group(1).strip())
+                name = remaining[unit_match.end() :].strip()
             else:
-                ingredient.name = remaining.strip()
+                unit = None
+                name = remaining.strip()
+            return Ingredient(raw=stripped, quantity=quantity, unit=unit, name=name)
         else:
-            ingredient.name = stripped
-        return ingredient
+            return Ingredient(raw=stripped, name=stripped)
 
 
 class NLPIngredientParser(BaseIngredientParser):
@@ -55,7 +56,7 @@ class NLPIngredientParser(BaseIngredientParser):
                     qty = qty_val
                 unit_val = str(parsed.amount[0].get("unit", ""))
                 if unit_val:
-                    unit = unit_val
+                    unit = normalize_unit(unit_val)
 
             return Ingredient(
                 raw=stripped,

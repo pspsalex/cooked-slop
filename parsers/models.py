@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 from dataclasses import dataclass, field
 from typing import List, Optional
+from .units import normalize_unit
 
 @dataclass
 class Ingredient:
@@ -10,6 +11,11 @@ class Ingredient:
     unit: Optional[str] = None
     name: Optional[str] = None
     comment: Optional[str] = None
+
+    def __post_init__(self):
+        if self.unit is not None:
+            self.unit = normalize_unit(self.unit)
+
 
 @dataclass
 class Recipe:

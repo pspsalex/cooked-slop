@@ -9,19 +9,19 @@
       "@type": "PropertyValue",
       "name": "garlic, minced",
       "value": 4,
-      "unitText": "cloves"
+      "unitText": "clove"
     },
     {
       "@type": "PropertyValue",
       "name": "butter",
       "value": 3,
-      "unitText": "tablespoons"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "olive oil",
       "value": 2,
-      "unitText": "tablespoons"
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",

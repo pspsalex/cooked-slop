@@ -90,7 +90,7 @@
       "@type": "PropertyValue",
       "name": "flour",
       "value": 2,
-      "unitText": "cups"
+      "unitText": "cup"
     },
     {
       "@type": "PropertyValue",

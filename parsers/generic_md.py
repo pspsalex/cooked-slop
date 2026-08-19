@@ -9,7 +9,6 @@ from typing import Iterator, Optional
 from .base import BaseRecipeParser, BaseIngredientParser
 from .models import Recipe, Ingredient
 from .registry import ParserRegistry
-from .units import normalize_unit
 
 logger = logging.getLogger(__name__)
 
@@ -168,10 +167,7 @@ class GenericMdParser(BaseRecipeParser):
                 ing_text = self._clean_line(stripped.replace("--", "-"))
                 if ing_text:
                     if self.ingredient_parser:
-                        parsed_ing = self.ingredient_parser.parse(ing_text)
-                        if parsed_ing.unit:
-                            parsed_ing.unit = normalize_unit(parsed_ing.unit)
-                        recipe.ingredients.append(parsed_ing)
+                        recipe.ingredients.append(self.ingredient_parser.parse(ing_text))
                     else:
                         recipe.ingredients.append(
                             Ingredient(raw=ing_text, name=ing_text)

@@ -9,7 +9,7 @@
       "@type": "PropertyValue",
       "name": "instant dry yeast",
       "value": 1,
-      "unitText": "pkg"
+      "unitText": "package"
     },
     {
       "@type": "PropertyValue",
@@ -76,7 +76,7 @@
       "@type": "PropertyValue",
       "name": "bacon cut into small pieces fried and drained",
       "value": "1/2",
-      "unitText": "lb"
+      "unitText": "pound"
     },
     {
       "@type": "PropertyValue",
@@ -94,7 +94,7 @@
       "@type": "PropertyValue",
       "name": "sliced pepperoni",
       "value": 6,
-      "unitText": "oz"
+      "unitText": "ounce"
     },
     {
       "@type": "PropertyValue",
@@ -112,13 +112,13 @@
       "@type": "PropertyValue",
       "name": "grated colby cheese",
       "value": 8,
-      "unitText": "oz"
+      "unitText": "ounce"
     },
     {
       "@type": "PropertyValue",
       "name": "grated monterey jack cheese",
       "value": 8,
-      "unitText": "oz"
+      "unitText": "ounce"
     },
     {
       "@type": "PropertyValue",
@@ -160,7 +160,7 @@
       "@type": "PropertyValue",
       "name": "(2.5-oz) chipped ham cut into small pieces with scissors",
       "value": 1,
-      "unitText": "pkg"
+      "unitText": "package"
     },
     {
       "@type": "PropertyValue",
@@ -172,7 +172,7 @@
       "@type": "PropertyValue",
       "name": "(12-oz) shredded mozzarella cheese",
       "value": 1,
-      "unitText": "pkg"
+      "unitText": "package"
     },
     "Half of a 14-oz jar of ragu pizza quick"
   ],

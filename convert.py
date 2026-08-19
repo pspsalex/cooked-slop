@@ -14,7 +14,6 @@ from typing import List, Optional, Any, Iterator, Union
 # Import parsers
 from parsers import Recipe, BaseIngredientParser, ParserRegistry, get_ingredient_parser
 from parsers.llm_parser import LLMRecipeParser
-from parsers.units import normalize_unit
 
 # --- Sharding helpers ---
 def _get_tokens(text: str) -> set[str]:
