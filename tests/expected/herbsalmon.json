@@ -9,13 +9,13 @@
       "@type": "PropertyValue",
       "name": "olive oil",
       "value": 1,
-      "unitText": "T."
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "shallots, finely chopped",
       "value": "2 1/2",
-      "unitText": "T."
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
@@ -63,13 +63,13 @@
       "@type": "PropertyValue",
       "name": "butter",
       "value": 16,
-      "unitText": "T."
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "white wine",
       "value": 2,
-      "unitText": "T."
+      "unitText": "tablespoon"
     },
     "salt and pepper",
     "Salmon:",
@@ -83,19 +83,19 @@
       "@type": "PropertyValue",
       "name": "parsley, finely chopped",
       "value": 1,
-      "unitText": "T."
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "chives, finely chopped",
       "value": 1,
-      "unitText": "T."
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "tarragon, finely chopped",
       "value": 1,
-      "unitText": "T."
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",

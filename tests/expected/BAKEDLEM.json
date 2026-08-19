@@ -20,13 +20,13 @@
       "@type": "PropertyValue",
       "name": "chopped Italian parsley",
       "value": 2,
-      "unitText": "T."
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
       "name": "dried oregano",
       "value": 1,
-      "unitText": "T."
+      "unitText": "tablespoon"
     },
     {
       "@type": "PropertyValue",
@@ -50,13 +50,13 @@
       "@type": "PropertyValue",
       "name": "salt",
       "value": "3/4",
-      "unitText": "t."
+      "unitText": "teaspoon"
     },
     {
       "@type": "PropertyValue",
       "name": "pepper",
       "value": "1/8",
-      "unitText": "t."
+      "unitText": "teaspoon"
     }
   ],
   "recipeInstructions": [
