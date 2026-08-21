@@ -21,19 +21,9 @@ provider:
   temperature: 0.1
 
 prompt:
-  # System prompt — keep concise for small models
-  system: |
-    You are a recipe extraction assistant. Given raw recipe text, extract the
-    recipe data and return ONLY a valid JSON object. No markdown, no extra text.
-    Use this exact schema:
-    {
-      "title": "string",
-      "categories": ["string"],
-      "yield_amount": "string",
-      "ingredients": ["string"],
-      "instructions": ["string"]
-    }
-    If a field cannot be determined, use an empty string or empty list.
+  # Extraction mode: "marked" (default, transforms text to Markdown then parses deterministically)
+  # or "json" (direct JSON extraction by LLM).
+  mode: "marked"
 
   # Maximum characters of file content sent to the model.
   # Keep low for small/quantised models to avoid context exhaustion.

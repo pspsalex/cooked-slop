@@ -97,13 +97,13 @@ class GenericMdParser(BaseRecipeParser):
         return text.strip(" -*")
 
     def _is_ingredients_header(self, line: str) -> bool:
-        cleaned = re.sub(r"[^a-zA-Z:]", "", line).lower()
-        return cleaned == "ingredients:" or cleaned.startswith("ingredients:")
+        cleaned = re.sub(r"[^a-zA-Z:]", "", line).lower().rstrip(":")
+        return cleaned == "ingredients"
 
     def _is_instructions_header(self, line: str) -> bool:
-        cleaned = re.sub(r"[^a-zA-Z:]", "", line).lower()
-        targets = ["preparation:", "directions:", "instructions:", "method:", "steps:"]
-        return any(cleaned == t or cleaned.startswith(t) for t in targets)
+        cleaned = re.sub(r"[^a-zA-Z:]", "", line).lower().rstrip(":")
+        targets = {"preparation", "directions", "instructions", "method", "steps"}
+        return cleaned in targets
 
     def _parse_single_recipe_block(self, block_text: str, filepath: str = "") -> Optional[Recipe]:
         lines = block_text.splitlines()
@@ -161,10 +161,29 @@ class GenericMdParser(BaseRecipeParser):
                 state = "INSTRUCTIONS"
                 continue
 
+            if state == "PREAMBLE":
+                if not stripped:
+                    continue
+                # Extract metadata if present
+                m_yield = re.match(r"(?i)^(?:yield|yields|servings|serves|makes):\s*(.+)$", stripped)
+                if m_yield:
+                    recipe.yield_amount = m_yield.group(1).strip()
+                    continue
+                m_cat = re.match(r"(?i)^(?:categories|category|tags|keywords):\s*(.+)$", stripped)
+                if m_cat:
+                    cats = [c.strip() for c in m_cat.group(1).split(",") if c.strip()]
+                    recipe.categories.extend(cats)
+                    continue
+                m_desc = re.match(r"(?i)^(?:description|summary):\s*(.+)$", stripped)
+                if m_desc:
+                    recipe.description = m_desc.group(1).strip()
+                    continue
+
             if state == "INGREDIENTS":
                 if not stripped:
                     continue
                 ing_text = self._clean_line(stripped.replace("--", "-"))
+                ing_text = re.sub(r"^#+\s*", "", ing_text)
                 if ing_text:
                     if self.ingredient_parser:
                         recipe.ingredients.append(self.ingredient_parser.parse(ing_text))
@@ -177,12 +196,13 @@ class GenericMdParser(BaseRecipeParser):
                     flush_instruction()
                     continue
 
-                # If this line explicitly starts a new numbered item or bullet list item, flush previous step
-                is_new_list_item = bool(re.match(r"^(?:[-*+•]|\d+[.)])\s+", stripped))
+                # If this line explicitly starts a new numbered item or bullet list item or sub-header, flush previous step
+                is_new_list_item = bool(re.match(r"^(?:[-*+•]|\d+[.)]|#+)\s+", stripped))
                 if is_new_list_item and current_instruction_step:
                     flush_instruction()
 
                 inst_text = self._clean_line(stripped)
+                inst_text = re.sub(r"^#+\s*", "", inst_text)
                 if inst_text:
                     current_instruction_step.append(inst_text)
 

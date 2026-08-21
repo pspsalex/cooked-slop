@@ -23,6 +23,7 @@ import requests
 import yaml
 
 from .base import BaseIngredientParser, BaseRecipeParser
+from .generic_md import GenericMdParser
 from .models import Ingredient, Recipe
 
 logger = logging.getLogger(__name__)
@@ -52,6 +53,23 @@ _DEFAULT_SYSTEM = (
     '  "instructions": ["string"]\n'
     '}\n'
     "If a field cannot be determined, use an empty string or empty list."
+)
+
+_DEFAULT_MARKED_SYSTEM = (
+    "You are a specialized recipe extraction assistant.\n"
+    "Your job is to convert raw unstructured text strictly into standard marked Markdown recipe format.\n\n"
+    "Guidelines:\n"
+    "1. Place the title on line 1 as a level 1 heading: `# Recipe Title`.\n"
+    "2. If mentioned, include metadata lines directly under title, e.g., `Yield: ...`, `Prep Time: ...`, `Categories: ...`.\n"
+    "3. Create an ingredients section starting with header `## Ingredients`.\n"
+    "   - List EVERY ingredient line starting with `- `.\n"
+    "   - Use sub-headers like `### For the crust` to group ingredients if sub-sections exist.\n"
+    "   - Do NOT omit, summarize, alter, or miss any ingredients.\n"
+    "4. Create an instructions section starting with header `## Instructions`.\n"
+    "   - List every instruction step line-by-line starting with step numbers `1. `, `2. ` or bullets `- `.\n"
+    "   - Use sub-headers like `### Baking` to group steps if sub-sections exist.\n"
+    "   - Do NOT omit, summarize, or skip any cooking steps.\n"
+    "5. Return ONLY the marked Markdown content without code block backticks."
 )
 
 
@@ -128,6 +146,17 @@ class RecipeSanityChecker:
             warnings.append(f"yield_amount has no digit: {yield_amount!r}")
 
         return warnings
+
+    def check_recipe(self, recipe: Recipe) -> List[str]:
+        """Applies sanity checks to a Recipe dataclass object."""
+        data = {
+            "title": recipe.title,
+            "ingredients": [i.raw for i in recipe.ingredients],
+            "instructions": recipe.instructions,
+            "categories": recipe.categories,
+            "yield_amount": recipe.yield_amount,
+        }
+        return self.check(data, json_ok=True)
 
 
 # ---------------------------------------------------------------------------
@@ -218,8 +247,15 @@ class LLMRecipeParser(BaseRecipeParser):
 
         cfg = self._load_config(config_path)
         self._client = LLMClient(cfg.get("provider", {}))
-        self._system_prompt: str = cfg.get("prompt", {}).get("system", _DEFAULT_SYSTEM).strip()
-        self._max_input_chars: int = int(cfg.get("prompt", {}).get("max_input_chars", 6000))
+        prompt_cfg = cfg.get("prompt", {})
+        self._mode: str = prompt_cfg.get("mode", "marked").lower()
+        if "system" in prompt_cfg:
+            self._system_prompt = prompt_cfg["system"].strip()
+        else:
+            self._system_prompt = (
+                _DEFAULT_SYSTEM if self._mode == "json" else _DEFAULT_MARKED_SYSTEM
+            )
+        self._max_input_chars: int = int(prompt_cfg.get("max_input_chars", 6000))
         self._sanity = RecipeSanityChecker(cfg.get("sanity", {}))
 
     # ------------------------------------------------------------------
@@ -252,39 +288,72 @@ class LLMRecipeParser(BaseRecipeParser):
                 filepath,
             )
 
-        user_msg = (
-            f"Extract the recipe from the following text:\n\n```\n{truncated}\n```"
-        )
-
-        try:
-            raw_reply = self._client.chat(self._system_prompt, user_msg)
-        except requests.RequestException as exc:
-            logger.error("LLM request failed for %s: %s", filepath, exc)
-            return
-
-        data, json_ok = _extract_json(raw_reply)
-        if data is None:
-            logger.error(
-                "Could not extract JSON from LLM reply for %s.\nReply was:\n%s",
-                filepath,
-                raw_reply[:500],
+        if self._mode == "json":
+            user_msg = (
+                f"Extract the recipe from the following text:\n\n```\n{truncated}\n```"
             )
-            return
 
-        warnings = self._sanity.check(data, json_ok=json_ok)
+            try:
+                raw_reply = self._client.chat(self._system_prompt, user_msg)
+            except requests.RequestException as exc:
+                logger.error("LLM request failed for %s: %s", filepath, exc)
+                return
 
-        recipe = self._build_recipe(data, filepath)
+            data, json_ok = _extract_json(raw_reply)
+            if data is None:
+                logger.error(
+                    "Could not extract JSON from LLM reply for %s.\nReply was:\n%s",
+                    filepath,
+                    raw_reply[:500],
+                )
+                return
 
-        if warnings:
-            flag_msg = "⚠ HALLUCINATION_FLAG: " + "; ".join(warnings)
-            logger.warning("Sanity issues in %s: %s", filepath, "; ".join(warnings))
-            # Preserve any description the recipe already has
-            if recipe.description:
-                recipe.description = f"{flag_msg} | {recipe.description}"
-            else:
-                recipe.description = flag_msg
+            warnings = self._sanity.check(data, json_ok=json_ok)
 
-        yield recipe
+            recipe = self._build_recipe(data, filepath)
+
+            if warnings:
+                flag_msg = "⚠ HALLUCINATION_FLAG: " + "; ".join(warnings)
+                logger.warning("Sanity issues in %s: %s", filepath, "; ".join(warnings))
+                if recipe.description:
+                    recipe.description = f"{flag_msg} | {recipe.description}"
+                else:
+                    recipe.description = flag_msg
+
+            yield recipe
+        else:
+            user_msg = (
+                f"Extract and format the recipe from the following raw text into marked Markdown:\n\n```\n{truncated}\n```"
+            )
+
+            try:
+                raw_reply = self._client.chat(self._system_prompt, user_msg)
+            except requests.RequestException as exc:
+                logger.error("LLM request failed for %s: %s", filepath, exc)
+                return
+
+            clean_markdown = re.sub(
+                r"^```(?:markdown|md)?\s*|\s*```$", "", raw_reply.strip(), flags=re.MULTILINE
+            )
+
+            md_parser = GenericMdParser(self.ingredient_parser)
+            parsed_recipes = list(md_parser.parse_content(clean_markdown, filepath))
+
+            if not parsed_recipes:
+                logger.error("Could not parse marked Markdown from LLM reply for %s.", filepath)
+                return
+
+            for recipe in parsed_recipes:
+                recipe.source_format = self.source_format
+                warnings = self._sanity.check_recipe(recipe)
+                if warnings:
+                    flag_msg = "⚠ HALLUCINATION_FLAG: " + "; ".join(warnings)
+                    logger.warning("Sanity issues in %s: %s", filepath, "; ".join(warnings))
+                    if recipe.description:
+                        recipe.description = f"{flag_msg} | {recipe.description}"
+                    else:
+                        recipe.description = flag_msg
+                yield recipe
 
     # ------------------------------------------------------------------
     # Helpers
