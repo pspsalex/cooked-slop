@@ -1,16 +1,32 @@
 # SPDX-License-Identifier: MIT
 import re
+from typing import Optional
 from .models import Ingredient
 from .base import BaseIngredientParser
 from .units import normalize_unit
 
-try:
-    from ingredient_parser import parse_ingredient
+_parse_ingredient = None
+_HAS_NLP_PARSER: Optional[bool] = None
 
-    HAS_NLP_PARSER = True
-except ImportError:
-    parse_ingredient = None
-    HAS_NLP_PARSER = False
+
+def is_nlp_available() -> bool:
+    """Checks if ingredient-parser-nlp is available, loading it lazily."""
+    global _parse_ingredient, _HAS_NLP_PARSER
+    if _HAS_NLP_PARSER is None:
+        try:
+            from ingredient_parser import parse_ingredient
+            _parse_ingredient = parse_ingredient
+            _HAS_NLP_PARSER = True
+        except ImportError:
+            _parse_ingredient = None
+            _HAS_NLP_PARSER = False
+    return _HAS_NLP_PARSER
+
+
+def __getattr__(name: str):
+    if name == "HAS_NLP_PARSER":
+        return is_nlp_available()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 class RegexIngredientParser(BaseIngredientParser):
@@ -44,10 +60,10 @@ class NLPIngredientParser(BaseIngredientParser):
 
     def parse(self, raw_line: str) -> Ingredient:
         stripped = raw_line.strip()
-        if not HAS_NLP_PARSER:
+        if not is_nlp_available() or _parse_ingredient is None:
             return self._fallback.parse(raw_line)
         try:
-            parsed = parse_ingredient(stripped)
+            parsed = _parse_ingredient(stripped)
             qty = None
             unit = None
             if parsed.amount:
@@ -70,6 +86,7 @@ class NLPIngredientParser(BaseIngredientParser):
 
 
 def get_ingredient_parser(use_nlp: bool = True) -> BaseIngredientParser:
-    if use_nlp and HAS_NLP_PARSER:
+    if use_nlp and is_nlp_available():
         return NLPIngredientParser()
     return RegexIngredientParser()
+
