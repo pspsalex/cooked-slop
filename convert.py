@@ -242,7 +242,7 @@ class JSONStreamWriter:
 
 
 # --- CLI and Processing Logic ---
-def parse_arguments() -> argparse.Namespace:
+def parse_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Convert Recipes (MealMaster, MasterCook, PDF, HTML, CSV) to schema.org JSON-LD format",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -316,7 +316,7 @@ def parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="Output publishing dates in the resulting json."
     )
-    return parser.parse_args()
+    return parser.parse_args(args)
 
 
 def convert_recipe_file(
@@ -530,8 +530,8 @@ def process_directory(
         print()
 
 
-def main():
-    args = parse_arguments()
+def main(argv: Optional[List[str]] = None):
+    args = parse_arguments(argv)
 
     # Configure logging based on flags
     # -v/--verbose sets INFO level, but doesn't enable TRACE for SQL
@@ -562,9 +562,9 @@ def main():
     use_nlp = not args.no_nlp
     ingredient_parser = get_ingredient_parser(use_nlp=use_nlp)
 
-    from parsers.ingredients import HAS_NLP_PARSER
+    from parsers.ingredients import is_nlp_available
 
-    if HAS_NLP_PARSER and use_nlp:
+    if is_nlp_available() and use_nlp:
         print(f"{Colors.GREEN}✓ Using NLP Ingredient Parser{Colors.ENDC}")
     else:
         print(f"{Colors.YELLOW}ℹ Using Regex Fallback Ingredient Parser{Colors.ENDC}")

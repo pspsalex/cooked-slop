@@ -14,11 +14,21 @@ from .html_config import (
 
 logger = logging.getLogger(__name__)
 
-try:
-    from recipe_scrapers import scrape_html
-    HAS_RECIPE_SCRAPERS = True
-except ImportError:
-    HAS_RECIPE_SCRAPERS = False
+_scrape_html = None
+_HAS_RECIPE_SCRAPERS = None
+
+
+def _get_scrape_html():
+    global _scrape_html, _HAS_RECIPE_SCRAPERS
+    if _HAS_RECIPE_SCRAPERS is None:
+        try:
+            from recipe_scrapers import scrape_html
+            _scrape_html = scrape_html
+            _HAS_RECIPE_SCRAPERS = True
+        except ImportError:
+            _scrape_html = None
+            _HAS_RECIPE_SCRAPERS = False
+    return _scrape_html
 
 
 @ParserRegistry.register
@@ -70,7 +80,8 @@ class HtmlParser(BaseRecipeParser):
             except Exception as e:
                 logger.debug("XPath HTML schema parsing failed for %s: %s", filepath, e)
 
-        if not HAS_RECIPE_SCRAPERS:
+        scraper_fn = _get_scrape_html()
+        if not scraper_fn:
             logger.warning(
                 "recipe-scrapers library not installed and no valid XPath schema matched. Skipping %s.",
                 filepath,
@@ -78,7 +89,7 @@ class HtmlParser(BaseRecipeParser):
             return
 
         try:
-            scraper = scrape_html(
+            scraper = scraper_fn(
                 content,
                 org_url="https://localhost/" + Path(filepath).name,
                 supported_only=False,
@@ -113,3 +124,4 @@ class HtmlParser(BaseRecipeParser):
         except Exception as e:
             logger.warning("HTML parsing error for %s: %s", filepath, e)
             return
+

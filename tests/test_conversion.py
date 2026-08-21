@@ -1,25 +1,20 @@
 import json
-import subprocess
-import sys
 import pytest
 from pathlib import Path
+from convert import main as convert_main
 
-# Path to the conversion script
-CONVERT_SCRIPT = Path(__file__).parent.parent / "convert.py"
 SAMPLES_DIR = Path(__file__).parent / "samples"
 EXPECTED_DIR = Path(__file__).parent / "expected"
 
 def run_conversion(input_path: Path, output_path: Path):
     """Runs the convert.py script on a single file."""
     cmd = [
-        sys.executable,
-        str(CONVERT_SCRIPT),
         str(input_path),
         "--output", str(output_path),
         "--no-nlp"  # Use regex parser to be deterministic in tests
     ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    assert result.returncode == 0, f"Conversion failed for {input_path}\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+    ret_code = convert_main(cmd)
+    assert ret_code == 0, f"Conversion failed for {input_path}"
 
 def get_samples():
     """Finds all non-hidden files in the samples directory."""
@@ -76,16 +71,14 @@ def test_sharded_conversion(tmp_path: Path):
     out_dir = tmp_path / "sharded_out"
 
     cmd = [
-        sys.executable,
-        str(CONVERT_SCRIPT),
         str(sample_path),
         "-o",
         str(out_dir),
         "--shard",
         "--no-nlp",
     ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    assert result.returncode == 0, f"STDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+    ret_code = convert_main(cmd)
+    assert ret_code == 0, f"Conversion failed for {sample_path}"
 
     # Verify that at least one .json file exists in a sub-sub-directory under out_dir (e.g. out_dir/xx/yy/*.json)
     json_files = list(out_dir.rglob("*.json"))
@@ -94,4 +87,5 @@ def test_sharded_conversion(tmp_path: Path):
         rel = jf.relative_to(out_dir)
         # Should have structure bucket1/bucket2/filename.json (3 parts)
         assert len(rel.parts) == 3, f"Expected 3 path components (xx/yy/file.json), got {rel.parts}"
+
 
