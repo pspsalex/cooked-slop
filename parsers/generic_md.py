@@ -85,8 +85,11 @@ class GenericMdParser(BaseRecipeParser):
         title = raw_title.strip()
         # Remove leading Markdown headings (# Title, ## Title)
         title = re.sub(r"^#+\s*", "", title)
+        # Handle trailing backslashes or attached description lines
+        if "\\" in title:
+            title = title.split("\\")[0]
         # Remove outer bold/italic markup (**Title**, *Title*, ___Title___)
-        title = re.sub(r"^(?:\*{1,3}|_{1,3})(.*?)(?:\*{1,3}|_{1,3})$", r"\1", title)
+        title = re.sub(r"^(?:\*{1,3}|_{1,3})(.*?)(?:\*{1,3}|_{1,3})$", r"\1", title.strip())
         return title.strip()
 
     def _clean_line(self, line: str) -> str:
@@ -178,9 +181,20 @@ class GenericMdParser(BaseRecipeParser):
                 if m_desc:
                     recipe.description = m_desc.group(1).strip()
                     continue
+                m_time = re.match(r"(?i)^\s*(?:\*{1,3}|_*)?(?:prep|cook|baking|bake|total)(?:\s+time)?:\*?\s*(.+)$", stripped)
+                if m_time:
+                    continue
+
+                # Auto-transition to INGREDIENTS if line starts with a list marker or digit/quantity
+                if re.match(r"^(?:[-*+•]|\d+[.)]|\d+\s+[a-zA-Z])", stripped):
+                    state = "INGREDIENTS"
+                    # fall through to INGREDIENTS block below
 
             if state == "INGREDIENTS":
                 if not stripped:
+                    continue
+                # Skip timing lines if present inside ingredients block
+                if re.match(r"(?i)^\s*(?:\*{1,3}|_*)?(?:prep|cook|baking|bake|total)(?:\s+time)?:\*?\s*(.+)$", stripped):
                     continue
                 ing_text = self._clean_line(stripped.replace("--", "-"))
                 ing_text = re.sub(r"^#+\s*", "", ing_text)
@@ -213,11 +227,99 @@ class GenericMdParser(BaseRecipeParser):
         return None
 
     def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
-        # Split content into multiple recipe blocks separated by 12 or more dashes (with only whitespace around)
-        blocks = re.split(r"(?:^|\n)\s*-{12,}\s*(?:\n|$)", content)
+        # Pre-process any ASCII/Markdown grid tables into unrolled linear text
+        clean_content = unroll_markdown_tables(content)
+        # Split content into multiple recipe blocks separated by 12 or more dashes
+        blocks = re.split(r"(?:^|\n)\s*-{12,}\s*(?:\n|$)", clean_content)
         for block in blocks:
             if not block.strip():
                 continue
             recipe = self._parse_single_recipe_block(block, filepath)
             if recipe:
                 yield recipe
+
+
+def unroll_markdown_tables(text: str) -> str:
+    """Pre-processes text to unroll ASCII grid tables (+---+) and pipe tables into linear text."""
+    lines = text.splitlines()
+    out = []
+    table_border_re = re.compile(r"^\+[-+:]+\+$")
+    in_grid_table = False
+    table_rows = []
+    current_row = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+        if table_border_re.match(stripped):
+            if not in_grid_table:
+                in_grid_table = True
+                current_row = []
+            else:
+                if current_row:
+                    table_rows.append(current_row)
+                    current_row = []
+            i += 1
+            continue
+        if in_grid_table:
+            if stripped.startswith("|"):
+                current_row.append(line)
+                i += 1
+                continue
+            else:
+                if current_row:
+                    table_rows.append(current_row)
+                    current_row = []
+                out.extend(_process_grid_table_rows(table_rows))
+                table_rows = []
+                in_grid_table = False
+                out.append(line)
+                i += 1
+                continue
+        else:
+            out.append(line)
+            i += 1
+    if in_grid_table and (table_rows or current_row):
+        if current_row:
+            table_rows.append(current_row)
+        out.extend(_process_grid_table_rows(table_rows))
+    return "\n".join(out)
+
+
+def _process_grid_table_rows(table_rows: list[list[str]]) -> list[str]:
+    res = []
+    for row in table_rows:
+        col_cells: dict[int, list[str]] = {}
+        for line in row:
+            parts = line.split("|")
+            if len(parts) >= 3:
+                cols = parts[1:-1]
+                for c_idx, cell in enumerate(cols):
+                    col_cells.setdefault(c_idx, []).append(cell.rstrip("\\").strip())
+        for c_idx in sorted(col_cells.keys()):
+            cell_lines = col_cells[c_idx]
+            current_item = []
+            for cl in cell_lines:
+                cl_clean = cl.strip().rstrip("\\").strip()
+                if not cl_clean or cl_clean == ".":
+                    if current_item:
+                        item_str = " ".join(current_item).strip()
+                        item_str = re.sub(r"^\*\*(.*?)\*\*$", r"\1", item_str)
+                        if item_str:
+                            res.append(item_str)
+                        current_item = []
+                else:
+                    if current_item and (cl_clean.startswith("**") or cl_clean.startswith("*")):
+                        item_str = " ".join(current_item).strip()
+                        item_str = re.sub(r"^\*\*(.*?)\*\*$", r"\1", item_str)
+                        if item_str:
+                            res.append(item_str)
+                        current_item = []
+                    cl_clean_unbold = re.sub(r"^\*\*(.*?)\*\*$", r"\1", cl_clean)
+                    current_item.append(cl_clean_unbold)
+            if current_item:
+                item_str = " ".join(current_item).strip()
+                item_str = re.sub(r"^\*\*(.*?)\*\*$", r"\1", item_str)
+                if item_str:
+                    res.append(item_str)
+    return res

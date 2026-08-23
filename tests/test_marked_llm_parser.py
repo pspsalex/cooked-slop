@@ -138,3 +138,26 @@ sanity:
     assert len(recipe.ingredients) == 3
     assert len(recipe.instructions) == 3
     assert recipe.ingredients[0].raw == "1 cup cinnamon sugar mix"
+
+
+def test_unroll_grid_table_potato_casserole():
+    from pathlib import Path
+    sample_file = Path("nux/llm-samples/Potato beef casserole.docx.md")
+    if not sample_file.exists():
+        pytest.skip("sample file not found")
+
+    content = sample_file.read_text(encoding="utf-8")
+    ing_parser = RegexIngredientParser()
+    md_parser = GenericMdParser(ing_parser)
+
+    recipes = list(md_parser.parse_content(content, str(sample_file)))
+    assert len(recipes) == 1
+    recipe = recipes[0]
+    assert recipe.title == "Potato-Pan Burger"
+    # All 15 ingredient items extracted from table columns
+    raw_ings = [i.raw for i in recipe.ingredients]
+    assert any("2 lb. ground beef" in i for i in raw_ings)
+    assert any("1/4 cup butter or margarine" in i for i in raw_ings)
+    assert any("2 cups packaged instant mashed potato flakes" in i for i in raw_ings)
+    assert len(recipe.ingredients) >= 15
+

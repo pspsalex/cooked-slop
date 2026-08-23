@@ -3,19 +3,20 @@
 # Usage: python3 convert.py <input> --llm-config configs/my_llm.yaml -o output.json
 
 provider:
-  # Base URL for an OpenAI-compatible API endpoint.
-  # Ollama default: http://localhost:11434/v1
-  # OpenAI:         https://api.openai.com/v1
-  base_url: "http://localhost:11434/v1"
+  # Base URL for local Ollama or OpenAI-compatible endpoint.
+  # Ollama Native API (default): http://localhost:11434/api
+  # Ollama OpenAI-compat:         http://localhost:11434/v1
+  # OpenAI:                      https://api.openai.com/v1
+  base_url: "http://localhost:11434/api"
 
   # Model identifier (must be pulled in Ollama, or available at the provider)
-  model: "qwen2.5:7b-instruct"
+  model: "qwen2.5-coder:7b"
 
   # API key — leave empty for local Ollama
   api_key: ""
 
   # Request timeout in seconds (LLM calls can be slow on CPU)
-  timeout_seconds: 120
+  timeout_seconds: 240
 
   # Low temperature for deterministic/structured extraction
   temperature: 0.1

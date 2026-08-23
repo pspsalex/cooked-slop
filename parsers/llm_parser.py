@@ -23,7 +23,7 @@ import requests
 import yaml
 
 from .base import BaseIngredientParser, BaseRecipeParser
-from .generic_md import GenericMdParser
+from .generic_md import GenericMdParser, unroll_markdown_tables
 from .models import Ingredient, Recipe
 
 logger = logging.getLogger(__name__)
@@ -176,21 +176,71 @@ class LLMClient:
         """Send a chat request and return the assistant reply as a string."""
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_key}",
         }
-        payload = {
-            "model": self.model,
-            "temperature": self.temperature,
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-        }
-        url = f"{self.base_url}/chat/completions"
-        logger.debug("LLM request → %s (model=%s)", url, self.model)
-        response = requests.post(url, json=payload, headers=headers, timeout=self.timeout)
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+
+        base = self.base_url.rstrip("/")
+
+        # Check for native Ollama API endpoints (/api or /api/chat)
+        if base.endswith("/api/chat") or base.endswith("/api"):
+            url = base if base.endswith("/chat") else f"{base}/chat"
+            payload = {
+                "model": self.model,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                "stream": False,
+                "options": {"temperature": self.temperature},
+            }
+            logger.debug("LLM request (native Ollama) → %s (model=%s)", url, self.model)
+            response = requests.post(url, json=payload, headers=headers, timeout=self.timeout)
+            response.raise_for_status()
+            return response.json()["message"]["content"]
+        else:
+            # OpenAI-compatible endpoint
+            if base.endswith("/chat/completions"):
+                url = base
+            elif base.endswith("/v1"):
+                url = f"{base}/chat/completions"
+            else:
+                url = f"{base}/v1/chat/completions"
+
+            payload = {
+                "model": self.model,
+                "temperature": self.temperature,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+            }
+            logger.debug("LLM request (OpenAI compat) → %s (model=%s)", url, self.model)
+            try:
+                response = requests.post(url, json=payload, headers=headers, timeout=self.timeout)
+                response.raise_for_status()
+                res_json = response.json()
+                if "choices" in res_json and res_json["choices"]:
+                    return res_json["choices"][0]["message"]["content"]
+                elif "message" in res_json:
+                    return res_json["message"]["content"]
+                raise ValueError(f"Unexpected LLM response structure: {res_json}")
+            except requests.HTTPError as err:
+                if err.response is not None and err.response.status_code == 404:
+                    fallback_url = f"{self.base_url.split('/v1')[0].rstrip('/')}/api/chat" if "/v1" in self.base_url else "http://localhost:11434/api/chat"
+                    logger.warning(
+                        "404 on %s — falling back to native Ollama API at %s", url, fallback_url
+                    )
+                    ollama_payload = {
+                        "model": self.model,
+                        "messages": payload["messages"],
+                        "stream": False,
+                        "options": {"temperature": self.temperature},
+                    }
+                    fb_res = requests.post(fallback_url, json=ollama_payload, headers=headers, timeout=self.timeout)
+                    fb_res.raise_for_status()
+                    return fb_res.json()["message"]["content"]
+                raise
 
 
 # ---------------------------------------------------------------------------
@@ -279,11 +329,12 @@ class LLMRecipeParser(BaseRecipeParser):
         return 0.0  # never auto-detected
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
-        truncated = content[: self._max_input_chars]
-        if len(content) > self._max_input_chars:
+        clean_content = unroll_markdown_tables(content)
+        truncated = clean_content[: self._max_input_chars]
+        if len(clean_content) > self._max_input_chars:
             logger.debug(
                 "Input truncated from %d to %d chars for %s",
-                len(content),
+                len(clean_content),
                 self._max_input_chars,
                 filepath,
             )
@@ -329,7 +380,13 @@ class LLMRecipeParser(BaseRecipeParser):
             try:
                 raw_reply = self._client.chat(self._system_prompt, user_msg)
             except requests.RequestException as exc:
-                logger.error("LLM request failed for %s: %s", filepath, exc)
+                logger.warning(
+                    "LLM request failed for %s: %s — falling back to direct parser", filepath, exc
+                )
+                md_parser = GenericMdParser(self.ingredient_parser)
+                for r in md_parser.parse_content(clean_content, filepath):
+                    r.source_format = f"{self.source_format} (Fallback)"
+                    yield r
                 return
 
             clean_markdown = re.sub(
@@ -340,7 +397,12 @@ class LLMRecipeParser(BaseRecipeParser):
             parsed_recipes = list(md_parser.parse_content(clean_markdown, filepath))
 
             if not parsed_recipes:
-                logger.error("Could not parse marked Markdown from LLM reply for %s.", filepath)
+                logger.warning(
+                    "Could not parse marked Markdown from LLM reply for %s — falling back to direct parser", filepath
+                )
+                for r in md_parser.parse_content(clean_content, filepath):
+                    r.source_format = f"{self.source_format} (Fallback)"
+                    yield r
                 return
 
             for recipe in parsed_recipes:
