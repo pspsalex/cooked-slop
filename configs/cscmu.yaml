@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: MIT
+name: cscmu
+description: "XPath configuration for Carnegie Mellon University School of Computer Science Usenet Recipe Archive"
+version: "1.0"
+
+detection:
+  path_pattern: ".*cs\\.cmu/.*\\.html?$"
+  content_patterns:
+    - "Carnegie Mellon's School of Computer Science"
+    - "Recipe Archive"
+
+fields:
+  title:
+    xpath: "//h1/text() | //title/text()"
+  description:
+    xpath: "//pre/text()"
+  instructions:
+    xpath: "//pre/text()"
