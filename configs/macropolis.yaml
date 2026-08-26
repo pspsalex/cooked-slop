@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: MIT
+name: macropolis
+description: "XPath and delimiter configuration for Macropolis TuttoCucina multi-recipe archives"
+version: "1.0"
+
+detection:
+  path_pattern: ".*macropolis.*\\.htm[l]?$"
+  content_patterns:
+    - "TuttoCucina"
+    - "macropolis.org"
+
+recipe_delimiter: "<b>Title:"
+
+fields:
+  title:
+    xpath: "//b[contains(., 'Title:')]/text()"
+  categories:
+    xpath: "//text()[contains(., 'Categories:')]"
+    split_delimiter: ","
+  yield_amount:
+    xpath: "//text()[contains(., 'Yield:')]"
+  body:
+    xpath: "//td[@valign='top']"

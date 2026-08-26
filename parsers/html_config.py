@@ -6,14 +6,15 @@ Supports extracting recipe fields from HTML pages using XPath expressions specif
 in YAML configuration files.
 """
 
+import html
 import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Iterator
 import yaml
 
-from .models import Recipe
+from .models import Recipe, Ingredient
 from .base import BaseIngredientParser
 
 logger = logging.getLogger(__name__)
@@ -49,12 +50,14 @@ class HtmlRecipeSchema:
     version: str = "1.0"
     detection: HtmlDetectionConfig = field(default_factory=HtmlDetectionConfig)
     fields: Dict[str, FieldConfig] = field(default_factory=dict)
+    recipe_delimiter: Optional[str] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "HtmlRecipeSchema":
         name = data.get("name", "custom_html")
         description = data.get("description", "")
         version = str(data.get("version", "1.0"))
+        recipe_delimiter = data.get("recipe_delimiter")
 
         det_data = data.get("detection", {})
         detection = HtmlDetectionConfig(
@@ -81,6 +84,7 @@ class HtmlRecipeSchema:
             version=version,
             detection=detection,
             fields=fields,
+            recipe_delimiter=recipe_delimiter,
         )
 
 
@@ -211,45 +215,113 @@ def extract_xpath_values(tree: Any, cfg: FieldConfig) -> List[str]:
     return values
 
 
-def parse_html_with_schema(
-    content: str,
+def _parse_single_chunk_with_schema(
+    chunk: str,
     schema: HtmlRecipeSchema,
     ingredient_parser: BaseIngredientParser,
     filepath: Optional[str] = None,
 ) -> Recipe:
-    """Parse recipe HTML content into Recipe model using an HtmlRecipeSchema."""
-    if not HAS_LXML:
-        raise RuntimeError("lxml library is required for XPath HTML parsing.")
-
-    tree = lxml.html.fromstring(f"<html><body>{content}</body></html>")
+    """Parse a single HTML chunk into a Recipe model."""
     recipe = Recipe(source_file=filepath, source_format=f"HTML ({schema.name})")
+
+    clean_chunk = re.sub(r'(?:<br\s*/?>\s*){2,}', '\n\n', chunk, flags=re.IGNORECASE)
+    clean_chunk = re.sub(r'<br\s*/?>\s*\n?', '\n', clean_chunk, flags=re.IGNORECASE)
+    try:
+        tree = lxml.html.fromstring(f"<html><body>{clean_chunk}</body></html>")
+    except Exception:
+        tree = lxml.html.fromstring(f"<html><body>{chunk}</body></html>")
+
+    text = tree.text_content()
 
     # Title
     title_cfg = schema.fields.get("title")
     if title_cfg:
         vals = extract_xpath_values(tree, title_cfg)
         if vals:
-            recipe.title = vals[0]
+            raw_title = vals[0]
+            recipe.title = re.sub(r'^Title:\s*', '', raw_title, flags=re.IGNORECASE).strip()
+    if not recipe.title:
+        m = re.search(
+            r'Title:\s*([^<\r\n]+(?:\r?\n[^\r\n<]+)*?)(?=\s*(?:Categories:|Yield:|Ingredients:|\r?\n\r?\n|<|$))',
+            text,
+            re.IGNORECASE,
+        )
+        if m:
+            recipe.title = " ".join(m.group(1).split()).strip()
+    if recipe.title:
+        recipe.title = html.unescape(recipe.title).strip()
 
     # Yield
     yield_cfg = schema.fields.get("yield_amount") or schema.fields.get("yield")
     if yield_cfg:
         vals = extract_xpath_values(tree, yield_cfg)
         if vals:
-            recipe.yield_amount = vals[0]
+            m_y = re.search(r'Yield(?:\s*amount)?:\s*([^\r\n<]+)', text, re.IGNORECASE)
+            if m_y:
+                recipe.yield_amount = m_y.group(1).strip()
+            else:
+                raw_yield = vals[0]
+                recipe.yield_amount = re.sub(
+                    r'^Yield(?:\s*amount)?:\s*', '', raw_yield, flags=re.IGNORECASE
+                ).strip()
+    if not recipe.yield_amount:
+        m = re.search(r'Yield(?:\s*amount)?:\s*([^\r\n<]+)', text, re.IGNORECASE)
+        if m:
+            recipe.yield_amount = m.group(1).strip()
+    if recipe.yield_amount:
+        recipe.yield_amount = html.unescape(recipe.yield_amount).strip()
 
     # Categories
     cat_cfg = schema.fields.get("categories") or schema.fields.get("category")
     if cat_cfg:
         vals = extract_xpath_values(tree, cat_cfg)
         if vals:
-            cats = []
-            for v in vals:
-                if cat_cfg.split_delimiter and cat_cfg.split_delimiter in v:
-                    cats.extend([c.strip() for c in v.split(cat_cfg.split_delimiter) if c.strip()])
-                else:
-                    cats.append(v)
-            recipe.categories = cats
+            m_c = re.search(
+                r'Categories:\s*([^\r\n<]+)',
+                text,
+                re.IGNORECASE,
+            )
+            if m_c:
+                cats_str = m_c.group(1).strip()
+                delim = cat_cfg.split_delimiter or ","
+                recipe.categories = [
+                    html.unescape(c.strip())
+                    for c in cats_str.split(delim)
+                    if c.strip()
+                ]
+            else:
+                cats = []
+                for v in vals:
+                    v_clean = re.sub(r'^Categories:\s*', '', v, flags=re.IGNORECASE).strip()
+                    if cat_cfg.split_delimiter and cat_cfg.split_delimiter in v_clean:
+                        cats.extend(
+                            [
+                                html.unescape(c.strip())
+                                for c in v_clean.split(cat_cfg.split_delimiter)
+                                if c.strip()
+                            ]
+                        )
+                    else:
+                        cats.append(html.unescape(v_clean))
+                recipe.categories = cats
+    if not recipe.categories:
+        m = re.search(
+            r'Categories:\s*([^<\r\n]+(?:\r?\n[^\r\n<]+)*?)(?=\s*(?:Yield:|Ingredients:|\r?\n\r?\n|<|$))',
+            text,
+            re.IGNORECASE,
+        )
+        if m:
+            cats_str = " ".join(m.group(1).split()).strip()
+            delim = (
+                cat_cfg.split_delimiter
+                if (cat_cfg and cat_cfg.split_delimiter)
+                else ","
+            )
+            recipe.categories = [
+                html.unescape(c.strip())
+                for c in cats_str.split(delim)
+                if c.strip()
+            ]
 
     # Description
     desc_cfg = schema.fields.get("description")
@@ -270,12 +342,148 @@ def parse_html_with_schema(
     if ing_cfg:
         raw_ings = extract_xpath_values(tree, ing_cfg)
         for raw in raw_ings:
-            recipe.ingredients.append(ingredient_parser.parse(raw))
+            if ing_cfg.split_delimiter and ing_cfg.split_delimiter in raw:
+                for line in raw.split(ing_cfg.split_delimiter):
+                    if line.strip():
+                        recipe.ingredients.append(
+                            ingredient_parser.parse(html.unescape(line.strip()))
+                        )
+            else:
+                recipe.ingredients.append(
+                    ingredient_parser.parse(html.unescape(raw))
+                )
 
     # Instructions
     inst_cfg = schema.fields.get("instructions")
     if inst_cfg:
         raw_insts = extract_xpath_values(tree, inst_cfg)
-        recipe.instructions = raw_insts
+        recipe.instructions = [html.unescape(i) for i in raw_insts]
+
+    # If neither ingredients nor instructions were extracted via XPath, parse from MealMaster body
+    if not recipe.ingredients and not recipe.instructions:
+        body_lines = [l.strip() for l in text.splitlines()]
+        # Strip separator lines like +++++ or =====
+        body_lines = [l if not re.match(r'^[+=-]{4,}$', l) else "" for l in body_lines]
+        start_idx = 0
+        while start_idx < len(body_lines):
+            line = body_lines[start_idx]
+            if (
+                line.lower().startswith(('title:', 'categories:', 'yield:', 'category:'))
+                or (recipe.title and (line == recipe.title or line in recipe.title))
+            ):
+                start_idx += 1
+            elif not line:
+                start_idx += 1
+            else:
+                break
+        in_ingredients = True
+        current_inst = []
+        for line in body_lines[start_idx:]:
+            if not line:
+                if current_inst:
+                    recipe.instructions.append(" ".join(current_inst))
+                    current_inst = []
+                continue
+            is_header = bool(re.match(r'^[-=*]{2,}.*[-=*]{2,}$', line)) or bool(
+                re.match(r'^[A-Z0-9 ,/-]{3,}--+$', line)
+            )
+            starts_qty = bool(
+                re.match(r'^(\d|½|¼|¾|⅓|⅔|1/|2/|3/|4/|5/|6/|7/|8/|9/|\d+\s*\d+/\d+)', line)
+            )
+            if in_ingredients:
+                if is_header or starts_qty:
+                    recipe.ingredients.append(
+                        ingredient_parser.parse(html.unescape(line))
+                    )
+                elif line.startswith("-") and len(line) < 40:
+                    recipe.ingredients.append(
+                        ingredient_parser.parse(html.unescape(line))
+                    )
+                elif len(recipe.ingredients) > 0 and (
+                    len(line) > 80
+                    or (
+                        line[0].isupper()
+                        and (
+                            line.endswith(".")
+                            or (
+                                " " in line
+                                and len(line.split()) > 7
+                                and not any(
+                                    w in line.lower()
+                                    for w in [
+                                        "tb", "ts", "tbsp", "tsp", "cup", "cups", "oz", "lb",
+                                        "can", "clove", "cloves", "slice", "slices", "package",
+                                        "pk", "c", "g", "kg", "ml", "md", "lg", "ea", "pn", "pinch"
+                                    ]
+                                )
+                            )
+                        )
+                    )
+                ):
+                    in_ingredients = False
+                    current_inst.append(html.unescape(line))
+                else:
+                    if len(recipe.ingredients) == 0 and len(line) < 40 and not line.endswith("."):
+                        recipe.ingredients.append(
+                            ingredient_parser.parse(html.unescape(line))
+                        )
+                    elif len(recipe.ingredients) > 0 and len(line) < 40 and not line.endswith("."):
+                        recipe.ingredients.append(
+                            ingredient_parser.parse(html.unescape(line))
+                        )
+                    else:
+                        in_ingredients = False
+                        current_inst.append(html.unescape(line))
+            else:
+                current_inst.append(html.unescape(line))
+        if current_inst:
+            recipe.instructions.append(" ".join(current_inst))
 
     return recipe
+
+
+def parse_html_recipes_with_schema(
+    content: str,
+    schema: HtmlRecipeSchema,
+    ingredient_parser: BaseIngredientParser,
+    filepath: Optional[str] = None,
+) -> Iterator[Recipe]:
+    """Parse recipe HTML content into Recipe models using an HtmlRecipeSchema."""
+    if not HAS_LXML:
+        raise RuntimeError("lxml library is required for XPath HTML parsing.")
+
+    if schema.recipe_delimiter:
+        delim = schema.recipe_delimiter
+        if "title:" in delim.lower():
+            pattern = r'(?i)(?=(?:<\s*b[^>]*>\s*|<\s*p[^>]*>\s*|<\s*font[^>]*>\s*)*Title:)'
+        else:
+            escaped = re.escape(delim)
+            delim_pattern = re.sub(r'\\ ', r'\\s+', escaped)
+            pattern = rf'(?i)(?={delim_pattern})'
+        chunks = re.split(pattern, content)
+        for chunk in chunks:
+            if "title:" in delim.lower() and not re.search(r'Title:\s*', chunk, re.IGNORECASE):
+                continue
+            recipe = _parse_single_chunk_with_schema(
+                chunk, schema, ingredient_parser, filepath
+            )
+            if recipe and (recipe.title or recipe.ingredients):
+                yield recipe
+    else:
+        recipe = _parse_single_chunk_with_schema(
+            content, schema, ingredient_parser, filepath
+        )
+        if recipe and (recipe.title or recipe.ingredients):
+            yield recipe
+
+
+def parse_html_with_schema(
+    content: str,
+    schema: HtmlRecipeSchema,
+    ingredient_parser: BaseIngredientParser,
+    filepath: Optional[str] = None,
+) -> Recipe:
+    """Parse recipe HTML content into Recipe model using an HtmlRecipeSchema (single recipe)."""
+    return _parse_single_chunk_with_schema(
+        content, schema, ingredient_parser, filepath
+    )

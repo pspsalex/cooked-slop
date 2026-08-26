@@ -8,7 +8,7 @@ from .base import BaseRecipeParser, BaseIngredientParser
 from .registry import ParserRegistry
 from .html_config import (
     get_html_schema_registry,
-    parse_html_with_schema,
+    parse_html_recipes_with_schema,
     HAS_LXML,
 )
 
@@ -45,7 +45,7 @@ class HtmlParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        if Path(filepath).suffix.lower() in {'.html', '.htm'}:
+        if Path(filepath).suffix.lower() in {'.html', '.htm', '.shtml'}:
             return 0.99
         if re.search(r'<html|<body|<div|<p>', content_sample, re.IGNORECASE):
             return 0.8
@@ -71,11 +71,14 @@ class HtmlParser(BaseRecipeParser):
 
         if schema and HAS_LXML:
             try:
-                recipe = parse_html_with_schema(
+                yielded = False
+                for recipe in parse_html_recipes_with_schema(
                     content, schema, self.ingredient_parser, filepath
-                )
-                if recipe.title or recipe.ingredients:
-                    yield recipe
+                ):
+                    if recipe.title or recipe.ingredients:
+                        yield recipe
+                        yielded = True
+                if yielded:
                     return
             except Exception as e:
                 logger.debug("XPath HTML schema parsing failed for %s: %s", filepath, e)
@@ -124,4 +127,3 @@ class HtmlParser(BaseRecipeParser):
         except Exception as e:
             logger.warning("HTML parsing error for %s: %s", filepath, e)
             return
-

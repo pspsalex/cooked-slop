@@ -1,0 +1,155 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Spicy Eggplant Salad (Bonjan) From Afghanistan",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Eggplants",
+      "value": 3,
+      "unitText": "medium"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Pepper",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Coarse (kosher salt)",
+      "value": "2 1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Hot red chili flakes, or",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    "Minced fresh chiles",
+    {
+      "@type": "PropertyValue",
+      "name": "Corn oil",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Ground cinnamon",
+      "value": 2,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Tomato sauce",
+      "value": "1 1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Crushed dried mint",
+      "value": 1,
+      "unitText": "tablespoon"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Slice the eggplants crosswise into 1,5 inch thick pieces. Sprinkle them with 2 tsp. coarse salt and let stand for 15 minutes. rinse eggplants under cold water, which removes the bitter taste, rinse, and dry well on a towel."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Heat the oil in a skillet and lightly brown eggplant slices over moderate heat for 3 minutes. Remove and put into a serving bowl. Cool."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Put the tomato sauce, pepper, chile, cinnamon, mint and 1/2 tsp. salt, if wanted, in a pan. Simmer over low heat for 10 minutes, which is long enough to integrate the flavors. Pour this over the eggplant; refrigerate until ready to use. The salad can remain in the refrigerator for several days. Serve cold or at room temperature. Yield: 8 servings."
+    }
+  ],
+  "recipeYield": "1 servings",
+  "recipeCategory": "Indian",
+  "keywords": "Indian, Afghan, Salads",
+  "comment": "Imported from tests/samples/macropolis_sample.html",
+  "url": "file://tests/samples/macropolis_sample.html",
+  "description": "Recipe converted from HTML (macropolis) format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Afghan Chicken",
+  "recipeIngredient": [
+    "Stephen Ceideburg",
+    {
+      "@type": "PropertyValue",
+      "name": "Cloves garlic",
+      "value": 2,
+      "unitText": "large"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Plain, whole-milk yogurt",
+      "value": 2,
+      "unitText": "cup"
+    },
+    "Juice and pulp of 1 large",
+    "-lemon, 3 to 4 tablespoons",
+    {
+      "@type": "PropertyValue",
+      "name": "Cracked black pepper",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Whole chicken breasts, about",
+      "value": 2,
+      "unitText": "large"
+    },
+    "-2 pounds"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Long, slow marinating in garlicky yogurt tenderizes, moistens and adds deep flavor, so you end up with skinless grilled chicken that's as delicious as it is nutritionally correct. Serve with soft pita or Arab flatbread and fresh yogurt."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Put the salt in a wide, shallow non-reactive bowl with the garlic and mash them together until you have paste. Add yogurt, lemon and pepper."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Skin the chicken breasts, remove all visible fat and separate the halves. Bend each backward to break the bones so the pieces win lie flat. Add to the yogurt and turn so all surfaces are well-coated."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Cover the bowl tightly and refrigerate. Allow to marinate at least overnight, up to a day and a half. Turn when you think of it."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "To cook, remove breasts from marinade and wipe off all but a thin film. Broil or grill about 6 inches from the heat for 6 to 8 minutes a side, or until thoroughly cooked. Meat will brown somewhat but should not char. Serve at once."
+    }
+  ],
+  "recipeYield": "6 servings",
+  "recipeCategory": "Middle east",
+  "keywords": "Middle east, Chicken, Ceideburg, Bbq, Afghan",
+  "comment": "Imported from tests/samples/macropolis_sample.html",
+  "url": "file://tests/samples/macropolis_sample.html",
+  "description": "Recipe converted from HTML (macropolis) format"
+}
+]

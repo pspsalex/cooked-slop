@@ -196,3 +196,26 @@ def test_id_caps_detection():
     assert score >= 0.90, f"Expected score >= 0.90 for ID Caps format, got {score}"
 
 
+
+
+def test_macropolis_html_detection(ingredient_parser):
+    from parsers.html_config import get_html_schema_registry
+    from parsers.html_parser import HtmlParser
+
+    sample = """<html>
+<head><title>TuttoCucina</title>
+<link rel="SHORTCUT ICON" href="http://www.macropolis.org/fav/magcas.ico">
+</head>
+<body><b>Title: Test Recipe</b><br>Categories: Test<br>Yield: 2 servings<br><br>1 c Milk<br><br>Drink milk.</body>
+</html>"""
+    reg = get_html_schema_registry()
+    schema = reg.detect_schema(sample, "macropolis/sample.htm")
+    assert schema is not None
+    assert schema.name == "macropolis"
+
+    parser = HtmlParser(ingredient_parser)
+    recipes = list(parser.parse_content(sample, "macropolis/sample.htm"))
+    assert len(recipes) == 1
+    assert recipes[0].title == "Test Recipe"
+    assert recipes[0].categories == ["Test"]
+    assert recipes[0].yield_amount == "2 servings"
