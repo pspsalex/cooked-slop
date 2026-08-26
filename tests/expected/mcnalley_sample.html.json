@@ -1,0 +1,113 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "ALBONDIGAS (Meatball Soup)",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Onion, minced",
+      "value": 1,
+      "unitText": "each"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Garlic, minced",
+      "value": 1,
+      "unitText": "clove"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Oil",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Tomato Sauce",
+      "value": 1,
+      "unitText": "can"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Beef Stock",
+      "value": 3,
+      "unitText": "quart"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "of Cilantro or Mint",
+      "value": 1,
+      "unitText": "sprig"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Egg, slightly beaten",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Ground Pork",
+      "value": "3/4",
+      "unitText": "pound"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Raw Rice or Crushed Oatmeal",
+      "value": "1/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": "1 1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Pepper",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Oregano, crushed",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Onion, minced",
+      "value": "1/2",
+      "unitText": "small"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Ground Beef",
+      "value": "3/4",
+      "unitText": "pound"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Mix meat with the rest of the meatball ingredients. Shape into small meatballs. Fry minced onion and garlic in oil in a large pot. Add tomato and beef stock. Heat to boiling. Drop meatballs into boiling broth. Cover tightly and cook for 30 minutes. Add a sprig of cilantro about 10 minutes before soup is done."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Please acknowledge www.mcnalley.com if you choose to publish this recipe elsewhere."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Remove cilantro before serving."
+    }
+  ],
+  "recipeYield": "SERVES 10",
+  "comment": "Imported from tests/samples/mcnalley_sample.html",
+  "url": "file://tests/samples/mcnalley_sample.html",
+  "description": "Recipe converted from HTML (mcnalley) format"
+}
+]
