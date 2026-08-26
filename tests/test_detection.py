@@ -219,3 +219,21 @@ def test_macropolis_html_detection(ingredient_parser):
     assert recipes[0].title == "Test Recipe"
     assert recipes[0].categories == ["Test"]
     assert recipes[0].yield_amount == "2 servings"
+
+
+def test_html_garry_howard_and_coffeeshop_detection():
+    from parsers.html_config import get_html_schema_registry
+    reg = get_html_schema_registry()
+
+    cases = [
+        ('mexican/salsa.shtml', "Garry's Home Cookin' mexicancooking.netrelief.com", 'mexican_recipes'),
+        ('netrelief/dip.shtml', "Garry's Home Cookin' cooking.netrelief.com", 'netrelief_recipes'),
+        ('bbq/rub.htm', "Garry's Home Cookin' bbq.netrelief.com", 'bbq_recipes'),
+        ('chile/chili.shtml', "Garry's Home Cookin' chile.netrelief.com", 'chile_recipes'),
+        ('The Coffee Shop Recipe Book/000001-cool.html', 'The Coffee Shoppe RocketLibrarian', 'coffeeshop_recipes'),
+    ]
+
+    for filepath, sample_text, expected_name in cases:
+        schema = reg.detect_schema(sample_text, filepath)
+        assert schema is not None, f'Failed to detect schema for {filepath}'
+        assert schema.name == expected_name, f'Expected {expected_name}, got {schema.name} for {filepath}'

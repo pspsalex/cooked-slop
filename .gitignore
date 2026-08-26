@@ -167,3 +167,7 @@ output/**
 
 # Credentials
 TOKEN
+venv/
+.venv/
+venv
+.venv

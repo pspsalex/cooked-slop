@@ -1,0 +1,110 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Kit Anderson's Bad Attitude Chili",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "pork roast",
+      "value": 2,
+      "unitText": "pound"
+    },
+    "-- cut into 1\" pieces",
+    {
+      "@type": "PropertyValue",
+      "name": "cheap ground beef",
+      "value": 2,
+      "unitText": "pound"
+    },
+    "-- (You'll need the fat. This isn't health food.)",
+    {
+      "@type": "PropertyValue",
+      "name": "GOOD chile powder",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    "-- (Your local supermarket brand tastes like cardboard.)",
+    {
+      "@type": "PropertyValue",
+      "name": "onion",
+      "value": 1,
+      "unitText": "HUGE"
+    },
+    "-- roughly chopped",
+    {
+      "@type": "PropertyValue",
+      "name": "garlic",
+      "value": 1,
+      "unitText": "head"
+    },
+    "-- minced",
+    {
+      "@type": "PropertyValue",
+      "name": "Mexican green chiles",
+      "value": 8,
+      "unitText": "New"
+    },
+    "-- roasted, peeled, seeded, chopped.",
+    {
+      "@type": "PropertyValue",
+      "name": "hot Hungarian paprika",
+      "value": 1,
+      "unitText": "Tbl"
+    },
+    "-- (This is legal. Paprika is a chile.)",
+    {
+      "@type": "PropertyValue",
+      "name": "ground cumin",
+      "value": 1,
+      "unitText": "Tbl"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "boullion cubes",
+      "value": 4,
+      "unitText": "beef"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "28 oz can crushed tomatoes",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "amber Mexican beer",
+      "value": 1,
+      "unitText": "bottle"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "bourbon",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "bitter baker's chocolate",
+      "value": 2,
+      "unitText": "squares"
+    },
+    "salt to taste"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Sautee 1/4 of the garlic and onions until translucent. Add 1/4 of the meat, chile powder and brown. Salt the meat while cooking. Put into your chili pot."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "As in any recipe, the amount of ingredients is variable. Add more of anything you want, especially chiles."
+    }
+  ],
+  "recipeYield": "serves 6-8",
+  "comment": "Imported from tests/samples/chile_sample.html",
+  "url": "file://tests/samples/chile_sample.html",
+  "description": "Recipe converted from HTML (chile_recipes) format"
+}
+]

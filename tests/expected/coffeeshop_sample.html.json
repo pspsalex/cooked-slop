@@ -1,0 +1,100 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Sweet Apple Cinnamon Herbal Shake",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "vanilla ice cream",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Coffee Shoppe Apple Cinnamon tea bags",
+      "value": 2,
+      "unitText": "The"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cinnamon ( optional )",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    "To Prepare:",
+    "In a blender, mix ingredients until fully blended. ( cut open tea bags and mix contents with ice cream )",
+    "To Serve:",
+    "Top with whipped cream"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "In a blender, mix ingredients until fully blended. ( cut open tea bags and mix contents with ice cream )"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "To Serve:"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Top with whipped cream"
+    }
+  ],
+  "comment": "Imported from tests/samples/coffeeshop_sample.html",
+  "url": "file://tests/samples/coffeeshop_sample.html",
+  "description": "Recipe converted from HTML (coffeeshop_recipes) format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Blackberry Blaze Escape",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "vanilla ice cream",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Coffee Shoppe Blackberry Blaze tea bags",
+      "value": 2,
+      "unitText": "The"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Blackcurrant syrup ( optional )",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    "To Prepare:",
+    "In a blender, mix ingredients until fully blended. ( cut open tea bags and mix contents with ice cream )",
+    "To Serve:",
+    "Garnish with whipped cream"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "In a blender, mix ingredients until fully blended. ( cut open tea bags and mix contents with ice cream )"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "To Serve:"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Garnish with whipped cream"
+    }
+  ],
+  "comment": "Imported from tests/samples/coffeeshop_sample.html",
+  "url": "file://tests/samples/coffeeshop_sample.html",
+  "description": "Recipe converted from HTML (coffeeshop_recipes) format"
+}
+]

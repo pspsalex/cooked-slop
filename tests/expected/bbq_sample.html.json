@@ -1,0 +1,97 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "La Parilla Traditional Achiote Recado",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Annatto Seeds",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Water",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Ground Allspice",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Ground Black Pepper",
+      "value": 2,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Ancho Chile Powder",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Kosher Salt",
+      "value": 4,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Mexican Oregano -- Toasted And Ground",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Garlic -- Peeled",
+      "value": 3,
+      "unitText": "clove"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "White Onions -- Thickly Sliced",
+      "value": "1/2",
+      "unitText": "medium"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Apple Cider Vinegar",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Freshly Squeezed Orange Juice",
+      "value": "1 1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Freshly Squeezed Lemon Juice",
+      "value": "1/4",
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "This mild, citrusy red spice paste can transform the blandest of foods."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Put the annatto seeds and water in a small saucepan and place over high heat. Cook 30 minutes."
+    }
+  ],
+  "recipeYield": "Makes about 2 1/2 cups.",
+  "comment": "Imported from tests/samples/bbq_sample.html",
+  "url": "file://tests/samples/bbq_sample.html",
+  "description": "Recipe converted from HTML (bbq_recipes) format"
+}
+]
