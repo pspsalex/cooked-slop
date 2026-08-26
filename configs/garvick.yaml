@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+name: garvick
+description: "XPath configuration for Garvick.com recipe collection"
+version: "1.0"
+
+detection:
+  path_pattern: ".*garvick.*\\.htm[l]?$"
+  content_patterns:
+    - "BGT-468"
+    - "cpic035.gif"
+
+fields:
+  title:
+    xpath: "//p//b[not(ancestor::h1) and not(ancestor::script) and not(ancestor::table) and not(ancestor::a) and not(.//a)]/text() | //p[@style and contains(@style, '14pt')]//b[not(ancestor::h1) and not(ancestor::script) and not(ancestor::table) and not(ancestor::a) and not(.//a)]/text() | //p//font//b[not(ancestor::h1) and not(ancestor::script) and not(ancestor::table) and not(ancestor::a) and not(.//a)]/text()"
+  yield_amount:
+    xpath: "//p[starts-with(normalize-space(text()), 'Serves') or starts-with(normalize-space(text()), 'Makes')]/text()"
+  ingredients:
+    xpath: "//ul/li | //p[contains(text(), 'cl') or contains(text(), 'tb') or contains(text(), 'ts') or contains(text(), 'c ') or contains(text(), 'oz') or contains(text(), 'lb')]"
+  instructions:
+    xpath: "//p[not(ancestor::h1) and not(.//b) and not(starts-with(normalize-space(text()), 'Serves')) and not(starts-with(normalize-space(text()), 'Makes'))]"

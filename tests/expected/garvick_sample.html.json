@@ -1,0 +1,803 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Chocolate Marble Cake",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": "1/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "egg, well beaten",
+      "value": 2,
+      "unitText": "each"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "flour",
+      "value": "1 1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "baking powder",
+      "value": 2,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "milk",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chocolate square, unsweetened",
+      "value": 1,
+      "unitText": "each"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "vanilla",
+      "value": 1,
+      "unitText": "teaspoon"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Cream together the butter and sugar; add the eggs and mix well."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Sift together the flour and baking powder and add alternately with the milk to the creamed mixture."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Put 1/3 of the combined mixture into a bowl. Melt together the butter and chocolate and add to the combined mixture."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Add the vanilla to the white batter."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Drop the white batter, then the chocolate batter, by spoonfuls into a well-greased, deep cake pan and bake at 350-F for about 40 minutes."
+    }
+  ],
+  "comment": "Imported from tests/samples/garvick_sample.html",
+  "url": "file://tests/samples/garvick_sample.html",
+  "description": "Recipe converted from HTML (garvick) format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Fresh Strawberry Cupcakes",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "All-purpose Flour",
+      "value": "1 3/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Baking Soda",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Chopped Walnuts",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Egg whites",
+      "value": 2,
+      "unitText": "per serving"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vanilla extract",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vegetable Oil",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Pkg frozen sweet Strawberries*",
+      "value": 10,
+      "unitText": "ounce"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "* or 1 cup crushed fresh strawberries mixed with 3 T sugar. Mix together flour, baking soda, sugar and nuts in a bowl."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "In another bowl, beat together egg whites, vanilla extract and oil until well blended. Add strawberries and beat at slow speed of mixer until berries are partially broken. Beat in flour mixture slowly until smooth, but berries are still a little bit chunky."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Pour batter into greased muffin tins, filling halfway."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Bake at 350 degrees F for 30 minutes, or until they test done."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Sprinkle with powdered sugar or favorite frosting, if desired."
+    }
+  ],
+  "comment": "Imported from tests/samples/garvick_sample.html",
+  "url": "file://tests/samples/garvick_sample.html",
+  "description": "Recipe converted from HTML (garvick) format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Sock It To Me Cake",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Box yellow cake mix",
+      "value": 1,
+      "unitText": "each"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Oil",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sour cream",
+      "value": 8,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Eggs",
+      "value": 4,
+      "unitText": "each"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Brown sugar",
+      "value": 3,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cinnamon",
+      "value": 2,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Chopped nuts",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Butter",
+      "value": "10 1/2",
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": "1 1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Milk",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    "Vanilla to taste"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Mix sugar and cake mix."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Mix oil and sour cream and then add cake mix."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Add eggs, one at a time, beating well after each."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Pour half of batter into greased tube pan; then add filling. Pour rest of batter on top."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Bake at 350 degrees F. for 45-50 minutes. Cool in pan 30 minutes. Remove and glaze."
+    }
+  ],
+  "comment": "Imported from tests/samples/garvick_sample.html",
+  "url": "file://tests/samples/garvick_sample.html",
+  "description": "Recipe converted from HTML (garvick) format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Stir Crazy Cake",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "All-purpose flour",
+      "value": "2 1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": "1 1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cocoa",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Soda",
+      "value": 2,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cooking oil",
+      "value": "2/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vinegar",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vanilla",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cold water or coffee",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cinnamon",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Put flour, sugar, cocoa, soda and salt into an ungreased 13 x 9 x 2\" metal baking pan."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Stir with a fork to mix; form 3 wells in flour mixture."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Pour oil into one well, vinegar in one well, and vanilla in the last well."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Pour cold water (or coffee) evenly over top of cake and stir with a fork until well mixed. Do not beat. Combine remaining sugar and cinnamon; sprinkle mixture over batter."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Bake at 350 degrees for 35-40 minutes."
+    }
+  ],
+  "comment": "Imported from tests/samples/garvick_sample.html",
+  "url": "file://tests/samples/garvick_sample.html",
+  "description": "Recipe converted from HTML (garvick) format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Chocolate Malted Milk Cake",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "unsweetened chocolate",
+      "value": 2,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "margarine",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": "1 1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 2,
+      "unitText": "each"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "vanilla",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cake flour",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "lemon juice",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "milk",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "baking soda",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "malt vinegar",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Cocoa powder",
+      "value": 1,
+      "unitText": "per serving"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chopped walnuts",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "unsweetened chocolate",
+      "value": 4,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter or margarine",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "powdered sugar",
+      "value": 4,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "milk",
+      "value": 5,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "vanilla",
+      "value": 1,
+      "unitText": "teaspoon"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Chocolate Frosting:"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Melt chocolate in double boiler and set aside to cool completely."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Cream together margarine and sugar until light and fluffy. Add eggs, 1 at a time, beating well after each addition. Blend in the vanilla."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Stir together cake flour and salt."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Combine lemon juice and milk."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "text": "Blend flour mixture into creamed butter-sugar mixture alternately with lemon juice/milk mixture; mix well."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "text": "Add melted chocolate, blending thoroughly."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 8,
+      "text": "Dissolve baking soda in malt vinegar in bowl large enough to accommodate foaming of mixture."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 9,
+      "text": "Add to batter, mixing well."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 10,
+      "text": "Divide batter equally between 2 (8\") square cake pans, greased and dusted with cocoa powder."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 11,
+      "text": "Bake at 350 degrees 30 minutes or until toothpick inserted in center comes out clean."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 12,
+      "text": "Cool in pans for about 10 minutes, then remove and cool completely on wire racks."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 13,
+      "text": "Place 1 layer, top-side down, on serving platter."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 14,
+      "text": "Spoon about 1/3 cup Chocolate Frosting onto layer and spread evenly to edge."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 15,
+      "text": "Sprinkle with chopped walnuts."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 16,
+      "text": "Place other layer, top-side up, on frosted layer."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 17,
+      "text": "Frost sides of cake, then top, covering completely."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 18,
+      "text": "Chocolate Frosting: Melt chocolate in double boiler and cool completely. Cream together butter and powdered sugar. Add milk, vanilla and melted chocolate. Blend until smooth and creamy."
+    }
+  ],
+  "recipeYield": "Makes about 2 cups of frosting.",
+  "comment": "Imported from tests/samples/garvick_sample.html",
+  "url": "file://tests/samples/garvick_sample.html",
+  "description": "Recipe converted from HTML (garvick) format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Blonde Brownies",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Flour",
+      "value": "2 2/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Baking powder",
+      "value": "2 1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Butter",
+      "value": "2/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Box light brown sugar",
+      "value": 1,
+      "unitText": "pound"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Eggs",
+      "value": 3
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Pkg chocolate chips",
+      "value": 6,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Pkg butterscotch chips",
+      "value": 6,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Pecans",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Sift flour, baking powder and salt together and set aside. Melt butter and brown sugar in saucepan; cool."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "When cool, add eggs, one at a time. Add flour mixture; add chocolate and butterscotch chips and pecans last."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Spread in a jelly roll pan; bake at 350 degree for 25-30 minutes. Do not overcook. Batter is very thick."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Cut in squares when cool."
+    }
+  ],
+  "comment": "Imported from tests/samples/garvick_sample.html",
+  "url": "file://tests/samples/garvick_sample.html",
+  "description": "Recipe converted from HTML (garvick) format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Chocolate Decadence Cake",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Semisweet chocolate, chopped",
+      "value": 6,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Unsweetened chocolate, chopped",
+      "value": 2,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Freshly brewed espresso",
+      "value": "1/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Unsalted butter",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vanilla extract",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Eggs; separated, room temperature",
+      "value": 6,
+      "unitText": "large"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Dark brown sugar; packed",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "All-purpose flour, sifted",
+      "value": "1/3",
+      "unitText": "cup"
+    },
+    "Powdered sugar"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Position rack in center of oven and preheat to 350 degrees F."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Butter 10-inch-diameter springform pan with 2-inch-high sides."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Melt both chocolates with coffee and butter in heavy medium saucepan over medium-low heat, stirring until smooth. Pour into large bowl. Cool. Mix in vanilla extract."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Using electric mixer, beat yolks with both sugars in medium bowl until slowly dissolving ribbon forms when beaters are lifted. Fold yolk mixture into chocolate mixture. Fold in flour."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "Using electric mixer fitted with clean, dry beaters, beat whites in another large bowl until almost stiff. Fold 1/4 of whites into chocolate mixture to lighten. Gently fold in remaining whites."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "text": "Gently pour batter into prepared pan."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "text": "Bake until toothpick inserted in center comes out with moist crumbs still attached, about 45 minutes."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 8,
+      "text": "Transfer to rack and cool (cake will fall)."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 9,
+      "text": "Cover cake in pan with plastic wrap and let stand. Run small knife around cake pan sides to loosen if needed."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 10,
+      "text": "Release pan sides of cake. Invert cake onto plate."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 11,
+      "text": "Place stencil or doily on top of cake. Sift powdered sugar over. Remove stencil and and serve."
+    }
+  ],
+  "comment": "Imported from tests/samples/garvick_sample.html",
+  "url": "file://tests/samples/garvick_sample.html",
+  "description": "Recipe converted from HTML (garvick) format"
+}
+]
