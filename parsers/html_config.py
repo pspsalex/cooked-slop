@@ -6,11 +6,12 @@ Supports extracting recipe fields from HTML pages using XPath expressions specif
 in YAML configuration files.
 """
 
+import html
 import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, Iterator, List, Optional, Any
 import yaml
 
 from .models import Recipe
@@ -49,6 +50,9 @@ class HtmlRecipeSchema:
     version: str = "1.0"
     detection: HtmlDetectionConfig = field(default_factory=HtmlDetectionConfig)
     fields: Dict[str, FieldConfig] = field(default_factory=dict)
+    recipe_container: Optional[str] = None
+    recipe_delimiter: Optional[str] = None
+    multi_recipe: bool = False
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "HtmlRecipeSchema":
@@ -81,6 +85,9 @@ class HtmlRecipeSchema:
             version=version,
             detection=detection,
             fields=fields,
+            recipe_container=data.get("recipe_container"),
+            recipe_delimiter=data.get("recipe_delimiter"),
+            multi_recipe=data.get("multi_recipe", False),
         )
 
 
@@ -209,6 +216,157 @@ def extract_xpath_values(tree: Any, cfg: FieldConfig) -> List[str]:
             values.append(val)
 
     return values
+
+
+def _parse_garvick_recipes(
+    tree: Any,
+    schema: HtmlRecipeSchema,
+    ingredient_parser: BaseIngredientParser,
+    filepath: Optional[str] = None,
+) -> Iterator[Recipe]:
+    """Extract multiple distinct recipes from Garvick-formatted HTML."""
+    title_cfg = schema.fields.get("title")
+    if not title_cfg:
+        return
+
+    title_nodes = tree.xpath(title_cfg.xpath)
+
+    valid_titles = []
+    for node in title_nodes:
+        if isinstance(node, str):
+            parent = getattr(node, "getparent", lambda: None)()
+            if parent is None:
+                continue
+            text = " ".join(node.split())
+        else:
+            parent = node
+            text = " ".join(node.text_content().split())
+
+        if not text:
+            continue
+
+        t_lower = text.lower()
+        if any(kw in t_lower for kw in [
+            "tip:", "barbeque tip:", "links to", "click here", "recipes:",
+            "site map", "privacy policy", "free recipes", "garvick home",
+            "top 100", "for book lovers", "for chocolate lovers", "for candy lovers",
+            "for movie buffs", "for cookie lovers", "for a child", "bath products", "your own creations",
+            "recipe of the month", "chill dough overnight.", "try this recipe",
+            "back to annual events", "annual events", "easter crafts", "easter games", "easter gifts", "easter recipes", "garnish:"
+        ]):
+            continue
+
+        if parent.xpath("ancestor-or-self::a") or parent.xpath(".//a"):
+            continue
+
+        p_elem = parent.xpath("ancestor-or-self::p")
+        if not p_elem:
+            continue
+        p = p_elem[0]
+        valid_titles.append((p, text))
+
+    seen = set()
+    unique_titles = []
+    for p, text in valid_titles:
+        if p not in seen:
+            seen.add(p)
+            unique_titles.append((p, text))
+
+    for idx, (p_elem, title_text) in enumerate(unique_titles):
+        next_p = unique_titles[idx + 1][0] if idx + 1 < len(unique_titles) else None
+
+        section_nodes = []
+        curr = p_elem.getnext()
+        while curr is not None:
+            if curr == next_p:
+                break
+            if next_p is not None and next_p in curr.iterdescendants():
+                break
+            section_nodes.append(curr)
+            curr = curr.getnext()
+
+        ingredients = []
+        instructions = []
+        yield_amount = ""
+
+        for elem in section_nodes:
+            if elem.tag in ("script", "style", "table"):
+                continue
+            if elem.tag == "ul":
+                for li in elem.xpath(".//li"):
+                    raw = " ".join(li.text_content().split())
+                    if raw:
+                        ingredients.append(ingredient_parser.parse(raw))
+            elif elem.tag == "p":
+                if elem.xpath(".//a[contains(@href, 'index.html') or contains(@href, 'meal-master')]"):
+                    break
+                p_text = elem.text_content().strip()
+                if not p_text:
+                    continue
+                elem_html = lxml.html.tostring(elem, encoding="unicode")
+                raw_lines = [
+                    re.sub(r"\s+", " ", html.unescape(l).replace("\xa0", " ")).strip()
+                    for l in re.split(r"<br\s*/?>", elem_html, flags=re.IGNORECASE)
+                ]
+                raw_lines = [re.sub(r"<[^>]+>", "", l).strip() for l in raw_lines]
+                raw_lines = [l for l in raw_lines if l]
+
+                if len(raw_lines) > 1 and any(ingredient_parser.parse(l).quantity for l in raw_lines[:4]):
+                    for line in raw_lines:
+                        m_yield = re.match(r"^(?:serves|makes)\s+(.+)$", line, re.IGNORECASE)
+                        if m_yield:
+                            yield_amount = line
+                            continue
+                        if any(line.lower().startswith(x) for x in ["filling:", "glaze:", "frosting:", "marinade", "chocolate frosting:"]):
+                            continue
+                        if line.startswith("*") and ("cup" in line or "sugar" in line or "tb" in line):
+                            instructions.append(line)
+                            continue
+                        parsed = ingredient_parser.parse(line)
+                        if parsed.quantity or (parsed.unit and parsed.unit != line):
+                            ingredients.append(parsed)
+                        else:
+                            instructions.append(line)
+                else:
+                    clean_text = " ".join(p_text.split())
+                    m_yield = re.match(r"^(?:serves|makes)\s+(.+)$", clean_text, re.IGNORECASE)
+                    if m_yield:
+                        yield_amount = clean_text
+                    elif clean_text.lower().startswith("filling:") or clean_text.lower().startswith("glaze:"):
+                        pass
+                    else:
+                        instructions.append(clean_text)
+
+        if ingredients:
+            yield Recipe(
+                title=title_text,
+                yield_amount=yield_amount,
+                ingredients=ingredients,
+                instructions=instructions,
+                source_file=filepath,
+                source_format=f"HTML ({schema.name})",
+            )
+
+
+def parse_html_recipes_with_schema(
+    content: str,
+    schema: HtmlRecipeSchema,
+    ingredient_parser: BaseIngredientParser,
+    filepath: Optional[str] = None,
+) -> Iterator[Recipe]:
+    """Parse recipe HTML content into an iterator of Recipe models using an HtmlRecipeSchema."""
+    if not HAS_LXML:
+        raise RuntimeError("lxml library is required for XPath HTML parsing.")
+
+    tree = lxml.html.fromstring(f"<html><body>{content}</body></html>")
+
+    if schema.name == "garvick":
+        yield from _parse_garvick_recipes(tree, schema, ingredient_parser, filepath)
+        return
+
+    recipe = parse_html_with_schema(content, schema, ingredient_parser, filepath)
+    if recipe.title or recipe.ingredients:
+        yield recipe
 
 
 def parse_html_with_schema(
