@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+name: mcnalley
+description: "XPath configuration for McNalley Recipe Archive and Mom's Recipes"
+version: "1.0"
+
+detection:
+  path_pattern: ".*\\.html?$"
+  content_patterns:
+    - "recipeTitle"
+    - "RecipeIngred"
+
+fields:
+  title:
+    xpath: "//strong[@class='recipeTitle']/text() | //td[@class='recipeTitle']/text() | //td[@class='recipeTitle']/p/text()[1] | //table[@class='recipeTitle']//strong/text() | //*[@class='recipeTitle' and not(@class='recipeTitleCopy')]/text() | //span[contains(@class, 'ScripttextRed')]/text()"
+  yield_amount:
+    xpath: "//span[contains(@class, 'RecipeHead') and (contains(text(), 'SERVES') or contains(text(), 'Serves') or contains(text(), 'Makes') or contains(text(), 'Yield'))]/text() | //td[contains(@class, 'RecipeHead') and (contains(text(), 'SERVES') or contains(text(), 'Serves') or contains(text(), 'Makes') or contains(text(), 'Yield'))]/text() | //strong[contains(@class, 'RecipeHead') and (contains(text(), 'SERVES') or contains(text(), 'Serves') or contains(text(), 'Makes') or contains(text(), 'Yield'))]/text() | //*[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'serves')]/text() | //*[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'makes')]/text() | //*[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'yield')]/text()"
+  ingredients:
+    xpath: "//td[contains(@class, 'RecipeIngred')] | //span[contains(@class, 'RecipeIngred')]/text() | //td[contains(@class, 'Scripttext') and not(contains(@class, 'BlueText'))]//p/text() | //td[contains(@class, 'Scripttext') and not(contains(@class, 'BlueText'))]/text()"
+  instructions:
+    xpath: "//span[contains(@class, 'RecipeTxt')] | //*[contains(@class, 'RecipeTxt')] | //td[contains(@class, 'BlueText')]//p[contains(@class, 'Scripttext')][1]/text() | //td[contains(@class, 'BlueText')]//p[contains(@class, 'Scripttext')][1]"
