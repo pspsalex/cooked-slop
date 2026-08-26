@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+name: chile_recipes
+description: "XPath configuration for netRelief Chili recipe archives"
+version: "1.0"
+
+detection:
+  path_pattern: ".*chile.*\\.(s?html?)$"
+  content_patterns:
+    - "chile.netrelief.com"
+    - "Garry's Home Cookin'"
+
+fields:
+  title:
+    xpath: "//h2/text() | //title/text()"
+  yield_amount:
+    xpath: "//p[contains(., 'serves')]/text()"
+  ingredients:
+    xpath: "//dl/dd//text()"
+  instructions:
+    xpath: "//table[last()]//tr[last()]//td/text()"

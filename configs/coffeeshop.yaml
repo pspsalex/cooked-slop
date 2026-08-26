@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: MIT
+name: coffeeshop_recipes
+description: "Configuration for The Coffee Shop Recipe Book archive"
+version: "1.0"
+
+detection:
+  path_pattern: ".*(?:Coffee Shop|coffeeshop).*\\.html?$"
+  content_patterns:
+    - "The Coffee Shoppe"
+    - "RocketLibrarian"
+
+recipe_delimiter: '<FONT FACE="Times New Roman" SIZE="4"><B>'
+
+fields:
+  title:
+    xpath: "//font[@size='4']/b/text()"
+  ingredients:
+    xpath: "//font[@size='3'][preceding-sibling::font[contains(normalize-space(.), 'Ingredients')] and following-sibling::font[contains(normalize-space(.), 'Prepare')]]//text() | //font[@size='3'][preceding-sibling::font[contains(normalize-space(.), 'Ingredients')]]//text()"
+    split_delimiter: "\n"
+  instructions:
+    xpath: "//font[@size='3'][preceding-sibling::font[contains(normalize-space(.), 'Prepare')]]//text()"

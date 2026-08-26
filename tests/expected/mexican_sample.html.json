@@ -1,0 +1,55 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Basic Salsa with Any Kind of Dry Chiles",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "Chiles dry *",
+      "value": 6,
+      "unitText": "large"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Onion",
+      "value": "1/2",
+      "unitText": "medium"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Vinegar",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic",
+      "value": 1,
+      "unitText": "clove"
+    },
+    "Salt",
+    "Vegetable oil"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "* Morita, mulato, guajillo or any kind."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Wash the chiles in water and discard the seeds and threads of chiles."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Patricia Wriedt"
+    }
+  ],
+  "comment": "Imported from tests/samples/mexican_sample.html",
+  "url": "file://tests/samples/mexican_sample.html",
+  "description": "Recipe converted from HTML (mexican_recipes) format"
+}
+]

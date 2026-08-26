@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: MIT
+name: netrelief_recipes
+description: "XPath configuration for netRelief Home Cookin' archives"
+version: "1.0"
+
+detection:
+  path_pattern: '.*netrelief.*\.(s?html?)$'
+  content_patterns:
+    - "Garry's Home Cookin'"
+    - "cooking.netrelief.com"
+
+fields:
+  title:
+    xpath: "//p[@align='center']/font[@size='5']/b/text() | //title/text()"
+  yield_amount:
+    xpath: "//p/b[contains(., 'Serving Size')]/following-sibling::text()[1]"
+  description:
+    xpath: "//blockquote/p/b[contains(., 'Recipe By')]/following-sibling::text()[1]"
+  ingredients:
+    xpath: "//blockquote/p[b and not(contains(b, 'Recipe By')) and not(contains(b, 'Serving Size'))]/b//text()"
+    split_delimiter: "\n"
+  instructions:
+    xpath: "//blockquote/p[not(b) and not(i)]/text()"

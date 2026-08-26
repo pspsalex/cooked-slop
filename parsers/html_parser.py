@@ -45,7 +45,7 @@ class HtmlParser(BaseRecipeParser):
 
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
-        if Path(filepath).suffix.lower() in {'.html', '.htm'}:
+        if Path(filepath).suffix.lower() in {'.html', '.htm', '.shtml'}:
             return 0.99
         if re.search(r'<html|<body|<div|<p>', content_sample, re.IGNORECASE):
             return 0.8
@@ -71,12 +71,36 @@ class HtmlParser(BaseRecipeParser):
 
         if schema and HAS_LXML:
             try:
-                recipe = parse_html_with_schema(
-                    content, schema, self.ingredient_parser, filepath
-                )
-                if recipe.title or recipe.ingredients:
-                    yield recipe
-                    return
+                if schema.recipe_delimiter:
+                    try:
+                        delim_pattern = rf"(?i)(?={schema.recipe_delimiter})"
+                        chunks = re.split(delim_pattern, content)
+                    except Exception:
+                        delim_pattern = rf"(?i)(?={re.escape(schema.recipe_delimiter)})"
+                        chunks = re.split(delim_pattern, content)
+
+                    yielded = False
+                    for chunk in chunks:
+                        if not chunk.strip():
+                            continue
+                        try:
+                            recipe = parse_html_with_schema(
+                                chunk, schema, self.ingredient_parser, filepath
+                            )
+                            if recipe.title or recipe.ingredients:
+                                yield recipe
+                                yielded = True
+                        except Exception as e:
+                            logger.debug("Chunk parsing failed for %s: %s", filepath, e)
+                    if yielded:
+                        return
+                else:
+                    recipe = parse_html_with_schema(
+                        content, schema, self.ingredient_parser, filepath
+                    )
+                    if recipe.title or recipe.ingredients:
+                        yield recipe
+                        return
             except Exception as e:
                 logger.debug("XPath HTML schema parsing failed for %s: %s", filepath, e)
 

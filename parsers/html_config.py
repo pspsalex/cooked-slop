@@ -47,6 +47,7 @@ class HtmlRecipeSchema:
     name: str
     description: str = ""
     version: str = "1.0"
+    recipe_delimiter: Optional[str] = None
     detection: HtmlDetectionConfig = field(default_factory=HtmlDetectionConfig)
     fields: Dict[str, FieldConfig] = field(default_factory=dict)
 
@@ -55,6 +56,7 @@ class HtmlRecipeSchema:
         name = data.get("name", "custom_html")
         description = data.get("description", "")
         version = str(data.get("version", "1.0"))
+        recipe_delimiter = data.get("recipe_delimiter")
 
         det_data = data.get("detection", {})
         detection = HtmlDetectionConfig(
@@ -79,6 +81,7 @@ class HtmlRecipeSchema:
             name=name,
             description=description,
             version=version,
+            recipe_delimiter=recipe_delimiter,
             detection=detection,
             fields=fields,
         )
@@ -136,24 +139,28 @@ class HtmlConfigRegistry:
 
     def score_schema(self, schema: HtmlRecipeSchema, content_sample: str, filepath: str) -> float:
         """Calculate confidence score (0.0 to 1.0) for a schema match."""
-        score = 0.0
-        checks = 0
-
+        path_matched = False
         if schema.detection.path_pattern:
-            checks += 1
             if re.search(schema.detection.path_pattern, filepath, re.IGNORECASE):
-                score += 1.0
+                path_matched = True
 
-        if schema.detection.content_patterns:
-            checks += len(schema.detection.content_patterns)
+        content_matched_count = 0
+        total_content = len(schema.detection.content_patterns)
+        if total_content > 0:
             for pattern in schema.detection.content_patterns:
                 if pattern.lower() in content_sample.lower():
-                    score += 1.0
+                    content_matched_count += 1
 
-        if checks == 0:
+        if schema.detection.path_pattern and total_content > 0:
+            path_score = 1.0 if path_matched else 0.0
+            content_score = content_matched_count / total_content
+            return 0.5 * path_score + 0.5 * content_score
+        elif schema.detection.path_pattern:
+            return 1.0 if path_matched else 0.0
+        elif total_content > 0:
+            return content_matched_count / total_content
+        else:
             return 0.1
-
-        return score / checks
 
     def get_schema(self, name: str) -> Optional[HtmlRecipeSchema]:
         """Get schema by name."""

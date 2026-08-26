@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: MIT
+name: mexican_recipes
+description: "XPath configuration for Garry Howard's Mexican recipe archives"
+version: "1.0"
+
+detection:
+  path_pattern: ".*mexican.*\\.(s?html?)$"
+  content_patterns:
+    - "Garry's Home Cookin'"
+    - "mexicancooking.netrelief.com"
+
+fields:
+  title:
+    xpath: "//p[@align='center']/font[@size='5']/b/text() | //title/text()"
+  description:
+    xpath: "//blockquote/p[b[contains(., 'Recipe By')]]/text()"
+  ingredients:
+    xpath: "//blockquote/p[b and not(contains(b, 'Recipe By'))]/b//text()"
+    split_delimiter: "\n"
+  instructions:
+    xpath: "//blockquote/p[not(b)]/text()"

@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: MIT
+name: bbq_recipes
+description: "XPath configuration for netRelief BBQ recipe archives"
+version: "1.0"
+
+detection:
+  path_pattern: ".*bbq.*\\.(s?html?)$"
+  content_patterns:
+    - "bbq.netrelief.com"
+    - "Garry's Home Cookin'"
+
+fields:
+  title:
+    xpath: "//table//font[@size='5']/b/text() | //title/text()"
+  description:
+    xpath: "//table//p[b[contains(., 'Recipe By')]]/text()"
+  yield_amount:
+    xpath: "//table//p[contains(., 'Makes')]/text()"
+  ingredients:
+    xpath: "//table//p[b and not(contains(b, 'Recipe By'))]/b//text()"
+    split_delimiter: "\n"
+  instructions:
+    xpath: "//table//p[not(b) and not(contains(., 'Makes'))]/text()"

@@ -1,0 +1,83 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Artichoke Dip Appetizer",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "cream cheese",
+      "value": 8,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "mozzarella cheese -- shredded",
+      "value": 12,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "mayonnaise",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "grated parmesan cheese",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "-- finely chopped",
+      "value": 1,
+      "unitText": "onion"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic -- finely chopped",
+      "value": 2,
+      "unitText": "clove"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "jars marinated artichoke hearts -- DRAIN WELL",
+      "value": 2,
+      "unitText": "small"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "pita bread",
+      "value": 2,
+      "unitText": "bags"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "I downloaded this recipe off the internet years ago."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Tear artichokes apart with your fingers."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Combine all other ingredients and mash."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Bake in an uncovered casserole dish for approx 30 minutes @ 350 or until bubbly."
+    }
+  ],
+  "recipeYield": "10",
+  "comment": "Imported from tests/samples/netrelief_sample.html",
+  "url": "file://tests/samples/netrelief_sample.html",
+  "description": "Recipe converted from HTML (netrelief_recipes) format"
+}
+]
