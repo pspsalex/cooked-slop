@@ -450,6 +450,7 @@ def process_directory(
         ".txt",
         ".html",
         ".htm",
+        ".shtml",
         ".pdf",
         ".jpg",
         ".png",
@@ -558,83 +559,64 @@ def main(argv: Optional[List[str]] = None):
         f"{Colors.BOLD}{Colors.HEADER}╚══════════════════════════════════════╝{Colors.ENDC}\n"
     )
 
-    parse_ingredients = not args.no_parse_ingredients
-    use_nlp = not args.no_nlp
-    ingredient_parser = get_ingredient_parser(use_nlp=use_nlp)
+    # Choose ingredient parser: NLP only if installed AND not disabled via --no-nlp
+    ingredient_parser = get_ingredient_parser(use_nlp=not args.no_nlp)
 
-    from parsers.ingredients import is_nlp_available
-
-    if is_nlp_available() and use_nlp:
-        print(f"{Colors.GREEN}✓ Using NLP Ingredient Parser{Colors.ENDC}")
-    else:
-        print(f"{Colors.YELLOW}ℹ Using Regex Fallback Ingredient Parser{Colors.ENDC}")
-
-    # Build LLM parser if requested
+    # Initialize LLM parser if --llm-config is passed
     llm_parser = None
     if args.llm_config:
         if not args.llm_config.exists():
             print(
-                f"{Colors.RED}Error: LLM config not found: {args.llm_config}{Colors.ENDC}"
+                f"{Colors.RED}LLM config file not found: {args.llm_config}{Colors.ENDC}"
             )
             return 1
+        llm_parser = LLMRecipeParser.from_yaml(args.llm_config, ingredient_parser)
         print(
-            f"{Colors.CYAN}✓ LLM mode enabled — config: {args.llm_config}{Colors.ENDC}"
+            f"  {Colors.CYAN}ℹ LLM Extraction Enabled: {llm_parser.model} via {llm_parser.base_url}{Colors.ENDC}"
         )
-        llm_parser = LLMRecipeParser(
-            ingredient_parser, config_path=str(args.llm_config)
-        )
+    elif ingredient_parser.__class__.__name__ == "RegexIngredientParser":
+        print(f"  {Colors.DIM}ℹ Using Regex Fallback Ingredient Parser{Colors.ENDC}")
+    else:
+        print(f"  {Colors.CYAN}ℹ Using Spacy NLP Ingredient Parser{Colors.ENDC}")
 
-    output_is_file = args.output.suffix != ""
+    input_path = args.input.resolve()
+
+    if not input_path.exists():
+        print(f"{Colors.RED}Input path does not exist: {input_path}{Colors.ENDC}")
+        return 1
+
+    # Single-file output mode is active if:
+    # 1) --multiple-per-file is explicitly passed (irrespective of output path format)
+    # OR
+    # 2) output path ends in .json and is not an existing directory
+    write_to_single_file = args.multiple_per_file or (
+        args.output.suffix.lower() == ".json" and not args.output.is_dir()
+    )
+
     stream_writer = None
-    if output_is_file:
+    if write_to_single_file:
+        output_dir = args.output.parent
         stream_writer = JSONStreamWriter(args.output, chunk=args.chunk)
+        one_file_per_recipe = False
+    else:
+        # No multiple-per-file and output string does not end in .json:
+        # Create folder and do 1 recipe per file
+        output_dir = args.output
+        output_dir.mkdir(parents=True, exist_ok=True)
+        one_file_per_recipe = True
 
     try:
-        if args.input.is_file():
-            if not args.verbose:
-                print(f"{Colors.CYAN}Converting:{Colors.ENDC} {args.input.name}")
-                print_progress_bar(
-                    0,
-                    args.input.stat().st_size,
-                    prefix="Processing",
-                    suffix=args.input.name,
-                )
-
-            convert_recipe_file(
-                args.input,
-                args.output.parent if output_is_file else args.output,
-                not args.multiple_per_file,
-                args.verbose,
-                parse_ingredients,
-                ingredient_parser,
-                args.format,
-                stream_writer,
-                debug_sql=args.debug_sql,
-                llm_parser=llm_parser,
-                shard=args.shard,
-                add_date=args.add_date,
-                html_config=args.html_config,
-            )
-
-            if not args.verbose:
-                print_progress_bar(
-                    args.input.stat().st_size,
-                    args.input.stat().st_size,
-                    prefix="Processing",
-                    suffix="Complete!",
-                )
-
-        elif args.input.is_dir():
+        if input_path.is_dir():
             process_directory(
-                args.input,
-                args.output.parent if output_is_file else args.output,
-                not args.multiple_per_file,
+                input_path,
+                output_dir,
+                one_file_per_recipe,
                 args.verbose,
                 args.recursive,
-                parse_ingredients,
+                not args.no_parse_ingredients,
                 ingredient_parser,
-                args.format,
-                stream_writer,
+                format_name=args.format,
+                stream_writer=stream_writer,
                 debug_sql=args.debug_sql,
                 llm_parser=llm_parser,
                 shard=args.shard,
@@ -642,19 +624,29 @@ def main(argv: Optional[List[str]] = None):
                 html_config=args.html_config,
             )
         else:
-            print(f"{Colors.RED}Error: {args.input} not found{Colors.ENDC}")
-            return 1
-
+            convert_recipe_file(
+                input_path,
+                output_dir,
+                one_file_per_recipe,
+                args.verbose,
+                not args.no_parse_ingredients,
+                ingredient_parser,
+                format_name=args.format,
+                stream_writer=stream_writer,
+                debug_sql=args.debug_sql,
+                llm_parser=llm_parser,
+                shard=args.shard,
+                add_date=args.add_date,
+                html_config=args.html_config,
+            )
+    finally:
         if stream_writer:
             stream_writer.close()
 
-        print(f"\n{Colors.GREEN}{Colors.BOLD}✨ Conversion finished! ✨{Colors.ENDC}")
-        print(f"{Colors.DIM}Output saved to: {args.output.absolute()}{Colors.ENDC}\n")
-        return 0
-    except KeyboardInterrupt:
-        print(f"\n\n{Colors.RED}Forced exit - data may be incomplete{Colors.ENDC}\n")
-        return 1
+    print(f"\n  {Colors.GREEN}{Colors.BOLD}✨ Conversion finished! ✨{Colors.ENDC}")
+    print(f"  {Colors.DIM}Output saved to: {args.output}{Colors.ENDC}\n")
+    return 0
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

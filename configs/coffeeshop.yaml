@@ -4,7 +4,7 @@ description: "Configuration for The Coffee Shop Recipe Book archive"
 version: "1.0"
 
 detection:
-  path_pattern: ".*(?:Coffee Shop|coffeeshop).*\\.html?$"
+  path_pattern: ".*(?:Coffee Shop|coffeeshop)[/\\\\].*\\.html?$"
   content_patterns:
     - "The Coffee Shoppe"
     - "RocketLibrarian"

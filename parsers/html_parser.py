@@ -62,26 +62,32 @@ class HtmlParser(BaseRecipeParser):
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         registry = get_html_schema_registry()
-        schema = None
 
         if self.config_path:
             schema = registry.load_schema_from_file(Path(self.config_path))
-        if not schema:
-            schema = registry.detect_schema(content[:5000], filepath)
+            candidate_schemas = [schema] if schema else []
+        else:
+            candidate_schemas = registry.detect_schemas(content, filepath)
 
-        if schema and HAS_LXML:
-            try:
-                yielded = False
-                for recipe in parse_html_recipes_with_schema(
-                    content, schema, self.ingredient_parser, filepath
-                ):
-                    if recipe.title or recipe.ingredients:
-                        yield recipe
-                        yielded = True
-                if yielded:
-                    return
-            except Exception as e:
-                logger.debug("XPath HTML schema parsing failed for %s: %s", filepath, e)
+        if HAS_LXML:
+            for schema in candidate_schemas:
+                try:
+                    yielded = False
+                    for recipe in parse_html_recipes_with_schema(
+                        content, schema, self.ingredient_parser, filepath
+                    ):
+                        if recipe.title or recipe.ingredients:
+                            yield recipe
+                            yielded = True
+                    if yielded:
+                        return
+                except Exception as e:
+                    logger.debug(
+                        "XPath HTML schema parsing failed for %s with schema %s: %s",
+                        filepath,
+                        schema.name,
+                        e,
+                    )
 
         scraper_fn = _get_scrape_html()
         if not scraper_fn:

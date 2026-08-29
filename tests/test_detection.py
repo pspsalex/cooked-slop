@@ -228,6 +228,9 @@ def test_html_garry_howard_and_coffeeshop_detection():
     cases = [
         ('mexican/salsa.shtml', "Garry's Home Cookin' mexicancooking.netrelief.com", 'mexican_recipes'),
         ('netrelief/dip.shtml', "Garry's Home Cookin' cooking.netrelief.com", 'netrelief_recipes'),
+        ('netrelief/basic_all_american_bbq_sauce_recipe.shtml', "Garry's Home Cookin' cooking.netrelief.com", 'netrelief_recipes'),
+        ('netrelief/garrys_green_chile_recipe.shtml', "Garry's Home Cookin' cooking.netrelief.com", 'netrelief_recipes'),
+        ('netrelief/garrys_mexican_rice_recipe.shtml', "Garry's Home Cookin' cooking.netrelief.com", 'netrelief_recipes'),
         ('bbq/rub.htm', "Garry's Home Cookin' bbq.netrelief.com", 'bbq_recipes'),
         ('chile/chili.shtml', "Garry's Home Cookin' chile.netrelief.com", 'chile_recipes'),
         ('The Coffee Shop Recipe Book/000001-cool.html', 'The Coffee Shoppe RocketLibrarian', 'coffeeshop_recipes'),
@@ -237,3 +240,44 @@ def test_html_garry_howard_and_coffeeshop_detection():
         schema = reg.detect_schema(sample_text, filepath)
         assert schema is not None, f'Failed to detect schema for {filepath}'
         assert schema.name == expected_name, f'Expected {expected_name}, got {schema.name} for {filepath}'
+
+
+def test_macropolis_upenn_html_detection(ingredient_parser):
+    from parsers.html_config import get_html_schema_registry
+    from parsers.html_parser import HtmlParser
+
+    sample = """<! **SAS Computing, University of Pennsylvania** >
+<! HTML Generated from DCCS's Penninfo Node: 19185.TXT >
+<! by "pips2html" written by Peter Kitchin >
+<html><head><title>TuttoCucina</title>
+<link rel="SHORTCUT ICON" href="http://www.macropolis.org/fav/magcas.ico">
+</head>
+<body>
+<H2><A name=SHORBA></a>SHORBA</H2>
+<UL>Puree of Lamb Khartoum Yield: 2 quarts of soup (8 1-cup portions)</UL>
+<P>This is a most interesting soup.</P>
+<P>In a 6-quart saucepan:</P>
+<P><B>Simmer:</B> 3 Ibs. LAMB BONES in</P>
+<DT>2 quarts WATER
+<DT>2 tsp. SALT for one hour.
+<P><B>Add:</B> 1/2 Ib. WHOLE ONIONS, peeled</P>
+<P><B>Simmer</B> for 1 hour until vegetables are thoroughly cooked.</P>
+</body>
+</html>"""
+    reg = get_html_schema_registry()
+    schema = reg.detect_schema(sample, "macropolis/sudan.htm")
+    assert schema is not None
+    assert schema.name == "macropolis_upenn"
+
+    parser = HtmlParser(ingredient_parser)
+    recipes = list(parser.parse_content(sample, "macropolis/sudan.htm"))
+    assert len(recipes) == 1
+    assert recipes[0].title == "SHORBA"
+    assert recipes[0].yield_amount == "2 quarts of soup (8 1-cup portions)"
+    assert recipes[0].description == "Puree of Lamb Khartoum"
+    assert len(recipes[0].ingredients) == 4
+    # Check unit normalization for Ibs.
+    lamb = next(i for i in recipes[0].ingredients if "LAMB BONES" in i.name)
+    assert lamb.unit == "pound"
+    assert lamb.quantity == "3"
+

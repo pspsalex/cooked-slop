@@ -4,7 +4,7 @@ description: "XPath configuration for netRelief Home Cookin' archives"
 version: "1.0"
 
 detection:
-  path_pattern: '.*netrelief.*\.(s?html?)$'
+  path_pattern: ".*netrelief[/\\\\].*\\.(s?html?)$"
   content_patterns:
     - "Garry's Home Cookin'"
     - "cooking.netrelief.com"

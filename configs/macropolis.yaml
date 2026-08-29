@@ -8,6 +8,7 @@ detection:
   content_patterns:
     - "TuttoCucina"
     - "macropolis.org"
+    - "Title:"
 
 recipe_delimiter: "<b>Title:"
 

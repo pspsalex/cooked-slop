@@ -4,7 +4,7 @@ description: "XPath configuration for netRelief Chili recipe archives"
 version: "1.0"
 
 detection:
-  path_pattern: ".*chile.*\\.(s?html?)$"
+  path_pattern: ".*chile[/\\\\].*\\.(s?html?)$"
   content_patterns:
     - "chile.netrelief.com"
     - "Garry's Home Cookin'"

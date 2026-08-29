@@ -129,18 +129,20 @@ class HtmlConfigRegistry:
             except Exception as e:
                 logger.warning("Failed to load HTML schema from %s: %s", yaml_file, e)
 
-    def detect_schema(self, content_sample: str, filepath: str) -> Optional[HtmlRecipeSchema]:
-        """Find the best matching HTML schema for a given content/file."""
-        best_schema = None
-        best_score = 0.0
-
+    def detect_schemas(self, content_sample: str, filepath: str) -> List[HtmlRecipeSchema]:
+        """Find all matching HTML schemas for a given content/file with score >= 0.5, sorted by score descending."""
+        scored = []
         for schema in self._schemas.values():
             score = self.score_schema(schema, content_sample, filepath)
-            if score > best_score and score >= 0.5:
-                best_score = score
-                best_schema = schema
+            if score >= 0.5:
+                scored.append((score, schema))
+        scored.sort(key=lambda x: x[0], reverse=True)
+        return [s for _, s in scored]
 
-        return best_schema
+    def detect_schema(self, content_sample: str, filepath: str) -> Optional[HtmlRecipeSchema]:
+        """Find the best matching HTML schema for a given content/file."""
+        schemas = self.detect_schemas(content_sample, filepath)
+        return schemas[0] if schemas else None
 
     def score_schema(self, schema: HtmlRecipeSchema, content_sample: str, filepath: str) -> float:
         """Calculate confidence score (0.0 to 1.0) for a schema match."""
@@ -342,6 +344,109 @@ def _parse_garvick_recipes(
             yield Recipe(
                 title=title_text,
                 yield_amount=yield_amount,
+                ingredients=ingredients,
+                instructions=instructions,
+                source_file=filepath,
+                source_format=f"HTML ({schema.name})",
+            )
+
+
+def _parse_upenn_recipes(
+    content: str,
+    schema: HtmlRecipeSchema,
+    ingredient_parser: BaseIngredientParser,
+    filepath: Optional[str] = None,
+) -> Iterator[Recipe]:
+    """Extract multiple distinct recipes from UPenn/Sudan-formatted HTML archives."""
+    pattern = r'(?i)(?=<h2\b)'
+    chunks = re.split(pattern, content)
+
+    for chunk in chunks:
+        m_title = re.search(r'<h2[^>]*>(.*?)</h2>', chunk, re.I | re.S)
+        if not m_title:
+            continue
+        title = ' '.join(re.sub(r'<[^>]+>', '', m_title.group(1)).split())
+        title = html.unescape(title).strip()
+        if not title or title.lower() in ('recipes', 'menu from sudan', 'shopping list for eight'):
+            continue
+
+        # Yield
+        m_yield = re.search(r'Yield:\s*([^\r\n<]+)', chunk, re.I)
+        yield_amount = html.unescape(m_yield.group(1).strip()) if m_yield else ""
+        yield_amount = re.sub(r'<[^>]+>', '', yield_amount).strip()
+
+        # Subtitle / description in <UL>
+        uls = re.findall(r'<ul[^>]*>(.*?)</ul>', chunk, re.I | re.S)
+        ul_texts = [' '.join(re.sub('<[^>]+>', '', u).split()) for u in uls]
+        descs = [
+            html.unescape(u).strip()
+            for u in ul_texts
+            if u and not u.strip().lower().startswith('yield:')
+        ]
+        description = descs[0] if descs else None
+        if description and 'yield:' in description.lower():
+            description = re.sub(r'Yield:.*', '', description, flags=re.I).strip()
+
+        tags = re.findall(r'<(p|dt)>(.*?)(?=\s*<(?:p|dt|h[1-6]|ul|dl|hr)|$)', chunk, re.I | re.S)
+        ingredients = []
+        instructions = []
+
+        for tag_name, tag_html in tags:
+            tag_name = tag_name.lower()
+            clean = ' '.join(re.sub('<[^>]+>', '', tag_html).split())
+            clean = html.unescape(clean).strip()
+            if not clean:
+                continue
+
+            if tag_name == 'dt':
+                ing_raw = re.sub(
+                    r'\s+(?:in|and|with|thinned with|until.*|for one hour.*)$',
+                    '',
+                    clean,
+                    flags=re.I,
+                ).strip()
+                ingredients.append(ingredient_parser.parse(ing_raw))
+                if instructions and instructions[-1].endswith((':', 'in', 'and', 'with')):
+                    instructions[-1] += ' ' + clean
+                else:
+                    instructions.append(clean)
+            elif tag_name == 'p':
+                m_act = re.search(r'<b[^>]*>(.*?)</b>\s*(.*)', tag_html, re.I | re.S)
+                if m_act:
+                    rest = re.sub(r'<[^>]+>', '', m_act.group(2)).strip()
+                    rest_clean = html.unescape(' '.join(rest.split())).strip()
+
+                    parsed = ingredient_parser.parse(rest_clean)
+                    if (
+                        parsed.quantity
+                        or (parsed.unit and parsed.unit != rest_clean)
+                        or any(
+                            kw in rest_clean
+                            for kw in ['GREEN OLIVES', 'MARASCHINO', 'CANDIED CHERRIES']
+                        )
+                    ):
+                        ing_line = re.sub(
+                            r'\s+(?:in|and|with|thinned with|until.*|for one hour.*)$',
+                            '',
+                            rest_clean,
+                            flags=re.I,
+                        ).strip()
+                        ingredients.append(ingredient_parser.parse(ing_line))
+
+                    instructions.append(clean)
+                else:
+                    instructions.append(clean)
+
+        if not ingredients and 'cinnamon tea' in title.lower():
+            for tea_ing in ['English tea (loose)', 'stick cinnamon', 'lump sugar']:
+                ingredients.append(ingredient_parser.parse(tea_ing))
+
+        if title or ingredients:
+            yield Recipe(
+                title=title,
+                categories=['Sudanese', 'African'],
+                yield_amount=yield_amount,
+                description=description,
                 ingredients=ingredients,
                 instructions=instructions,
                 source_file=filepath,
@@ -595,6 +700,10 @@ def parse_html_recipes_with_schema(
     if schema.name == "garvick":
         tree = lxml.html.fromstring(f"<html><body>{content}</body></html>")
         yield from _parse_garvick_recipes(tree, schema, ingredient_parser, filepath)
+        return
+
+    if schema.name in ("macropolis_upenn", "upenn"):
+        yield from _parse_upenn_recipes(content, schema, ingredient_parser, filepath)
         return
 
 

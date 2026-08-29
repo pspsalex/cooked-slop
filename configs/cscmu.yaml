@@ -4,7 +4,7 @@ description: "XPath configuration for Carnegie Mellon University School of Compu
 version: "1.0"
 
 detection:
-  path_pattern: ".*cs\\.cmu/.*\\.html?$"
+  path_pattern: ".*cs\\.cmu[/\\\\].*\\.html?$"
   content_patterns:
     - "Carnegie Mellon's School of Computer Science"
     - "Recipe Archive"
