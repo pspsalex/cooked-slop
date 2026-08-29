@@ -20,6 +20,15 @@ class BaseRecipeParser:
         self.ingredient_parser = ingredient_parser
         self.source_format = "Unknown"
 
+    def get_display_name(self, filepath: str | None = None) -> str:
+        """Return user-friendly display name for this parser, optionally tailored to filepath."""
+        fmt = self.source_format
+        if not fmt or fmt == "Unknown":
+            fmt = self.__class__.__name__.replace("Parser", "")
+        if not fmt.lower().endswith("parser"):
+            return f"{fmt} Parser"
+        return fmt
+
     @classmethod
     def format_id(cls) -> str:
         """Unique identifier for this format."""

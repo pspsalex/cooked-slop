@@ -53,6 +53,7 @@ class HtmlRecipeSchema:
     recipe_container: Optional[str] = None
     recipe_delimiter: Optional[str] = None
     multi_recipe: bool = False
+    config_file: Optional[str] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "HtmlRecipeSchema":
@@ -109,6 +110,7 @@ class HtmlConfigRegistry:
                 data = yaml.safe_load(f)
                 if data and isinstance(data, dict):
                     schema = HtmlRecipeSchema.from_dict(data)
+                    schema.config_file = file_path.name
                     self.register_schema(schema)
                     return schema
         except Exception as e:
@@ -125,6 +127,7 @@ class HtmlConfigRegistry:
                     data = yaml.safe_load(f)
                     if data and isinstance(data, dict) and "fields" in data:
                         schema = HtmlRecipeSchema.from_dict(data)
+                        schema.config_file = yaml_file.name
                         self._schemas[schema.name] = schema
             except Exception as e:
                 logger.warning("Failed to load HTML schema from %s: %s", yaml_file, e)

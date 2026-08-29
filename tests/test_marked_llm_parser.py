@@ -10,8 +10,12 @@ import pytest
 
 pytestmark = pytest.mark.llm
 
-test_ollama = importlib.import_module("nux.test-ollama")
-parse_marked_markdown = test_ollama.parse_marked_markdown
+pytest.importorskip("pydantic")
+try:
+    test_ollama = importlib.import_module("nux.test-ollama")
+    parse_marked_markdown = test_ollama.parse_marked_markdown
+except Exception as e:
+    pytest.skip(f"nux.test-ollama not available: {e}", allow_module_level=True)
 
 
 def test_parse_marked_markdown_basic():

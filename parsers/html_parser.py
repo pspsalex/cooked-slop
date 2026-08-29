@@ -60,6 +60,25 @@ class HtmlParser(BaseRecipeParser):
         self.source_format = "HTML/URL"
         self.config_path = config_path
 
+    def get_display_name(self, filepath: Optional[str] = None) -> str:
+        if self.config_path:
+            return f"HTML Parser, config {Path(self.config_path).name}"
+
+        schema = getattr(self, "active_schema", None)
+        if not schema and filepath:
+            try:
+                registry = get_html_schema_registry()
+                with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read()
+                schema = registry.detect_schema(content, str(filepath))
+            except Exception:
+                schema = None
+
+        if schema:
+            config_name = getattr(schema, "config_file", None) or f"{schema.name}.yaml"
+            return f"HTML Parser, config {config_name}"
+        return "HTML Parser"
+
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
         registry = get_html_schema_registry()
 
@@ -77,6 +96,7 @@ class HtmlParser(BaseRecipeParser):
                         content, schema, self.ingredient_parser, filepath
                     ):
                         if recipe.title or recipe.ingredients:
+                            self.active_schema = schema
                             yield recipe
                             yielded = True
                     if yielded:

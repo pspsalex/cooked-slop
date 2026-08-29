@@ -294,6 +294,7 @@ class LLMRecipeParser(BaseRecipeParser):
     ):
         super().__init__(ingredient_parser)
         self.source_format = "LLM"
+        self.config_path = config_path
 
         cfg = self._load_config(config_path)
         self._client = LLMClient(cfg.get("provider", {}))
@@ -307,6 +308,23 @@ class LLMRecipeParser(BaseRecipeParser):
             )
         self._max_input_chars: int = int(prompt_cfg.get("max_input_chars", 6000))
         self._sanity = RecipeSanityChecker(cfg.get("sanity", {}))
+
+    @property
+    def model(self) -> str:
+        return self._client.model
+
+    @property
+    def base_url(self) -> str:
+        return self._client.base_url
+
+    @classmethod
+    def from_yaml(cls, config_path: Any, ingredient_parser: BaseIngredientParser) -> "LLMRecipeParser":
+        return cls(ingredient_parser, config_path=str(config_path))
+
+    def get_display_name(self, filepath: Optional[str] = None) -> str:
+        if self.config_path:
+            return f"LLM Parser, config {Path(self.config_path).name}"
+        return "LLM Parser"
 
     # ------------------------------------------------------------------
     # BaseRecipeParser interface

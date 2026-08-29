@@ -333,6 +333,8 @@ def convert_recipe_file(
     shard: bool = False,
     add_date: bool = False,
     html_config: Optional[Path] = None,
+    file_prefix: str = "",
+    display_path: Optional[str] = None,
 ) -> int:
     if llm_parser is not None:
         parser = llm_parser
@@ -343,11 +345,20 @@ def convert_recipe_file(
         if parser is not None and hasattr(parser, "config_path") and html_config is not None:
             parser.config_path = str(html_config)
 
-    if not parser:
-        if verbose:
+    path_display = display_path or input_path.name
+    prefix_str = f"{Colors.BOLD}{file_prefix}{Colors.ENDC} " if file_prefix else ""
+    if verbose:
+        if parser:
+            parser_info = parser.get_display_name(str(input_path))
             print(
-                f"{Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}"
+                f"\n{prefix_str}{Colors.CYAN}{path_display}{Colors.ENDC}: {parser_info}"
             )
+        else:
+            print(
+                f"\n{prefix_str}{Colors.CYAN}{path_display}{Colors.ENDC}: {Colors.RED}Unsupported file format: {input_path.suffix}{Colors.ENDC}"
+            )
+
+    if not parser:
         return 0
 
     try:
@@ -490,15 +501,11 @@ def process_directory(
     )
 
     for file_idx, recipe_file in enumerate(recipe_files, 1):
-        if verbose:
-            rel_path = (
-                recipe_file.relative_to(input_dir)
-                if input_dir in recipe_file.parents
-                else recipe_file
-            )
-            print(
-                f"\n{Colors.BOLD}[{file_idx}/{len(recipe_files)}]{Colors.ENDC} {Colors.CYAN}{rel_path}{Colors.ENDC}"
-            )
+        rel_path = (
+            recipe_file.relative_to(input_dir)
+            if input_dir in recipe_file.parents
+            else recipe_file
+        )
 
         bytes_processed = convert_recipe_file(
             recipe_file,
@@ -514,6 +521,8 @@ def process_directory(
             shard=shard,
             add_date=add_date,
             html_config=html_config,
+            file_prefix=f"[{file_idx}/{len(recipe_files)}]",
+            display_path=str(rel_path),
         )
         processed_bytes += (
             recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
@@ -638,6 +647,8 @@ def main(argv: Optional[List[str]] = None):
                 shard=args.shard,
                 add_date=args.add_date,
                 html_config=args.html_config,
+                file_prefix="",
+                display_path=input_path.name,
             )
     finally:
         if stream_writer:

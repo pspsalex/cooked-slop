@@ -90,6 +90,7 @@ class SqliteRecipeSchema:
     # Metadata
     description: str = ""
     version: str = "1.0"
+    config_file: Optional[str] = None
 
     def to_dict(self) -> Dict:
         """Convert to dictionary for YAML serialization."""
@@ -404,6 +405,7 @@ class SqliteSchemaRegistry:
                     data = yaml.safe_load(f)
                     if data and isinstance(data, dict) and 'recipes_table' in data:
                         schema = SqliteRecipeSchema.from_dict(data)
+                        schema.config_file = yaml_file.name
                         self._schemas[schema.name] = schema
             except Exception as e:
                 logger.warning("Failed to load SQLite schema from %s: %s", yaml_file, e)

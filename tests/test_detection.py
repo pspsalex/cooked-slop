@@ -312,3 +312,43 @@ def test_all_html_schemas_content_only_detection():
         candidates = reg.detect_schemas(sample_content)
         assert len(candidates) >= 1
         assert candidates[0].name == expected_schema
+
+
+def test_parser_display_names(ingredient_parser):
+    from parsers.html_parser import HtmlParser
+    from parsers.sqlite.sqlite_parser import SqliteRecipeParser
+    from parsers.mealmaster import MealMasterParser
+    from parsers.cookware import CookwareCSVParser
+
+    mm = MealMasterParser(ingredient_parser)
+    assert mm.get_display_name() == "MealMaster Parser"
+
+    cw = CookwareCSVParser(ingredient_parser)
+    assert cw.get_display_name() == "Cookware CSV Parser"
+
+    html_p = HtmlParser(ingredient_parser)
+    assert html_p.get_display_name("tests/samples/garvick_sample.html") == "HTML Parser, config garvick.yaml"
+    assert html_p.get_display_name("tests/samples/sample_recipe.html") == "HTML Parser"
+
+    html_cfg = HtmlParser(ingredient_parser, config_path="configs/garvick.yaml")
+    assert html_cfg.get_display_name() == "HTML Parser, config garvick.yaml"
+
+    sql_p = SqliteRecipeParser(ingredient_parser)
+    assert sql_p.get_display_name("tests/samples/test_recipes.db") == "SQLite Parser, config cc-rec.yaml"
+
+
+def test_verbose_conversion_output(capsys, tmp_path):
+    from convert import main as convert_main
+
+    out_file = tmp_path / "out.json"
+    ret = convert_main([
+        "tests/samples/garvick_sample.html",
+        "-o", str(out_file),
+        "-v",
+        "--no-nlp"
+    ])
+    assert ret == 0
+    captured = capsys.readouterr().out
+    assert "garvick_sample.html" in captured
+    assert "HTML Parser, config garvick.yaml" in captured
+

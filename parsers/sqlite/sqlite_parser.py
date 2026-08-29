@@ -66,6 +66,19 @@ class SqliteRecipeParser(BaseRecipeParser):
         self.sqlite_table = None
         self.debug = debug  # Set to False to suppress SQL query logging
 
+    def get_display_name(self, filepath: Optional[str] = None) -> str:
+        if not self.schema and filepath:
+            try:
+                registry = get_sqlite_schema_registry()
+                self.schema = registry.detect_schema(Path(filepath))
+            except Exception:
+                pass
+
+        if self.schema:
+            config_name = getattr(self.schema, "config_file", None) or f"{self.schema.name}.yaml"
+            return f"SQLite Parser, config {config_name}"
+        return "SQLite Parser"
+
     def parse_file(self, filepath: str) -> Iterator[Recipe]:
         """Parse recipes from SQLite database file."""
         db_path = Path(filepath)
