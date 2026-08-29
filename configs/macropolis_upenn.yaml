@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: MIT
+name: macropolis_upenn
+description: "XPath and delimiter configuration for Macropolis UPenn African Studies Cookbook archives"
+version: "1.0"
+
+detection:
+  content_patterns:
+    - "Penninfo"
+    - "pips2html"
+
+recipe_delimiter: "<H2"
+
+fields:
+  title:
+    xpath: "//h2//text()"
+  yield_amount:
+    xpath: "//ul[contains(., 'Yield:')]"

@@ -4,10 +4,8 @@ description: "XPath configuration for Garvick.com recipe collection"
 version: "1.0"
 
 detection:
-  path_pattern: ".*garvick.*\\.htm[l]?$"
   content_patterns:
-    - "BGT-468"
-    - "cpic035.gif"
+    - "garvick"
 
 fields:
   title:

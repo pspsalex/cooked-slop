@@ -129,7 +129,7 @@ class HtmlConfigRegistry:
             except Exception as e:
                 logger.warning("Failed to load HTML schema from %s: %s", yaml_file, e)
 
-    def detect_schemas(self, content_sample: str, filepath: str) -> List[HtmlRecipeSchema]:
+    def detect_schemas(self, content_sample: str, filepath: str = "") -> List[HtmlRecipeSchema]:
         """Find all matching HTML schemas for a given content/file with score >= 0.5, sorted by score descending."""
         scored = []
         for schema in self._schemas.values():
@@ -139,31 +139,21 @@ class HtmlConfigRegistry:
         scored.sort(key=lambda x: x[0], reverse=True)
         return [s for _, s in scored]
 
-    def detect_schema(self, content_sample: str, filepath: str) -> Optional[HtmlRecipeSchema]:
+    def detect_schema(self, content_sample: str, filepath: str = "") -> Optional[HtmlRecipeSchema]:
         """Find the best matching HTML schema for a given content/file."""
         schemas = self.detect_schemas(content_sample, filepath)
         return schemas[0] if schemas else None
 
-    def score_schema(self, schema: HtmlRecipeSchema, content_sample: str, filepath: str) -> float:
-        """Calculate confidence score (0.0 to 1.0) for a schema match."""
-        score = 0.0
-        checks = 0
+    def score_schema(self, schema: HtmlRecipeSchema, content_sample: str, filepath: str = "") -> float:
+        """Calculate confidence score (0.0 to 1.0) for a schema match based solely on content patterns."""
+        if not schema.detection.content_patterns:
+            return 0.0
 
-        if schema.detection.path_pattern:
-            checks += 1
-            if re.search(schema.detection.path_pattern, filepath, re.IGNORECASE):
-                score += 1.0
-
-        if schema.detection.content_patterns:
-            checks += len(schema.detection.content_patterns)
-            for pattern in schema.detection.content_patterns:
-                if pattern.lower() in content_sample.lower():
-                    score += 1.0
-
-        if checks == 0:
-            return 0.1
-
-        return score / checks
+        matches = sum(
+            1 for pattern in schema.detection.content_patterns
+            if pattern.lower() in content_sample.lower()
+        )
+        return matches / len(schema.detection.content_patterns)
 
     def get_schema(self, name: str) -> Optional[HtmlRecipeSchema]:
         """Get schema by name."""
@@ -710,10 +700,10 @@ def parse_html_recipes_with_schema(
     if schema.recipe_delimiter:
         delim = schema.recipe_delimiter
         if "title:" in delim.lower():
-            pattern = r'(?i)(?=(?:<\s*b[^>]*>\s*|<\s*p[^>]*>\s*|<\s*font[^>]*>\s*)*Title:)'
+            pattern = r'(?i)(?=(?:<\s*b[^>]*>\s*|<\s*p[^>]*>\s*|<\s*font[^>]*>)*Title:)'
         else:
             escaped = re.escape(delim)
-            delim_pattern = re.sub(r'\\ ', r'\\s+', escaped)
+            delim_pattern = escaped.replace(r'\ ', r'\s+')
             pattern = rf'(?i)(?={delim_pattern})'
         chunks = re.split(pattern, content)
         for chunk in chunks:

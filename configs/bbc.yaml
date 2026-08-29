@@ -4,7 +4,6 @@ description: "XPath configuration for BBC Food HTML recipes"
 version: "1.0"
 
 detection:
-  path_pattern: ".*\\.html$"
   content_patterns:
     - "recipe-ingredients__list-item"
     - "recipe-method__list-item"

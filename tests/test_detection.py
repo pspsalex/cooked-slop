@@ -217,7 +217,7 @@ def test_macropolis_html_detection(ingredient_parser):
     recipes = list(parser.parse_content(sample, "macropolis/sample.htm"))
     assert len(recipes) == 1
     assert recipes[0].title == "Test Recipe"
-    assert recipes[0].categories == ["Test"]
+    assert recipes[0].categories == ['Test']
     assert recipes[0].yield_amount == "2 servings"
 
 
@@ -281,3 +281,34 @@ def test_macropolis_upenn_html_detection(ingredient_parser):
     assert lamb.unit == "pound"
     assert lamb.quantity == "3"
 
+
+def test_all_html_schemas_content_only_detection():
+    """Verify that all HTML schemas are detected solely from content patterns without relying on filepaths."""
+    from parsers.html_config import get_html_schema_registry
+    reg = get_html_schema_registry()
+
+    test_cases = [
+        ("<html><body>Welcome to garvick recipe page</body></html>", "garvick"),
+        ("<html><head><link rel='stylesheet' href='Rally.css'></head><body>Recipe</body></html>", "mcnalley"),
+        ("<html><body>Garry's Home Cookin' mexicancooking.netrelief.com</body></html>", "mexican_recipes"),
+        ("<html><body>Garry's Home Cookin' cooking.netrelief.com</body></html>", "netrelief_recipes"),
+        ("<html><body>Garry's Home Cookin' bbq.netrelief.com</body></html>", "bbq_recipes"),
+        ("<html><body>Garry's Home Cookin' chile.netrelief.com</body></html>", "chile_recipes"),
+        ("<html><body>The Coffee Shoppe by RocketLibrarian</body></html>", "coffeeshop_recipes"),
+        ("<html><body>CMU SCS Recipe Archive</body></html>", "cscmu"),
+        ("<html><body><li class='recipe-ingredients__list-item'>1 cup flour</li><li class='recipe-method__list-item'>Mix</li></body></html>", "bbc_food"),
+        ("<html><body>Top Secret Recipes by Todd Wilbur</body></html>", "top_secret_recipes"),
+        ("<html><head><title>TuttoCucina</title><link rel='icon' href='http://www.macropolis.org/icon'></head></html>", "macropolis"),
+        ("<html><!-- Penninfo pips2html --><body>Recipe</body></html>", "macropolis_upenn"),
+    ]
+
+    for sample_content, expected_schema in test_cases:
+        # Pass empty filepath or dummy filepath to prove path independence
+        schema = reg.detect_schema(sample_content, "")
+        assert schema is not None, f"Failed to detect schema for content: {sample_content}"
+        assert schema.name == expected_schema, f"Expected {expected_schema}, got {schema.name}"
+
+        # detect_schemas without filepath
+        candidates = reg.detect_schemas(sample_content)
+        assert len(candidates) >= 1
+        assert candidates[0].name == expected_schema

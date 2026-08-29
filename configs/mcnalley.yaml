@@ -4,10 +4,8 @@ description: "XPath configuration for McNalley Recipe Archive and Mom's Recipes"
 version: "1.0"
 
 detection:
-  path_pattern: ".*\\.html?$"
   content_patterns:
-    - "recipeTitle"
-    - "RecipeIngred"
+    - "Rally.css"
 
 fields:
   title:

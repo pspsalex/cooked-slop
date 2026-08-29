@@ -4,7 +4,6 @@ description: "XPath configuration for Garry Howard's Mexican recipe archives"
 version: "1.0"
 
 detection:
-  path_pattern: ".*mexican[/\\\\].*\\.(s?html?)$"
   content_patterns:
     - "Garry's Home Cookin'"
     - "mexicancooking.netrelief.com"

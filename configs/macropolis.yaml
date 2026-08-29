@@ -4,7 +4,6 @@ description: "XPath and delimiter configuration for Macropolis TuttoCucina multi
 version: "1.0"
 
 detection:
-  path_pattern: ".*macropolis.*\\.htm[l]?$"
   content_patterns:
     - "TuttoCucina"
     - "macropolis.org"
