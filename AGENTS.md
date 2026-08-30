@@ -73,7 +73,7 @@ scripts/
 All parsers use the Registry Pattern via `ParserRegistry` in `parsers/registry.py`.
 
 - **Decorator**: `@ParserRegistry.register` on the class definition
-  - **Critical**: the decorator only fires when the module is imported. All parsers **must** be imported in `parsers/__init__.py` and listed in `__all__`.
+  - Parser modules in `parsers/` are auto-discovered dynamically via `pkgutil.iter_modules`. Decorating your parser class with `@ParserRegistry.register` is all that's required.
 - **Base class**: `parsers/base.py` — `BaseRecipeParser(ingredient_parser: BaseIngredientParser)`
 - **Dynamic format list**: `ParserRegistry.all_format_names()` returns all `format_id` + `aliases` across registered parsers. The `-f` CLI flag uses this dynamically — no hardcoded choices.
 
@@ -137,16 +137,14 @@ class Ingredient:
 
 ## Adding a New Parser
 
-1. Create `parsers/yourformat.py` inheriting from `BaseRecipeParser`
-2. Add `from .yourformat import YourFormatParser` to `parsers/__init__.py`
-3. Add `'YourFormatParser'` to `__all__` in `parsers/__init__.py`
-4. Add a sample file at `tests/samples/yourfile.ext`
-5. Generate expected output (use `--no-nlp` for deterministic results):
+1. Create `parsers/yourformat.py` inheriting from `BaseRecipeParser` and decorate the class with `@ParserRegistry.register`
+2. Add a sample file at `tests/samples/yourfile.ext`
+3. Generate expected output (use `--no-nlp` for deterministic results):
    ```bash
    ./venv/bin/python3 convert.py tests/samples/yourfile.ext \
      -o tests/expected/yourfile.ext.json --no-nlp
    ```
-6. Run tests:
+4. Run tests:
    ```bash
    ./venv/bin/python3 -m pytest tests/ -v
    ```
@@ -260,7 +258,6 @@ Optional (dedup): `datasketch`, `numpy`, `unidecode`
 
 ## Common Pitfalls
 
-- **Missing import in `__init__.py`**: `@ParserRegistry.register` is silent if the module is never imported. Both the import line and the `__all__` entry in `parsers/__init__.py` are required.
 - **`return` instead of `yield`**: `parse_content` must be a generator. Using `return [...]` breaks streaming.
 - **`print()` in parsers**: Use `logger.debug()` / `logger.warning()`. Never `print()` in production parser code.
 - **Inflated `detect()` scores**: Generic/fallback parsers must return low scores (0.01–0.10) so specific parsers win. Score >= 0.99 triggers early exit.
