@@ -46,6 +46,14 @@ class ParserRegistry:
         return sorted(names)
 
     @classmethod
+    def supported_extensions(cls) -> set[str]:
+        """Aggregate all unique supported extensions across all registered parsers."""
+        exts: set[str] = set()
+        for parser in cls._parsers:
+            exts.update(parser.supported_extensions())
+        return exts
+
+    @classmethod
     def get_parser(
         cls,
         filepath: Path,

@@ -34,6 +34,10 @@ class GenericTextParser(BaseRecipeParser):
         return 100
 
     @classmethod
+    def supported_extensions(cls) -> set[str]:
+        return {'.txt', '.prn', '.out'}
+
+    @classmethod
     def detect(cls, filepath: str, content: str) -> float:
         """Return a minimal confidence score for any non-empty file.
 

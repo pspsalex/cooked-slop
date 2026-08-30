@@ -25,6 +25,10 @@ class RicetteMdParser(BaseRecipeParser):
         return 10
 
     @classmethod
+    def supported_extensions(cls) -> set[str]:
+        return {'.md'}
+
+    @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         if not content_sample:
             return 0.0

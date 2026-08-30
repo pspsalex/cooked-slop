@@ -33,6 +33,10 @@ class MealMasterParser(BaseRecipeParser):
         return 2
 
     @classmethod
+    def supported_extensions(cls) -> set[str]:
+        return {'.mmf', '.mm'}
+
+    @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         if Path(filepath).suffix.lower() == ".mmf":
             return 1.0
