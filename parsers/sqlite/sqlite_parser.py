@@ -42,6 +42,10 @@ class SqliteRecipeParser(BaseRecipeParser):
         return 25
 
     @classmethod
+    def supported_extensions(cls) -> set[str]:
+        return {'.sqlite', '.db'}
+
+    @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         from pathlib import Path
         path = Path(filepath)

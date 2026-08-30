@@ -44,6 +44,10 @@ class HtmlParser(BaseRecipeParser):
         return 20
 
     @classmethod
+    def supported_extensions(cls) -> set[str]:
+        return {'.html', '.htm', '.shtml'}
+
+    @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         if Path(filepath).suffix.lower() in {'.html', '.htm', '.shtml'}:
             return 0.99

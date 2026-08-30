@@ -133,6 +133,12 @@ def parse_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
         action="store_true",
         help="Output publishing dates in the resulting json."
     )
+    parser.add_argument(
+        "--ext",
+        nargs="+",
+        default=None,
+        help="Explicit list of file extensions to process (e.g. --ext .mmf .txt). Defaults to all registered parser extensions.",
+    )
     return parser.parse_args(args)
 
 
@@ -268,28 +274,17 @@ def process_directory(
     shard: bool = False,
     add_date: bool = False,
     html_config: Optional[Path] = None,
+    cli_extensions: Optional[List[str]] = None,
 ) -> None:
-    # Updated extensions to include stubs explicitly supported by ParserFactory.
-    extensions = {
-        ".mca",
-        ".mmf",
-        ".mm",
-        ".mxp",
-        ".mx2",
-        ".mz2",
-        ".txt",
-        ".html",
-        ".htm",
-        ".shtml",
-        ".pdf",
-        ".jpg",
-        ".png",
-        ".sqlite",
-        ".db",
-        ".csv",
-        ".ccf",
-        ".md",
-    }
+    if cli_extensions:
+        extensions = {ext.lower() if ext.startswith(".") else f".{ext.lower()}" for ext in cli_extensions}
+    else:
+        extensions = ParserRegistry.supported_extensions()
+        if not extensions:
+            # Safe fallback if registry is empty
+            extensions = {".txt", ".mmf", ".html", ".htm"}
+
+    # Include uppercase variants
     extensions.update([e.upper() for e in extensions])
 
     recipe_files = []
@@ -450,6 +445,7 @@ def main(argv: Optional[List[str]] = None):
                 shard=args.shard,
                 add_date=args.add_date,
                 html_config=args.html_config,
+                cli_extensions=args.ext,
             )
         else:
             if not args.verbose:

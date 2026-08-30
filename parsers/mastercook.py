@@ -39,6 +39,10 @@ class MasterCookParser(BaseRecipeParser):
     def priority(cls) -> int:
         return 10
 
+    @classmethod
+    def supported_extensions(cls) -> set[str]:
+        return {'.mxp', '.mx2', '.mz2'}
+
     HEADER_SIG = r'\*\s+Exported\s+from\s+MasterCook[^*]*\*'
 
     # Fixed-width column positions for the ingredient table

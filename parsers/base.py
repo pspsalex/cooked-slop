@@ -49,6 +49,11 @@ class BaseRecipeParser:
         """
         return 0.0
 
+    @classmethod
+    def supported_extensions(cls) -> set[str]:
+        """Return set of lowercased file extensions (with leading dot) handled by this parser."""
+        return set()
+
     def parse_file(self, filepath: str) -> Iterator[Recipe]:
         """Generator that yields recipes from file."""
         from pathlib import Path

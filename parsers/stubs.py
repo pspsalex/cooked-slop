@@ -19,6 +19,8 @@ class PdfParser(BaseRecipeParser):
     @classmethod
     def priority(cls) -> int: return 35
     @classmethod
+    def supported_extensions(cls) -> set[str]: return {'.pdf'}
+    @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         if Path(filepath).suffix.lower() == '.pdf': return 0.99
         return 0.0
@@ -39,6 +41,8 @@ class ImageParser(BaseRecipeParser):
     @classmethod
     def priority(cls) -> int: return 36
     @classmethod
+    def supported_extensions(cls) -> set[str]: return {'.jpg', '.jpeg', '.png'}
+    @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         if Path(filepath).suffix.lower() in {'.jpg', '.jpeg', '.png', '.gif', '.bmp'}: return 0.99
         return 0.0
@@ -58,6 +62,8 @@ class CsvParser(BaseRecipeParser):
     def format_id(cls) -> str: return "csv_generic"
     @classmethod
     def priority(cls) -> int: return 21
+    @classmethod
+    def supported_extensions(cls) -> set[str]: return {'.csv'}
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         if Path(filepath).suffix.lower() != '.csv': return 0.0

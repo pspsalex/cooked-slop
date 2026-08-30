@@ -33,6 +33,10 @@ class CookwareCSVParser(BaseRecipeParser):
         return 20
 
     @classmethod
+    def supported_extensions(cls) -> set[str]:
+        return {'.csv'}
+
+    @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         if not content_sample:
             return 0.0

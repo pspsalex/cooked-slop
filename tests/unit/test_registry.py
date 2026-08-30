@@ -195,3 +195,73 @@ def test_detection_exception_logging(caplog, tmp_path, ingredient_parser):
     finally:
         if FaultyDetectParser in ParserRegistry._parsers:
             ParserRegistry._parsers.remove(FaultyDetectParser)
+
+
+def test_supported_extensions():
+    """ParserRegistry.supported_extensions() aggregates all supported extensions."""
+    exts = ParserRegistry.supported_extensions()
+    assert isinstance(exts, set)
+    assert len(exts) > 0
+    assert ".nyc" in exts
+    assert ".xml" in exts
+    assert ".json" in exts
+    assert ".mmf" in exts
+    assert ".mm" in exts
+    assert ".mxp" in exts
+    assert ".ccf" in exts
+    assert ".mca" in exts
+    assert ".csv" in exts
+    assert ".md" in exts
+    assert ".txt" in exts
+    assert ".sqlite" in exts
+    assert ".db" in exts
+    assert ".html" in exts
+    assert ".pdf" in exts
+    assert ".jpg" in exts
+
+
+def test_base_recipe_parser_supported_extensions_default():
+    """Default BaseRecipeParser.supported_extensions() returns an empty set."""
+    assert BaseRecipeParser.supported_extensions() == set()
+
+
+def test_convert_parse_arguments_ext():
+    """--ext flag correctly parses list of extensions."""
+    from convert import parse_arguments
+    args = parse_arguments(["dummy_dir", "--ext", ".mmf", ".txt"])
+    assert args.ext == [".mmf", ".txt"]
+
+
+def test_process_directory_cli_extensions_filter(tmp_path, monkeypatch):
+    """process_directory respects cli_extensions argument and filters files."""
+    from convert import process_directory
+
+    in_dir = tmp_path / "inputs"
+    in_dir.mkdir()
+    out_dir = tmp_path / "outputs"
+    out_dir.mkdir()
+
+    (in_dir / "recipe1.mmf").write_text("dummy", encoding="utf-8")
+    (in_dir / "recipe2.txt").write_text("dummy", encoding="utf-8")
+    (in_dir / "recipe3.nyc").write_text("dummy", encoding="utf-8")
+
+    converted_files = []
+
+    def fake_convert(recipe_file, *args, **kwargs):
+        converted_files.append(recipe_file.name)
+        return 0
+
+    monkeypatch.setattr("convert.convert_recipe_file", fake_convert)
+
+    process_directory(
+        in_dir,
+        out_dir,
+        one_file_per_recipe=True,
+        verbose=False,
+        recursive=False,
+        parse_ingredients=False,
+        ingredient_parser=RegexIngredientParser(),
+        cli_extensions=[".mmf"],
+    )
+
+    assert converted_files == ["recipe1.mmf"]
