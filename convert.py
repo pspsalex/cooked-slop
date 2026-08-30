@@ -635,6 +635,8 @@ def main(argv: Optional[List[str]] = None):
                 html_config=args.html_config,
             )
         else:
+            if not args.verbose:
+                print(f"  {Colors.CYAN}Converting:{Colors.ENDC} {input_path.name}")
             convert_recipe_file(
                 input_path,
                 output_dir,
@@ -652,6 +654,9 @@ def main(argv: Optional[List[str]] = None):
                 file_prefix="",
                 display_path=input_path.name,
             )
+    except KeyboardInterrupt:
+        print(f"\n\n{Colors.RED}Forced exit - data may be incomplete{Colors.ENDC}\n")
+        return 1
     finally:
         if stream_writer:
             stream_writer.close()

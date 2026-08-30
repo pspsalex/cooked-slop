@@ -403,3 +403,35 @@ def test_generic_md_detection_and_table_parsing(ingredient_parser):
     assert "Transfer beef mixture" in r.instructions[2]
 
 
+def test_llm_client_fallback_url():
+    """Verify that LLMClient chat() 404 fallback derives URL from base_url origin instead of hardcoded localhost."""
+    from unittest.mock import MagicMock, patch
+    import requests
+    from parsers.llm_parser import LLMClient
+
+    client = LLMClient({"base_url": "http://myserver:11434/v1", "model": "test-model"})
+
+    resp_404 = MagicMock()
+    resp_404.status_code = 404
+    err_404 = requests.HTTPError(response=resp_404)
+
+    resp_200 = MagicMock()
+    resp_200.raise_for_status.return_value = None
+    resp_200.json.return_value = {"message": {"content": "fallback success"}}
+
+    def mock_post(url, json, headers, timeout):
+        if "chat/completions" in url:
+            raise err_404
+        elif url == "http://myserver:11434/api/chat":
+            return resp_200
+        raise ValueError(f"Unexpected URL called: {url}")
+
+    with patch("requests.post", side_effect=mock_post) as patched_post:
+        result = client.chat(system="sys prompt", user="user prompt")
+        assert result == "fallback success"
+        assert patched_post.call_count == 2
+        fallback_call_url = patched_post.call_args_list[1][0][0]
+        assert fallback_call_url == "http://myserver:11434/api/chat"
+
+
+

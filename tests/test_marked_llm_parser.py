@@ -1,6 +1,3 @@
-# SPDX-License-Identifier: MIT
-"""Unit tests for marked Markdown recipe parsing and LLMRecipeParser text-marking strategy."""
-
 from typing import Any, Dict
 from parsers.generic_md import GenericMdParser
 from parsers.ingredients import RegexIngredientParser
@@ -16,6 +13,7 @@ try:
     parse_marked_markdown = test_ollama.parse_marked_markdown
 except Exception as e:
     pytest.skip(f"nux.test-ollama not available: {e}", allow_module_level=True)
+
 
 
 def test_parse_marked_markdown_basic():

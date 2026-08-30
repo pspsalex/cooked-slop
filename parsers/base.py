@@ -25,9 +25,7 @@ class BaseRecipeParser:
         fmt = self.source_format
         if not fmt or fmt == "Unknown":
             fmt = self.__class__.__name__.replace("Parser", "")
-        if not fmt.lower().endswith("parser"):
-            return f"{fmt} Parser"
-        return fmt
+        return f"{fmt} Parser"
 
     @classmethod
     def format_id(cls) -> str:

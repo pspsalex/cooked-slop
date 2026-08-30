@@ -100,3 +100,20 @@ def test_resume_flag(tmp_path: Path):
     assert "GERMAN.MMF" in rows
     assert rows["GERMAN.MMF"][2] == "1"  # recipes_extracted = 1 from dummy
     assert rows["GERMAN.MMF"][3] == "ok"
+
+
+def test_timeout_cli(tmp_path: Path):
+    """Test --timeout CLI argument is accepted and passed through."""
+    out_dir = tmp_path / "batch_out"
+    csv_path = tmp_path / "batch_results.csv"
+
+    ret = batch_main([
+        "--dir", str(SAMPLES_DIR),
+        "--output-dir", str(out_dir),
+        "--csv", str(csv_path),
+        "--timeout", "5",
+        "-w", "2",
+    ])
+    assert ret == 0
+    assert csv_path.exists()
+

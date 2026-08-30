@@ -88,7 +88,7 @@ class HtmlRecipeSchema:
             detection=detection,
             fields=fields,
             recipe_container=data.get("recipe_container"),
-            recipe_delimiter=data.get("recipe_delimiter") or recipe_delimiter,
+            recipe_delimiter=recipe_delimiter,
             multi_recipe=data.get("multi_recipe", False),
         )
 
@@ -214,6 +214,18 @@ def extract_xpath_values(tree: Any, cfg: FieldConfig) -> List[str]:
     return values
 
 
+_GARVICK_TITLE_EXCLUDE_KEYWORDS = frozenset([
+    "tip:", "barbeque tip:", "links to", "click here", "recipes:",
+    "site map", "privacy policy", "free recipes", "garvick home",
+    "top 100", "for book lovers", "for chocolate lovers", "for candy lovers",
+    "for movie buffs", "for cookie lovers", "for a child", "bath products",
+    "your own creations", "recipe of the month", "chill dough overnight.",
+    "try this recipe", "back to annual events", "annual events",
+    "easter crafts", "easter games", "easter gifts", "easter recipes",
+    "garnish:",
+])
+
+
 def _parse_garvick_recipes(
     tree: Any,
     schema: HtmlRecipeSchema,
@@ -242,14 +254,7 @@ def _parse_garvick_recipes(
             continue
 
         t_lower = text.lower()
-        if any(kw in t_lower for kw in [
-            "tip:", "barbeque tip:", "links to", "click here", "recipes:",
-            "site map", "privacy policy", "free recipes", "garvick home",
-            "top 100", "for book lovers", "for chocolate lovers", "for candy lovers",
-            "for movie buffs", "for cookie lovers", "for a child", "bath products", "your own creations",
-            "recipe of the month", "chill dough overnight.", "try this recipe",
-            "back to annual events", "annual events", "easter crafts", "easter games", "easter gifts", "easter recipes", "garnish:"
-        ]):
+        if any(kw in t_lower for kw in _GARVICK_TITLE_EXCLUDE_KEYWORDS):
             continue
 
         if parent.xpath("ancestor-or-self::a") or parent.xpath(".//a"):
@@ -661,11 +666,7 @@ def _parse_single_chunk_with_schema(
                     in_ingredients = False
                     current_inst.append(html.unescape(line))
                 else:
-                    if len(recipe.ingredients) == 0 and len(line) < 40 and not line.endswith("."):
-                        recipe.ingredients.append(
-                            ingredient_parser.parse(html.unescape(line))
-                        )
-                    elif len(recipe.ingredients) > 0 and len(line) < 40 and not line.endswith("."):
+                    if len(line) < 40 and not line.endswith("."):
                         recipe.ingredients.append(
                             ingredient_parser.parse(html.unescape(line))
                         )
@@ -698,7 +699,6 @@ def parse_html_recipes_with_schema(
     if schema.name in ("macropolis_upenn", "upenn"):
         yield from _parse_upenn_recipes(content, schema, ingredient_parser, filepath)
         return
-
 
     if schema.recipe_delimiter:
         delim = schema.recipe_delimiter

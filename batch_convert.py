@@ -185,6 +185,7 @@ def run_batch_conversion(
     dry_run: bool = False,
     resume: bool = False,
     verbose: bool = False,
+    timeout: int = 120,
 ) -> int:
     """Run batch conversion across all processable files in input_dir."""
     convert_script = Path(__file__).parent / "convert.py"
@@ -236,6 +237,7 @@ def run_batch_conversion(
                 output_dir,
                 convert_script,
                 resume=resume,
+                timeout=timeout,
             ): rel_path
             for rel_path in to_process
         }
@@ -318,6 +320,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="Skip files that already have JSON output in the output directory",
     )
     parser.add_argument(
+        "--timeout",
+        type=int,
+        default=120,
+        help="Per-file timeout in seconds (default: 120)",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -337,6 +345,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         dry_run=args.dry_run,
         resume=args.resume,
         verbose=args.verbose,
+        timeout=args.timeout,
     )
 
 

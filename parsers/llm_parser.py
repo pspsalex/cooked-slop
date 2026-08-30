@@ -18,6 +18,7 @@ import logging
 import re
 from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional
+from urllib.parse import urlparse, urlunparse
 
 import requests
 import yaml
@@ -227,7 +228,9 @@ class LLMClient:
                 raise ValueError(f"Unexpected LLM response structure: {res_json}")
             except requests.HTTPError as err:
                 if err.response is not None and err.response.status_code == 404:
-                    fallback_url = f"{self.base_url.split('/v1')[0].rstrip('/')}/api/chat" if "/v1" in self.base_url else "http://localhost:11434/api/chat"
+                    parsed = urlparse(self.base_url.rstrip("/"))
+                    base_origin = urlunparse((parsed.scheme, parsed.netloc, "", "", "", ""))
+                    fallback_url = f"{base_origin}/api/chat"
                     logger.warning(
                         "404 on %s — falling back to native Ollama API at %s", url, fallback_url
                     )
