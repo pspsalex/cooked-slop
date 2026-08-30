@@ -5,18 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-016: Comprehensive Unit Test Suite
-- **Spec:** [SPEC-016-unit-test-suite.md](specs/SPEC-016-unit-test-suite.md)
-- **Priority:** P1 | **Tier:** 1 | **Type:** test | **Impact:** Test coverage and developer velocity
-- **Verify:** `./venv/bin/python3 -m pytest tests/unit/ -v`
-- [ ] Create worktree: `git worktree add -b feat/spec-016-unit-tests .worktrees/spec-016 main`
-- [ ] Create `tests/unit/__init__.py`
-- [ ] Create `tests/unit/test_converter.py` testing `SchemaOrgConverter.convert()` across data shapes
-- [ ] Create `tests/unit/test_writer.py` testing `JSONStreamWriter` empty/streaming/chunking
-- [ ] Create `tests/unit/test_ingredient_parser.py` testing `RegexIngredientParser` fractions/ranges/comments
-- [ ] Create `tests/unit/test_registry.py` testing auto-discovery, priority, and contract validation
-- [ ] Verify both unit and regression suites pass, commit, merge to `main`, and remove worktree
-
 ### SPEC-017: Dynamic File Extension Registry and Directory Traversal
 - **Spec:** [SPEC-017-dynamic-extension-registry.md](specs/SPEC-017-dynamic-extension-registry.md)
 - **Priority:** P1 | **Tier:** 1 | **Type:** refactor | **Impact:** Directory traversal across all supported formats
@@ -28,16 +16,6 @@
 - [ ] Refactor `process_directory()` in `convert.py` to query registry
 - [ ] Add `--ext` CLI option to allow custom extension filtering
 - [ ] Verify directory scanning discovers all formats, commit, merge to `main`, and remove worktree
-
-### SPEC-018: Spec Framework Standards and Validation
-- **Spec:** [SPEC-018-spec-framework-evolution.md](specs/SPEC-018-spec-framework-evolution.md)
-- **Priority:** P2 | **Tier:** 0 | **Type:** review | **Impact:** All specifications and templates
-- **Verify:** `./venv/bin/python3 -m pytest tests/test_specs.py -v`
-- [ ] Create worktree: `git worktree add -b feat/spec-018-spec-standards .worktrees/spec-018 main`
-- [ ] Add `## Detection Contract` and `## Golden Output` sections to `specs/_template.md`
-- [ ] Update `specs/README.md` and `AGENTS.md` with guidelines on Golden Output and detection contracts
-- [ ] Create `tests/test_specs.py` automated spec validator
-- [ ] Verify all specs pass validation, commit, merge to `main`, and remove worktree
 
 ### SPEC-019: Repository Packaging and Tools Reorganization
 - **Spec:** [SPEC-019-packaging-and-tools-reorg.md](specs/SPEC-019-packaging-and-tools-reorg.md)
@@ -56,7 +34,27 @@
 ## Archive
 
 <details>
-<summary>Completed specs (15 items)</summary>
+<summary>Completed specs (17 items)</summary>
+
+### SPEC-016: Comprehensive Unit Test Suite ✅
+- **Spec:** [SPEC-016-unit-test-suite.md](specs/done/SPEC-016-unit-test-suite.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** test | **Impact:** Test coverage and developer velocity
+- [x] Create worktree: `git worktree add -b feat/spec-016-unit-tests .worktrees/spec-016 main`
+- [x] Create `tests/unit/__init__.py`
+- [x] Create `tests/unit/test_converter.py` testing `SchemaOrgConverter.convert()` across data shapes
+- [x] Create `tests/unit/test_writer.py` testing `JSONStreamWriter` empty/streaming/chunking
+- [x] Create `tests/unit/test_ingredient_parser.py` testing `RegexIngredientParser` fractions/ranges/comments
+- [x] Create `tests/unit/test_registry.py` testing auto-discovery, priority, and contract validation
+- [x] Verify both unit and regression suites pass, commit, merge to `main`, and remove worktree
+
+### SPEC-018: Spec Framework Standards and Validation ✅
+- **Spec:** [SPEC-018-spec-framework-evolution.md](specs/done/SPEC-018-spec-framework-evolution.md)
+- **Priority:** P2 | **Tier:** 0 | **Type:** review | **Impact:** All specifications and templates
+- [x] Create worktree: `git worktree add -b feat/spec-018-spec-standards .worktrees/spec-018 main`
+- [x] Add `## Detection Contract` and `## Golden Output` sections to `specs/_template.md`
+- [x] Update `specs/README.md` and `AGENTS.md` with guidelines on Golden Output and detection contracts
+- [x] Create `tests/test_specs.py` automated spec validator
+- [x] Verify all specs pass validation, commit, merge to `main`, and remove worktree
 
 ### SPEC-014: Parser Auto-Discovery and Contract Hardening ✅
 - **Spec:** [SPEC-014-autodiscovery-and-contracts.md](specs/done/SPEC-014-autodiscovery-and-contracts.md)
