@@ -9,13 +9,13 @@
 - **Spec:** [SPEC-019-packaging-and-tools-reorg.md](specs/SPEC-019-packaging-and-tools-reorg.md)
 - **Priority:** P2 | **Tier:** 1 | **Type:** refactor | **Impact:** Packaging, CLI command, and tools organization
 - **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create worktree: `git worktree add -b feat/spec-019-packaging .worktrees/spec-019 main`
-- [ ] Create `pyproject.toml` with console script `cook` (and alias `recipe-convert`), dependencies, and extras
-- [ ] Move root scripts (`batch_convert.py`, `dedup.py`, `import_to_mealie.py`, `import_to_tandoor.py`, `update_expected.py`) to `tools/`
-- [ ] Move `extract/` directory to `tools/extract/`
-- [ ] Create backward-compatible root forwarding shims for moved tools
-- [ ] Verify `pip install -e .` and console scripts work
-- [ ] Verify test suite passes, commit, merge to `main`, and remove worktree
+- [x] Create worktree: `git worktree add -b feat/spec-019-packaging .worktrees/spec-019 main`
+- [x] Create `pyproject.toml` with console script `cook` (and alias `recipe-convert`), dependencies, and extras
+- [x] Move root scripts (`batch_convert.py`, `dedup.py`, `import_to_mealie.py`, `import_to_tandoor.py`, `update_expected.py`) to `tools/`
+- [x] Move `extract/` directory to `tools/extract/`
+- [x] Create backward-compatible root forwarding shims for moved tools
+- [x] Verify `pip install -e .` and console scripts work
+- [x] Verify test suite passes, commit, merge to `main`, and remove worktree
 
 ---
 
