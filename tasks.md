@@ -5,18 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-017: Dynamic File Extension Registry and Directory Traversal
-- **Spec:** [SPEC-017-dynamic-extension-registry.md](specs/SPEC-017-dynamic-extension-registry.md)
-- **Priority:** P1 | **Tier:** 1 | **Type:** refactor | **Impact:** Directory traversal across all supported formats
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create worktree: `git worktree add -b feat/spec-017-dynamic-extensions .worktrees/spec-017 main`
-- [ ] Add `supported_extensions()` classmethod to `BaseRecipeParser`
-- [ ] Implement `supported_extensions()` on all parser subclasses (including `.nyc`, `.xml`, `.json`)
-- [ ] Implement `ParserRegistry.supported_extensions()` aggregation
-- [ ] Refactor `process_directory()` in `convert.py` to query registry
-- [ ] Add `--ext` CLI option to allow custom extension filtering
-- [ ] Verify directory scanning discovers all formats, commit, merge to `main`, and remove worktree
-
 ### SPEC-019: Repository Packaging and Tools Reorganization
 - **Spec:** [SPEC-019-packaging-and-tools-reorg.md](specs/SPEC-019-packaging-and-tools-reorg.md)
 - **Priority:** P2 | **Tier:** 1 | **Type:** refactor | **Impact:** Packaging, CLI command, and tools organization
@@ -34,7 +22,18 @@
 ## Archive
 
 <details>
-<summary>Completed specs (17 items)</summary>
+<summary>Completed specs (18 items)</summary>
+
+### SPEC-017: Dynamic File Extension Registry and Directory Traversal ✅
+- **Spec:** [SPEC-017-dynamic-extension-registry.md](specs/done/SPEC-017-dynamic-extension-registry.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** refactor | **Impact:** Directory traversal across all supported formats
+- [x] Create worktree: `git worktree add -b feat/spec-017-dynamic-extensions .worktrees/spec-017 main`
+- [x] Add `supported_extensions()` classmethod to `BaseRecipeParser`
+- [x] Implement `supported_extensions()` on all parser subclasses (including `.nyc`, `.xml`, `.json`)
+- [x] Implement `ParserRegistry.supported_extensions()` aggregation
+- [x] Refactor `process_directory()` in `convert.py` to query registry
+- [x] Add `--ext` CLI option to allow custom extension filtering
+- [x] Verify directory scanning discovers all formats, commit, merge to `main`, and remove worktree
 
 ### SPEC-016: Comprehensive Unit Test Suite ✅
 - **Spec:** [SPEC-016-unit-test-suite.md](specs/done/SPEC-016-unit-test-suite.md)
