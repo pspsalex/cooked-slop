@@ -5,30 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-014: Parser Auto-Discovery and Contract Hardening
-- **Spec:** [SPEC-014-autodiscovery-and-contracts.md](specs/SPEC-014-autodiscovery-and-contracts.md)
-- **Priority:** P0 | **Tier:** 1 | **Type:** refactor | **Impact:** All 22+ parsers
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create worktree: `git worktree add -b feat/spec-014-autodiscovery .worktrees/spec-014 main`
-- [ ] Implement dynamic module iteration via `pkgutil.iter_modules` in `parsers/__init__.py`
-- [ ] Add runtime contract checks (generator `parse_content`, required classmethods) in `ParserRegistry.register()`
-- [ ] Replace silent `except Exception: pass` in `ParserRegistry.get_parser()` with `logger.debug`
-- [ ] Replace `print(traceback.format_exc())` in `parsers/base.py` with `logger.error`
-- [ ] Update `AGENTS.md` parser registration instructions
-- [ ] Verify test suite passes, commit, merge to `main`, and remove worktree
-
-### SPEC-015: Modular CLI and Conversion Architecture
-- **Spec:** [SPEC-015-modular-conversion-pipeline.md](specs/SPEC-015-modular-conversion-pipeline.md)
-- **Priority:** P0 | **Tier:** 1 | **Type:** refactor | **Impact:** Core CLI and JSON-LD pipeline
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create worktree: `git worktree add -b feat/spec-015-modular-cli .worktrees/spec-015 main`
-- [ ] Extract `SchemaOrgConverter` into `converter.py`
-- [ ] Extract `JSONStreamWriter` into `writer.py`
-- [ ] Extract MinHash sharding helpers into `shard.py`
-- [ ] Extract `Colors` and `print_progress_bar` into `ui.py`
-- [ ] Refactor `convert.py` to import from extracted modules with backward-compatible re-exports
-- [ ] Verify full test suite passes, commit, merge to `main`, and remove worktree
-
 ### SPEC-016: Comprehensive Unit Test Suite
 - **Spec:** [SPEC-016-unit-test-suite.md](specs/SPEC-016-unit-test-suite.md)
 - **Priority:** P1 | **Tier:** 1 | **Type:** test | **Impact:** Test coverage and developer velocity
@@ -75,13 +51,34 @@
 - [ ] Verify `pip install -e .` and console scripts work
 - [ ] Verify test suite passes, commit, merge to `main`, and remove worktree
 
-
 ---
 
 ## Archive
 
 <details>
-<summary>Completed specs (13 items)</summary>
+<summary>Completed specs (15 items)</summary>
+
+### SPEC-014: Parser Auto-Discovery and Contract Hardening ✅
+- **Spec:** [SPEC-014-autodiscovery-and-contracts.md](specs/done/SPEC-014-autodiscovery-and-contracts.md)
+- **Priority:** P0 | **Tier:** 1 | **Type:** refactor | **Impact:** All 22+ parsers
+- [x] Create worktree: `git worktree add -b feat/spec-014-autodiscovery .worktrees/spec-014 main`
+- [x] Implement dynamic module iteration via `pkgutil.iter_modules` in `parsers/__init__.py`
+- [x] Add runtime contract checks (generator `parse_content`, required classmethods) in `ParserRegistry.register()`
+- [x] Replace silent `except Exception: pass` in `ParserRegistry.get_parser()` with `logger.debug`
+- [x] Replace `print(traceback.format_exc())` in `parsers/base.py` with `logger.error`
+- [x] Update `AGENTS.md` parser registration instructions
+- [x] Verify test suite passes, commit, merge to `main`, and remove worktree
+
+### SPEC-015: Modular CLI and Conversion Architecture ✅
+- **Spec:** [SPEC-015-modular-conversion-pipeline.md](specs/done/SPEC-015-modular-conversion-pipeline.md)
+- **Priority:** P0 | **Tier:** 1 | **Type:** refactor | **Impact:** Core CLI and JSON-LD pipeline
+- [x] Create worktree: `git worktree add -b feat/spec-015-modular-cli .worktrees/spec-015 main`
+- [x] Extract `SchemaOrgConverter` into `converter.py`
+- [x] Extract `JSONStreamWriter` into `writer.py`
+- [x] Extract MinHash sharding helpers into `shard.py`
+- [x] Extract `Colors` and `print_progress_bar` into `ui.py`
+- [x] Refactor `convert.py` to import from extracted modules with backward-compatible re-exports
+- [x] Verify full test suite passes, commit, merge to `main`, and remove worktree
 
 ### SPEC-001: Batch Conversion Runner ✅
 - **Spec:** [SPEC-001-batch-runner.md](specs/done/SPEC-001-batch-runner.md)
