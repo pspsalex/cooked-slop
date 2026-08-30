@@ -148,12 +148,12 @@ Repeat for `dedup.py`, `import_to_mealie.py`, `import_to_tandoor.py`, and `updat
 
 ## Acceptance Criteria
 
-- [ ] `pyproject.toml` is created with dependencies, optional extras, and CLI entry points (`cook`, `recipe-convert`).
-- [ ] `./venv/bin/pip install -e .` installs cleanly into the project virtual environment.
-- [ ] Standalone scripts and `extract/` directory moved into `tools/`.
-- [ ] Backwards-compatible root shims exist for all moved scripts.
-- [ ] `AGENTS.md` updated with new directory layout and CLI command examples.
-- [ ] All tests pass: `./venv/bin/python3 -m pytest tests/ -v`.
+- [x] `pyproject.toml` is created with dependencies, optional extras, and CLI entry points (`cook`, `recipe-convert`).
+- [x] `./venv/bin/pip install -e .` installs cleanly into the project virtual environment.
+- [x] Standalone scripts and `extract/` directory moved into `tools/`.
+- [x] Backwards-compatible root shims exist for all moved scripts.
+- [x] `AGENTS.md` updated with new directory layout and CLI command examples.
+- [x] All tests pass: `./venv/bin/python3 -m pytest tests/ -v`.
 
 ---
 

@@ -5,7 +5,8 @@
 Always use the project virtualenv. Never use bare `python3` or `python`.
 
 ```bash
-./venv/bin/python3 convert.py [args]
+./venv/bin/cook [args]                                    # Installed CLI console script
+./venv/bin/python3 convert.py [args]                      # Direct entrypoint
 ./venv/bin/python3 -m pytest tests/ -v
 ./venv/bin/python3 -m pytest tests/test_conversion.py -v   # regression only
 ./venv/bin/python3 -m pytest tests/test_detection.py -v    # detection only
@@ -15,11 +16,9 @@ Always use the project virtualenv. Never use bare `python3` or `python`.
 
 ```
 scripts/
+├── pyproject.toml             # PEP 517/621 packaging (cook, recipe-convert, ...)
 ├── tasks.md                   # Single actionable backlog (all active & archived tasks)
 ├── convert.py                 # CLI entry point + SchemaOrgConverter + JSONStreamWriter
-├── import_to_mealie.py        # Mealie REST importer
-├── import_to_tandoor.py       # Tandoor REST importer
-├── update_expected.py         # Regenerate expected test outputs
 ├── requirements.txt           # All dependencies (including optional dedup deps)
 ├── specs/                     # Feature specifications & technical design documents
 │   ├── README.md              # Spec guide & frontmatter schema
@@ -28,7 +27,16 @@ scripts/
 ├── configs/                   # YAML configs (SQLite schemas, LLM, HTML layouts)
 │   ├── *.yaml                 # SQLite schema configs (auto-discovered)
 │   └── llm_example.yaml       # LLM provider config template
-├── extract/                   # Standalone extraction scripts (fareshare, garvick, etc.)
+├── tools/                     # Standalone tools and utilities package
+│   ├── __init__.py
+│   ├── batch_convert.py       # Batch conversion runner (CLI: recipe-batch)
+│   ├── dedup.py               # Recipe deduplication (CLI: recipe-dedup)
+│   ├── import_to_mealie.py    # Mealie REST importer
+│   ├── import_to_tandoor.py   # Tandoor REST importer
+│   ├── update_expected.py     # Regenerate expected test outputs
+│   └── extract/               # Standalone extraction scripts (breadbakers, etc.)
+│       ├── __init__.py
+│       └── breadbakers.py
 ├── parsers/
 │   ├── __init__.py            # Imports all parsers (triggers @register); defines __all__
 │   ├── base.py                # BaseRecipeParser, BaseIngredientParser, get_context_window()
@@ -232,14 +240,18 @@ Sends recipe text to an LLM (Ollama or OpenAI-compatible API) and parses the str
 
 The YAML config specifies: API endpoint, model name, prompt template, temperature, and max tokens.
 
-## Standalone Tools
-
-These scripts are independent of the parser system:
-
-- **`dedup.py`**: Recipe deduplication using MinHash LSH and union-find clustering. Reads JSON-LD output, groups near-duplicates, writes deduplicated output.
-- **`import_to_mealie.py`**: Imports JSON-LD recipes into a Mealie instance via REST API.
-- **`import_to_tandoor.py`**: Imports JSON-LD recipes into Tandoor Recipes via REST API.
-- **`update_expected.py`**: Convenience script — regenerates all `tests/expected/*.json` files using `--no-nlp`.
+## Standalone Tools (`tools/`)
+ 
+Standalone scripts are organized under the `tools/` package with console script entry points and root forwarding shims:
+ 
+- **`tools/dedup.py`** (`recipe-dedup`): Recipe deduplication using MinHash LSH and union-find clustering. Reads JSON-LD output, groups near-duplicates, writes deduplicated output.
+- **`tools/batch_convert.py`** (`recipe-batch`): Batch conversion runner across directory trees with multiprocessing and failure logging.
+- **`tools/import_to_mealie.py`**: Imports JSON-LD recipes into a Mealie instance via REST API.
+- **`tools/import_to_tandoor.py`**: Imports JSON-LD recipes into Tandoor Recipes via REST API.
+- **`tools/update_expected.py`**: Convenience script — regenerates all `tests/expected/*.json` files using `--no-nlp`.
+- **`tools/extract/`**: Extraction scripts for raw archives (e.g. `breadbakers.py`, `fareshare.py`, `garvick1.py`).
+ 
+Backward-compatible root shims exist for all moved tools so existing scripts and workflows continue to work.
 
 ## Coding Standards
 

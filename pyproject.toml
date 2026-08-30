@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cooked-slop"
+version = "0.2.0"
+description = "Universal recipe format converter to Schema.org JSON-LD"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "ingredient-parser-nlp>=0.1.0",
+    "recipe-scrapers>=14.0.0",
+    "pyyaml>=6.0",
+    "requests>=2.28.0",
+]
+
+[project.optional-dependencies]
+dedup = [
+    "datasketch>=1.6.0",
+    "numpy>=1.24.0",
+    "unidecode>=1.3.0",
+]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+cook = "convert:main"
+recipe-convert = "convert:main"
+recipe-batch = "tools.batch_convert:main"
+recipe-dedup = "tools.dedup:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["parsers*", "tools*", "extract*"]
+exclude = ["specs*", "configs*", "tests*"]
+
+[tool.setuptools]
+py-modules = [
+    "convert",
+    "converter",
+    "writer",
+    "shard",
+    "ui",
+    "batch_convert",
+    "dedup",
+    "import_to_mealie",
+    "import_to_tandoor",
+    "update_expected",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+markers = [
+    "llm: marks tests as requiring LLM / external models (deselect with '-m \"not llm\"')",
+]

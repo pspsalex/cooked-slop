@@ -3,10 +3,20 @@ import csv
 import json
 from pathlib import Path
 
-import pytest
-from batch_convert import is_skipped, run_batch_conversion, main as batch_main
+from tools.batch_convert import is_skipped, run_batch_conversion, main as batch_main
 
 SAMPLES_DIR = Path(__file__).parent / "samples"
+
+
+def test_root_shim_backward_compatibility():
+    """Verify that root batch_convert shim remains importable and functional."""
+    import batch_convert
+    assert hasattr(batch_convert, "is_skipped")
+    assert hasattr(batch_convert, "run_batch_conversion")
+    assert hasattr(batch_convert, "main")
+    assert batch_convert.is_skipped(Path("test.jpg")) is True
+    assert batch_convert.is_skipped(Path("test.txt")) is False
+
 
 
 def test_is_skipped():
