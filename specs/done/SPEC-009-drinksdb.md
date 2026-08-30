@@ -1,3 +1,14 @@
+---
+id: SPEC-009
+title: "Mr. Boston Drinks Database Parser"
+tier: 3
+type: parser
+priority: P2
+status: done
+impact: "1 file (~992 recipes)"
+deliverables: []
+---
+
 # Spec: Mr. Boston Drinks Database Parser
 ## Tier: 3
 ## Type: parser
@@ -122,9 +133,9 @@ Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AG
 - [ ] Expected output `tests/expected/drinks.out.json` generated with `--no-nlp`
 - [ ] Format detection test passes: `DrinksDbParser.detect` returns `>= 0.85` on `DRINKS.OUT`
 - [ ] Full conversion test on `/home/alex/junk/Recipes/Ingest/ToDo/TXT/DRINKS.OUT` extracts all 992 cocktail recipes:
-  ```bash
-  ./venv/bin/python3 convert.py /home/alex/junk/Recipes/Ingest/ToDo/TXT/DRINKS.OUT -o /tmp/drinks_out.json --no-nlp
-  ```
+   ```bash
+   ./venv/bin/python3 convert.py /home/alex/junk/Recipes/Ingest/ToDo/TXT/DRINKS.OUT -o /tmp/drinks_out.json --no-nlp
+   ```
 - [ ] Glassware is properly identified and excluded from ingredients list
 - [ ] Multi-column wrapped ingredients are merged correctly
 - [ ] All unit and regression tests pass: `./venv/bin/python3 -m pytest tests/ -v`

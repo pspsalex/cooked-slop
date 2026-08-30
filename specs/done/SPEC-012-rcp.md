@@ -1,3 +1,14 @@
+---
+id: SPEC-012
+title: "RCP Recipe Collection"
+tier: 3
+type: parser
+priority: P1
+status: done
+impact: "TBD"
+deliverables: []
+---
+
 # Spec: RCP Nutritional Exchange Format Parser
 ## Tier: 3
 ## Type: parser

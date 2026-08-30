@@ -1,3 +1,15 @@
+---
+id: SPEC-002
+title: "cs.cmu Usenet Recipe Archive HTML Config"
+tier: 2
+type: html-config
+priority: P0
+status: done
+impact: "~735 files"
+deliverables:
+  - configs/cscmu.yaml
+---
+
 # Spec: cs.cmu Usenet Recipe Archive HTML Config
 ## Tier: 2
 ## Type: html-config

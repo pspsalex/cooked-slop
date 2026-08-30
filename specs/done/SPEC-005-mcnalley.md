@@ -1,3 +1,14 @@
+---
+id: SPEC-005
+title: "McNalley Recipe Collection"
+tier: 2
+type: html-config
+priority: P1
+status: done
+impact: "TBD"
+deliverables: []
+---
+
 # Spec: McNalley Recipe Archive HTML Config
 ## Tier: 2
 ## Type: html-config

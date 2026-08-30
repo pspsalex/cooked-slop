@@ -1,3 +1,14 @@
+---
+id: SPEC-007
+title: "TopSecret Recipe Collection"
+tier: 2
+type: html-config
+priority: P1
+status: done
+impact: "TBD"
+deliverables: []
+---
+
 # Spec: Top Secret Recipes HTML Config
 ## Tier: 2
 ## Type: html-config
@@ -88,7 +99,7 @@ The goal is to create `configs/topsecret.yaml` to detect and parse these files i
             <tr>
               <td width="100%">
                 <p align="center"><font size="5"><em><strong>Top
-        Secret Recipes</strong></em><strong><br>
+91:         Secret Recipes</strong></em><strong><br>
         version of<br>
         Pancakes from<br>
         International House of Pancakes<br>

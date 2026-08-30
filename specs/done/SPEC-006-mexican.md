@@ -1,3 +1,14 @@
+---
+id: SPEC-006
+title: "Mexican Recipe Collection"
+tier: 2
+type: html-config
+priority: P1
+status: done
+impact: "TBD"
+deliverables: []
+---
+
 # Spec: Mexican/BBQ/Chile/NetRelief/Coffee Shop HTML Configs (Garry Howard Sites)
 ## Tier: 2
 ## Type: html-config

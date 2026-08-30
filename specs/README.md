@@ -1,75 +1,56 @@
-# Recipe ToDo Specs — Agent Execution Guide
+# Recipe Specifications (Specs)
 
 ## Overview
 
-This directory contains self-contained specification files for processing the recipe files in `/home/alex/junk/Recipes/Ingest/ToDo`. Each spec describes a single, independent task that an agent can implement without coordination.
+This directory contains self-contained technical specifications for recipe parsers, HTML layout configurations, and ingestion pipelines.
 
-## Tiers
+In this project's spec-driven development workflow:
+- **`specs/`** contains technical design documents detailing *what* needs to be parsed, with raw sample extracts, field mapping rules, and acceptance criteria.
+- **`tasks.md`** (in the repository root) is the **single actionable backlog** of tasks. Each spec corresponds to a task in `tasks.md`, broken down into atomic subtasks for AI agent execution.
+- Completed specifications are archived in **`specs/done/`**.
 
-| Tier | Type | Description |
-|:---|:---|:---|
-| **Tier 1** | Script | Batch conversion using existing parsers |
-| **Tier 2** | HTML Config | YAML XPath configs for specific websites |
-| **Tier 3** | Parser / Script | New parsers for niche formats + extract scripts |
-
-## How to Trigger a Spec
-
-### Single spec execution
+## Directory Structure
 
 ```
-Work on the spec at scripts/specs/tier2-cscmu.md — read it carefully, implement everything described, verify the acceptance criteria, and commit with a conventional-commit message.
+specs/
+├── README.md               # This document
+├── _template.md            # Template for authoring new specifications
+├── done/                   # Archive for completed specifications
+│   ├── SPEC-001-batch-runner.md
+│   ├── SPEC-002-cscmu.md
+│   └── ...
+└── SPEC-NNN-slug.md        # Active specifications
 ```
 
-### Multiple specs in sequence
+## Spec Naming & Frontmatter
 
+All specs follow the naming convention `SPEC-NNN-<kebab-case-name>.md` and include YAML frontmatter at the top:
+
+```yaml
+---
+id: SPEC-001
+title: "cs.cmu Usenet Recipe Archive HTML Config"
+tier: 2
+type: html-config      # html-config | parser | script | review
+priority: P0           # P0 | P1 | P2
+status: active         # active | done | blocked
+impact: "~735 files"
+deliverables:
+  - configs/cscmu.yaml
+---
 ```
-Work through all tier2-*.md specs in scripts/specs/ — implement each one, run tests after each, and commit separately with conventional-commit messages.
-```
 
-### Model selection
+## Authoring a New Spec
 
-Specs are designed to be self-contained enough for smaller models. Use **Flash** model tier when launching agents to control costs.
+1. Copy [`_template.md`](_template.md) to `specs/SPEC-NNN-<name>.md`.
+2. Fill out the YAML frontmatter and required sections:
+   - **Description**: What format or collection this targets.
+   - **Input Samples**: Verbatim raw file samples.
+   - **Expected Behavior**: Mapping rules and edge cases.
+   - **Acceptance Criteria**: Concrete, testable checkboxes.
+   - **Deliverables**: Explicit target files to create or modify.
+3. Add the corresponding task entry into [`../tasks.md`](../tasks.md) with atomic checklist items derived from the acceptance criteria.
 
-## Spec Format
+## Agent Workflow
 
-Each spec contains:
-
-- **Description**: What the task produces
-- **Input Samples**: Paths + inline content of representative files
-- **Expected Behavior**: Field mapping and extraction rules
-- **Acceptance Criteria**: Concrete checks the agent must pass
-- **Deliverables**: Exact file paths to create or modify
-- **Reference**: Existing implementations to study
-
-## Key References
-
-All agents should read `AGENTS.md` in the project root before starting work. Key files:
-
-| File | Purpose |
-|:---|:---|
-| `parsers/cookware.py` | Reference parser implementation (copy structure from here) |
-| `parsers/base.py` | Base class all parsers inherit from |
-| `parsers/models.py` | `Recipe` and `Ingredient` dataclasses |
-| `parsers/registry.py` | `@ParserRegistry.register` decorator |
-| `parsers/__init__.py` | All parser imports + `__all__` |
-| `parsers/html_config.py` | HTML YAML config schema |
-| `parsers/html_parser.py` | HTML parser (uses YAML configs) |
-| `configs/*.yaml` | Existing YAML configs for reference |
-| `convert.py` | CLI entry point |
-| `tests/test_conversion.py` | Regression test suite |
-
-## Commands
-
-```bash
-# Convert a single file
-./venv/bin/python3 convert.py <input_file> -o <output.json> --no-nlp
-
-# Convert with HTML config
-./venv/bin/python3 convert.py <input.html> --html-config configs/<config>.yaml -o <output.json> --no-nlp
-
-# Run all tests
-./venv/bin/python3 -m pytest tests/ -v
-
-# Generate expected test output (always use --no-nlp for determinism)
-./venv/bin/python3 convert.py tests/samples/<file> -o tests/expected/<file>.json --no-nlp
-```
+Agents should refer to [`../AGENTS.md`](../AGENTS.md) for master guidelines, environment commands, and development standards.

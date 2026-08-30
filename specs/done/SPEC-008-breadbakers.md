@@ -1,3 +1,15 @@
+---
+id: SPEC-008
+title: "Bread-Bakers Mailing List Extract Script"
+tier: 3
+type: script
+priority: P0
+status: done
+impact: "~11,538 files"
+deliverables:
+  - extract/breadbakers.py
+---
+
 # Spec: Bread-Bakers Mailing List Extract Script
 ## Tier: 3
 ## Type: script
@@ -151,7 +163,7 @@ Date: Sat, 6 Apr 1996 19:21:33 -0800
      - `reason`: One of `too_short`, `no_ingredients`, `toc_only`, `admin_only`
      - `line_count`: Count of non-blank lines remaining
      - `sample_line`: First non-blank line of remaining text for easy triage
-
+ 
 ### Downstream Post-Processing
 - Output files are standard plain-text recipes that can be converted by running:
   ```bash

@@ -1,3 +1,14 @@
+---
+id: SPEC-004
+title: "Macropolis Recipe Collection"
+tier: 2
+type: html-config
+priority: P1
+status: done
+impact: "TBD"
+deliverables: []
+---
+
 # Spec: Macropolis/TuttoCucina HTML Config
 ## Tier: 2
 ## Type: html-config

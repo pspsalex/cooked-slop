@@ -1,3 +1,15 @@
+---
+id: SPEC-001
+title: "Batch Conversion Runner"
+tier: 1
+type: script
+priority: P0
+status: done
+impact: "~6,500 files"
+deliverables:
+  - batch_convert.py
+---
+
 # Spec: Batch Conversion Runner
 ## Tier: 1
 ## Type: script

@@ -1,3 +1,15 @@
+---
+id: SPEC-003
+title: "Garvick.com Recipe Collection HTML Config"
+tier: 2
+type: html-config
+priority: P2
+status: done
+impact: "27 files"
+deliverables:
+  - configs/garvick.yaml
+---
+
 # Spec: Garvick.com Recipe Collection HTML Config
 ## Tier: 2
 ## Type: html-config

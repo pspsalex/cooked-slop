@@ -1,3 +1,14 @@
+---
+id: SPEC-011
+title: "InfoMac Recipe Collection"
+tier: 3
+type: parser
+priority: P1
+status: done
+impact: "TBD"
+deliverables: []
+---
+
 # Spec: Info-Mac / BBS .INF Recipe Parser
 ## Tier: 3
 ## Type: parser

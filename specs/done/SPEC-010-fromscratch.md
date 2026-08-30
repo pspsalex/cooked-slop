@@ -1,3 +1,14 @@
+---
+id: SPEC-010
+title: "FromScratch Recipe Collection"
+tier: 3
+type: parser
+priority: P1
+status: done
+impact: "TBD"
+deliverables: []
+---
+
 # Spec: From Scratch v2.0 Parser
 ## Tier: 3
 ## Type: parser

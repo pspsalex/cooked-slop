@@ -15,11 +15,16 @@ Always use the project virtualenv. Never use bare `python3` or `python`.
 
 ```
 scripts/
+├── tasks.md                   # Single actionable backlog (all active & archived tasks)
 ├── convert.py                 # CLI entry point + SchemaOrgConverter + JSONStreamWriter
 ├── import_to_mealie.py        # Mealie REST importer
 ├── import_to_tandoor.py       # Tandoor REST importer
 ├── update_expected.py         # Regenerate expected test outputs
 ├── requirements.txt           # All dependencies (including optional dedup deps)
+├── specs/                     # Feature specifications & technical design documents
+│   ├── README.md              # Spec guide & frontmatter schema
+│   ├── _template.md           # Template for authoring new specs
+│   └── done/                  # Completed specs archive
 ├── configs/                   # YAML configs (SQLite schemas, LLM, HTML layouts)
 │   ├── *.yaml                 # SQLite schema configs (auto-discovered)
 │   └── llm_example.yaml       # LLM provider config template
@@ -263,14 +268,32 @@ Optional (dedup): `datasketch`, `numpy`, `unidecode`
 - **NLP for expected output**: Never generate `tests/expected/` files without `--no-nlp`.
 - **Bare `python3`**: Always use `./venv/bin/python3` or `sys.executable` (in test code). Never bare `python3`.
 
-## Working on Tasks (`tasks.json`)
+## Spec-Driven Development Workflow (`tasks.md` & `specs/`)
 
-When the user asks to "work on a task" or "work on tasks.json":
+This repository uses a spec-driven development architecture:
+- **`tasks.md`** is the single actionable backlog for bug fixes, code quality, and feature development.
+- **`specs/`** houses detailed design specifications (`SPEC-NNN-<slug>.md`) backing non-trivial tasks with raw samples and mapping rules.
+- **`specs/done/`** contains completed specifications.
 
-1. **Pick a random task** from the `"not done"` tasks in `tasks.json` (prefer higher priority: P0 > P1 > P2)
-2. **Implement** the fix/feature following all subtasks
-3. **Code review** — review the changes for correctness, style, edge cases, and regressions
-4. **Fix any issues** found during review
-5. **Run tests** — `./venv/bin/python3 -m pytest tests/ -v`
-6. **Commit** — stage changed files and commit with a conventional-commit message (`fix:`, `feat:`, `refactor:`, etc.)
-7. **Update `tasks.json`** — mark the task and all its subtasks as `"done"`
+### Working on an Existing Task
+
+When the user asks to "work on a task", "work on next task", or "work on tasks.md":
+
+1. **Pick an unchecked task** from `## Active Tasks` in `tasks.md` (prioritize P0 > P1 > P2).
+2. **Consult the linked spec**: If the task references a spec in `specs/`, read the specification file for full architectural context, sample inputs, edge cases, and acceptance criteria.
+3. **Implement atomic subtasks**: Work through the subtask checklist sequentially.
+4. **Code review**: Self-review changes for correctness, project coding standards, error handling, and regressions.
+5. **Deterministic verification**: Run the exact verification command listed under the task's `**Verify:**` field (e.g. `./venv/bin/python3 -m pytest tests/ -v`).
+6. **Commit**: Stage changed files, the linked spec (if modified), and `tasks.md`. Commit with a conventional-commit message (`fix:`, `feat:`, `refactor:`, `test:`, `docs:`).
+7. **Update task status**:
+   - Check off completed subtasks in `tasks.md` (`- [x]`).
+   - When all subtasks for a task are complete, move the task to `## Archive` in `tasks.md`.
+   - If the task was backed by a spec, update the spec's frontmatter to `status: done` and move it to `specs/done/`.
+
+### Adding a New Spec & Task
+
+When adding new parsers, HTML configurations, or major components:
+
+1. **Create the spec**: Copy `specs/_template.md` to `specs/SPEC-NNN-<slug>.md` (use next available 3-digit ID).
+2. **Define frontmatter & requirements**: Provide YAML frontmatter, raw input samples, field mapping rules, edge cases, and concrete acceptance criteria.
+3. **Add task to `tasks.md`**: Under `## Active Tasks`, add a new entry referencing the spec, with priority, impact, verification command, and atomic checkboxes derived from acceptance criteria.
