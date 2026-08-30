@@ -47,6 +47,10 @@ deliverables:
    - **Description**: What format or collection this targets.
    - **Input Samples**: Verbatim raw file samples.
    - **Expected Behavior**: Mapping rules and edge cases.
+   - **Detection Contract**: Markdown table defining detection scoring behavior, including:
+     - Positive matches (e.g. extension pattern + signature content `>= 0.85`, content-only `>= 0.60`).
+     - Negative assertions: non-matching or generic content must return `== 0.0` to avoid score inflation and format collisions.
+   - **Golden Output (Canonical JSON-LD)**: Expected Schema.org Recipe JSON-LD fixture generated with `--no-nlp` (deterministic regex ingredient parser) to establish exact fixture expectations.
    - **Acceptance Criteria**: Concrete, testable checkboxes.
    - **Deliverables**: Explicit target files to create or modify.
 3. Add the corresponding task entry into [`../tasks.md`](../tasks.md) with atomic checklist items derived from the acceptance criteria.

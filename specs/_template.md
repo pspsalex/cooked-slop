@@ -38,6 +38,41 @@ Provide a clear explanation of what this specification accomplishes, what data o
 2. Unorthodox delimiters or formatting
 3. Embedded multi-recipes
 
+## Detection Contract
+
+| Condition | Expected Score | Rationale |
+|:---|:---|:---|
+| Path matches format pattern + content matches signature | `>= 0.85` | Definitive format match |
+| Content matches signature without distinctive filename | `>= 0.60` | Content-only match |
+| Generic text or HTML without signature markers | `== 0.0` | Negative assertion (must not false-positive) |
+
+## Golden Output (Canonical JSON-LD)
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Sample Recipe Title",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "flour",
+      "value": 2,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Combine ingredients."
+    }
+  ],
+  "recipeYield": "4 servings",
+  "recipeCategory": "Dessert"
+}
+```
+
 ## Acceptance Criteria
 - [ ] Deliverable file(s) exist and adhere to project standards
 - [ ] Auto-detection correctly matches target input files (score >= 0.5 without explicit flags if applicable)
