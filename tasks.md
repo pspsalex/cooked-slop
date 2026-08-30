@@ -5,25 +5,76 @@
 
 ## Active Tasks
 
-_No active tasks. Add new tasks here as work is identified._
-
-<!-- Template for new tasks:
-
-### SPEC-NNN: Title
-- **Spec:** [SPEC-NNN-name.md](specs/SPEC-NNN-name.md)
-- **Priority:** P0 | **Type:** html-config | **Impact:** ~N files
+### SPEC-014: Parser Auto-Discovery and Contract Hardening
+- **Spec:** [SPEC-014-autodiscovery-and-contracts.md](specs/SPEC-014-autodiscovery-and-contracts.md)
+- **Priority:** P0 | **Tier:** 1 | **Type:** refactor | **Impact:** All 22+ parsers
 - **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Subtask 1
-- [ ] Subtask 2
+- [ ] Create worktree: `git worktree add -b feat/spec-014-autodiscovery .worktrees/spec-014 main`
+- [ ] Implement dynamic module iteration via `pkgutil.iter_modules` in `parsers/__init__.py`
+- [ ] Add runtime contract checks (generator `parse_content`, required classmethods) in `ParserRegistry.register()`
+- [ ] Replace silent `except Exception: pass` in `ParserRegistry.get_parser()` with `logger.debug`
+- [ ] Replace `print(traceback.format_exc())` in `parsers/base.py` with `logger.error`
+- [ ] Update `AGENTS.md` parser registration instructions
+- [ ] Verify test suite passes, commit, merge to `main`, and remove worktree
 
-### BUG-NNN: Title
-- **Priority:** P1 | **Type:** bug
-- **Files:** `path/to/file.py`
+### SPEC-015: Modular CLI and Conversion Architecture
+- **Spec:** [SPEC-015-modular-conversion-pipeline.md](specs/SPEC-015-modular-conversion-pipeline.md)
+- **Priority:** P0 | **Tier:** 1 | **Type:** refactor | **Impact:** Core CLI and JSON-LD pipeline
 - **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Subtask 1
-- [ ] Subtask 2
+- [ ] Create worktree: `git worktree add -b feat/spec-015-modular-cli .worktrees/spec-015 main`
+- [ ] Extract `SchemaOrgConverter` into `converter.py`
+- [ ] Extract `JSONStreamWriter` into `writer.py`
+- [ ] Extract MinHash sharding helpers into `shard.py`
+- [ ] Extract `Colors` and `print_progress_bar` into `ui.py`
+- [ ] Refactor `convert.py` to import from extracted modules with backward-compatible re-exports
+- [ ] Verify full test suite passes, commit, merge to `main`, and remove worktree
 
--->
+### SPEC-016: Comprehensive Unit Test Suite
+- **Spec:** [SPEC-016-unit-test-suite.md](specs/SPEC-016-unit-test-suite.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** test | **Impact:** Test coverage and developer velocity
+- **Verify:** `./venv/bin/python3 -m pytest tests/unit/ -v`
+- [ ] Create worktree: `git worktree add -b feat/spec-016-unit-tests .worktrees/spec-016 main`
+- [ ] Create `tests/unit/__init__.py`
+- [ ] Create `tests/unit/test_converter.py` testing `SchemaOrgConverter.convert()` across data shapes
+- [ ] Create `tests/unit/test_writer.py` testing `JSONStreamWriter` empty/streaming/chunking
+- [ ] Create `tests/unit/test_ingredient_parser.py` testing `RegexIngredientParser` fractions/ranges/comments
+- [ ] Create `tests/unit/test_registry.py` testing auto-discovery, priority, and contract validation
+- [ ] Verify both unit and regression suites pass, commit, merge to `main`, and remove worktree
+
+### SPEC-017: Dynamic File Extension Registry and Directory Traversal
+- **Spec:** [SPEC-017-dynamic-extension-registry.md](specs/SPEC-017-dynamic-extension-registry.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** refactor | **Impact:** Directory traversal across all supported formats
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create worktree: `git worktree add -b feat/spec-017-dynamic-extensions .worktrees/spec-017 main`
+- [ ] Add `supported_extensions()` classmethod to `BaseRecipeParser`
+- [ ] Implement `supported_extensions()` on all parser subclasses (including `.nyc`, `.xml`, `.json`)
+- [ ] Implement `ParserRegistry.supported_extensions()` aggregation
+- [ ] Refactor `process_directory()` in `convert.py` to query registry
+- [ ] Add `--ext` CLI option to allow custom extension filtering
+- [ ] Verify directory scanning discovers all formats, commit, merge to `main`, and remove worktree
+
+### SPEC-018: Spec Framework Standards and Validation
+- **Spec:** [SPEC-018-spec-framework-evolution.md](specs/SPEC-018-spec-framework-evolution.md)
+- **Priority:** P2 | **Tier:** 0 | **Type:** review | **Impact:** All specifications and templates
+- **Verify:** `./venv/bin/python3 -m pytest tests/test_specs.py -v`
+- [ ] Create worktree: `git worktree add -b feat/spec-018-spec-standards .worktrees/spec-018 main`
+- [ ] Add `## Detection Contract` and `## Golden Output` sections to `specs/_template.md`
+- [ ] Update `specs/README.md` and `AGENTS.md` with guidelines on Golden Output and detection contracts
+- [ ] Create `tests/test_specs.py` automated spec validator
+- [ ] Verify all specs pass validation, commit, merge to `main`, and remove worktree
+
+### SPEC-019: Repository Packaging and Tools Reorganization
+- **Spec:** [SPEC-019-packaging-and-tools-reorg.md](specs/SPEC-019-packaging-and-tools-reorg.md)
+- **Priority:** P2 | **Tier:** 1 | **Type:** refactor | **Impact:** Packaging, CLI command, and tools organization
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create worktree: `git worktree add -b feat/spec-019-packaging .worktrees/spec-019 main`
+- [ ] Create `pyproject.toml` with console script `cook` (and alias `recipe-convert`), dependencies, and extras
+- [ ] Move root scripts (`batch_convert.py`, `dedup.py`, `import_to_mealie.py`, `import_to_tandoor.py`, `update_expected.py`) to `tools/`
+- [ ] Move `extract/` directory to `tools/extract/`
+- [ ] Create backward-compatible root forwarding shims for moved tools
+- [ ] Verify `pip install -e .` and console scripts work
+- [ ] Verify test suite passes, commit, merge to `main`, and remove worktree
+
 
 ---
 

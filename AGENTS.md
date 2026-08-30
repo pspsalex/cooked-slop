@@ -275,17 +275,46 @@ This repository uses a spec-driven development architecture:
 - **`specs/`** houses detailed design specifications (`SPEC-NNN-<slug>.md`) backing non-trivial tasks with raw samples and mapping rules.
 - **`specs/done/`** contains completed specifications.
 
+### Golden Rule: Isolated Git Worktrees for Every Work Unit
+
+**Every single task and spec MUST be developed inside a dedicated git worktree, verified, committed, and merged back to `main`.** Never edit or commit directly on `main` for non-trivial tasks.
+
+#### Standard Worktree Lifecycle:
+```bash
+# 1. Create a clean worktree and feature branch off main
+git worktree add -b feat/<task-id>-<slug> .worktrees/<task-id> main
+
+# 2. Change into the worktree directory
+cd .worktrees/<task-id>
+
+# 3. Implement subtasks sequentially and verify deterministically
+./venv/bin/python3 -m pytest tests/ -v
+
+# 4. Commit using conventional commits
+git add <changed-files>
+git commit -m "feat(<scope>): descriptive commit message"
+
+# 5. Return to main repository and merge cleanly
+cd /home/alex/junk/Recipes/scripts
+git merge --ff-only feat/<task-id>-<slug>
+
+# 6. Clean up worktree and feature branch
+git worktree remove .worktrees/<task-id>
+git branch -d feat/<task-id>-<slug>
+```
+
 ### Working on an Existing Task
 
 When the user asks to "work on a task", "work on next task", or "work on tasks.md":
 
 1. **Pick an unchecked task** from `## Active Tasks` in `tasks.md` (prioritize P0 > P1 > P2).
 2. **Consult the linked spec**: If the task references a spec in `specs/`, read the specification file for full architectural context, sample inputs, edge cases, and acceptance criteria.
-3. **Implement atomic subtasks**: Work through the subtask checklist sequentially.
-4. **Code review**: Self-review changes for correctness, project coding standards, error handling, and regressions.
-5. **Deterministic verification**: Run the exact verification command listed under the task's `**Verify:**` field (e.g. `./venv/bin/python3 -m pytest tests/ -v`).
-6. **Commit**: Stage changed files, the linked spec (if modified), and `tasks.md`. Commit with a conventional-commit message (`fix:`, `feat:`, `refactor:`, `test:`, `docs:`).
-7. **Update task status**:
+3. **Spawn isolated worktree**: Create a new worktree following the Golden Rule above (`git worktree add -b feat/<task-id>-<slug> .worktrees/<task-id> main`).
+4. **Implement atomic subtasks**: Work through the subtask checklist sequentially inside the worktree.
+5. **Code review**: Self-review changes for correctness, project coding standards, error handling, and regressions.
+6. **Deterministic verification**: Run the exact verification command listed under the task's `**Verify:**` field (e.g. `./venv/bin/python3 -m pytest tests/ -v`).
+7. **Commit & Merge**: Stage changed files, the linked spec (if modified), and `tasks.md`. Commit with a conventional-commit message (`fix:`, `feat:`, `refactor:`, `test:`, `docs:`), merge to `main`, and clean up the worktree.
+8. **Update task status**:
    - Check off completed subtasks in `tasks.md` (`- [x]`).
    - When all subtasks for a task are complete, move the task to `## Archive` in `tasks.md`.
    - If the task was backed by a spec, update the spec's frontmatter to `status: done` and move it to `specs/done/`.

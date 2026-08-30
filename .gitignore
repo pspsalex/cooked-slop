@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Git worktrees
+.worktrees/
+
 # Distribution / packaging
 .Python
 build/
