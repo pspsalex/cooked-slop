@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 import logging
+from pathlib import Path
 import re
 from typing import Iterator, List
 
@@ -33,6 +34,14 @@ class TwoColParser(BaseRecipeParser):
     @classmethod
     def detect(cls, filepath: str, content_sample: str) -> float:
         if not content_sample or not content_sample.strip():
+            return 0.0
+
+        ext = Path(filepath).suffix.lower()
+        if ext in {".md", ".markdown"}:
+            return 0.0
+
+        # Exclude files that have table borders or start with pipe/table markers
+        if re.search(r'^\s*[+|]', content_sample, re.MULTILINE):
             return 0.0
 
         # Exclude files that belong to known structured formats

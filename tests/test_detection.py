@@ -352,3 +352,54 @@ def test_verbose_conversion_output(capsys, tmp_path):
     assert "garvick_sample.html" in captured
     assert "HTML Parser, config garvick.yaml" in captured
 
+
+def test_two_col_excludes_markdown_and_tables():
+    from parsers.two_col import TwoColParser
+
+    md_table_sample = """+-----------------------------+-----------------------+
+| **Potato-Pan Burger**\\                              |
++-----------------------------+-----------------------+
+| **2 lb. ground beef**       | **1/4 cup butter**    |
++-----------------------------+-----------------------+"""
+    # Excludes .md extension
+    assert TwoColParser.detect("recipe.md", md_table_sample) == 0.0
+    # Excludes table borders even without .md extension
+    assert TwoColParser.detect("recipe.txt", md_table_sample) == 0.0
+
+
+def test_generic_md_detection_and_table_parsing(ingredient_parser):
+    from pathlib import Path
+    from parsers.generic_md import GenericMdParser
+    from parsers.registry import ParserRegistry
+
+    sample_path = Path("nux/Test/DOCX/Potato beef casserole.docx.md")
+    if not sample_path.exists():
+        sample_path = Path("nux/llm-samples/Potato beef casserole.docx.md")
+    if not sample_path.exists():
+        pytest.skip("Potato beef casserole sample not found")
+
+    content = sample_path.read_text(encoding="utf-8")
+
+    # Detection check
+    score = GenericMdParser.detect(str(sample_path), content[:2000])
+    assert score >= 0.70, f"Expected GenericMdParser score >= 0.70, got {score}"
+
+    # Auto-detection from registry should resolve to GenericMdParser
+    parser = ParserRegistry.get_parser(sample_path, ingredient_parser)
+    assert isinstance(parser, GenericMdParser)
+
+    # Parse content check
+    parser = GenericMdParser(ingredient_parser)
+    recipes = list(parser.parse_content(content, str(sample_path)))
+    assert len(recipes) == 1
+    r = recipes[0]
+    assert r.title == "Potato-Pan Burger"
+    assert "Mounds of golden potatoes top this easy casserole" in (r.description or "")
+    assert r.yield_amount == "8 servings"
+    assert len(r.ingredients) == 15
+    assert len(r.instructions) == 3
+    assert "In an extra-large skillet" in r.instructions[0]
+    assert "Meanwhile, in a medium saucepan" in r.instructions[1]
+    assert "Transfer beef mixture" in r.instructions[2]
+
+

@@ -391,7 +391,9 @@ def convert_recipe_file(
                 safe_name = re.sub(
                     r"[^\w\s-]", "", title
                 ).strip()
-                safe_name = re.sub(r"[-\s]+", "_", safe_name)
+                safe_name = re.sub(r"[-\s]+", "_", safe_name)[:120].strip("_")
+                if not safe_name:
+                    safe_name = "recipe"
                 output_file = target_dir / f"{safe_name}.json"
                 counter = 1
                 while output_file.exists():
