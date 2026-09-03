@@ -92,7 +92,7 @@ class GenericMdParser(BaseRecipeParser):
             # Check for recipe indicators: quantities, cooking verbs, or timing
             has_quantities = bool(
                 re.search(
-                    r"(?i)\b\d+(?:/\d+)?\s*(?:cups?|tbsp?\.?|tsp?\.?|tablespoons?|teaspoons?|lbs?\.?|pounds?|oz\.?|ounces?|grams?|g|kg|ml)\b",
+                    r"(?i)\b\d+(?:/\d+)?\s*(?:cups?|tbsp?\.?|tsp?\.?|tablespoons?|teaspoons?|lbs?\.?|pounds?|oz\.?|ounces?|grams?|g|kg|ml|c\b|tb\b|cloves?|slices?|cans?|pkgs?\.?|packages?|heads?|stalks?)\b",
                     content_sample,
                 )
             )
@@ -119,6 +119,8 @@ class GenericMdParser(BaseRecipeParser):
         title = title.replace(r"\'", "'").replace(r'\"', '"')
         # Remove trailing backslash if present (from Pandoc hard line breaks)
         title = title.rstrip("\\").strip()
+        # Remove Pandoc link/underline syntax like [Title]{.underline} or [Title]
+        title = re.sub(r"^\[(.*?)\](?:\(.*?\)|(?:\{.*?\})?)?$", r"\1", title.strip())
         # Remove outer bold/italic markup (**Title**, *Title*, ___Title___)
         title = re.sub(r"^(?:\*{1,3}|_{1,3})(.*?)(?:\*{1,3}|_{1,3})$", r"\1", title.strip())
         return title.strip()
@@ -141,28 +143,50 @@ class GenericMdParser(BaseRecipeParser):
         targets = {"preparation", "directions", "instructions", "method", "steps", "procedure"}
         return cleaned in targets
 
-    def _looks_like_instruction_start(self, stripped: str) -> bool:
-        """Detect whether a line is likely the start of an instruction step/paragraph."""
-        if re.match(r"^\d+[.)]\s+", stripped):
-            return True
-        instruction_verbs = (
-            r"(?i)^(?:in\s+an?\s+|meanwhile|transfer|combine|place|pour|mix|stir|whisk|"
-            r"heat|cook|bake|preheat|add|bring|boil|simmer|serve|drain|remove|beat|blend|"
-            r"cut|chop|peel|roll|spread|melt|sprinkle|brown|cover|toss|fold|cool|chill|"
-            r"refrigerate|divide|arrange|season|garnish|sift|using\s+|with\s+a\s+|to\s+make|"
-            r"make\s+the\s+|assemble\s+|get\s+out\s+|soak\s+|put\s+the\s+|grease\s+|"
-            r"line\s+a\s+|set\s+aside|let\s+|allow\s+|layer\s+|in\s+a\s+)"
-        )
-        if re.match(instruction_verbs, stripped):
-            return True
+    def _is_notes_header(self, line: str) -> bool:
+        cleaned = re.sub(r"[^a-zA-Z:]", "", line).lower().rstrip(":")
+        return cleaned in {"notes", "specialnotes", "note", "tips", "variations"}
 
-        # Narrative cooking sentences without bullet or quantity start
-        is_qty_start = bool(
+    def _is_metadata_line(self, line: str) -> bool:
+        return bool(
+            re.match(
+                r"(?i)^\s*(?:\*{1,3}|_*)?(?:yield|yields|servings?|makes|prep|cook|baking|bake|total|per serving|nutrition|calories|dietary exchanges):",
+                line,
+            )
+        )
+
+    def _is_toc_title(self, title: str) -> bool:
+        clean = re.sub(r"[^a-zA-Z ]", "", title).strip().lower()
+        return clean in {
+            "recipe index", "index", "table of contents", "contents",
+            "weights measures and equivalencies", "weights and measures",
+        } or bool(re.match(r"(?i)^(?:recipe index|table of contents)\b", clean))
+
+    def _looks_like_qty_or_ing(self, stripped: str) -> bool:
+        return bool(
             re.match(
                 r"^(?:[-*+•·]\s+|\d+[.)]\s+|\d+(?:/\d+)?(?:\s*-\s*\d+(?:/\d+)?)?\s+(?:[a-zA-Z]|½|¼|¾|⅓|⅔|⅛|⅜|⅝|⅞)|[½¼¾⅓⅔⅛⅜⅝⅞]|(?:a|an|some|few|pinch|dash)\s+)",
                 stripped,
             )
         )
+
+    def _looks_like_instruction_start(self, stripped: str) -> bool:
+        """Detect whether a line is likely the start of an instruction step/paragraph."""
+        if re.match(r"^\d+[.)]\s+", stripped):
+            return True
+        instruction_verbs = (
+            r"(?i)^(?:in\s+an?\s+|meanwhile\b|transfer\b|combine\b|place\b|pour\b|mix\b|stir\b|whisk\b|"
+            r"heat\b|cook\b|bake\b|preheat\b|add\b|bring\b|boil\b|simmer\b|serve\b|drain\b|remove\b|beat\b|blend\b|"
+            r"cut\b|chop\b|peel\b|roll\b|spread\b|melt\b|sprinkle\b|brown\b|cover\b|toss\b|fold\b|cool\b|chill\b|"
+            r"refrigerate\b|divide\b|arrange\b|season\b|garnish\b|sift\b|using\s+|with\s+a\s+|to\s+make\b|"
+            r"make\s+the\s+|assemble\s+|get\s+out\s+|soak\s+|put\s+the\s+|grease\s+|"
+            r"line\s+a\s+|set\s+aside\b|let\s+|allow\s+|layer\s+|in\s+a\s+)"
+        )
+        if re.match(instruction_verbs, stripped):
+            return True
+
+        # Narrative cooking sentences without bullet or quantity start
+        is_qty_start = self._looks_like_qty_or_ing(stripped)
         if len(stripped) > 60 and not is_qty_start:
             cooking_keywords = [
                 "skillet", "saucepan", "bowl", "oven", "minutes", "hours",
@@ -189,6 +213,8 @@ class GenericMdParser(BaseRecipeParser):
         state = "PREAMBLE"  # PREAMBLE -> INGREDIENTS -> INSTRUCTIONS
         current_instruction_step: list[str] = []
         last_section_header: Optional[str] = None
+        current_category: Optional[str] = None
+        recipe_heading_level: Optional[int] = None
 
         def flush_instruction(rec: Optional[Recipe]):
             if current_instruction_step and rec:
@@ -203,26 +229,33 @@ class GenericMdParser(BaseRecipeParser):
                 current_instruction_step.clear()
 
         def flush_recipe() -> Optional[Recipe]:
-            nonlocal current_recipe, state, last_section_header
+            nonlocal current_recipe, state, last_section_header, recipe_heading_level
             finished_recipe = None
             if current_recipe:
                 flush_instruction(current_recipe)
-                if current_recipe.title and (
-                    current_recipe.ingredients or current_recipe.instructions
+                if (
+                    current_recipe.title
+                    and current_recipe.ingredients
+                    and not self._is_toc_title(current_recipe.title)
                 ):
                     finished_recipe = current_recipe
                 current_recipe = None
                 state = "PREAMBLE"
                 last_section_header = None
+                recipe_heading_level = None
             return finished_recipe
 
-        def start_new_recipe(title_line: str):
-            nonlocal current_recipe, state, last_section_header
+        def start_new_recipe(title_line: str, heading_level: Optional[int] = None):
+            nonlocal current_recipe, state, last_section_header, recipe_heading_level
+            title = self._clean_title(title_line)
             current_recipe = Recipe(
-                title=self._clean_title(title_line),
+                title=title,
                 source_format=self.source_format,
                 source_file=filepath,
             )
+            if current_category:
+                current_recipe.categories = [current_category]
+            recipe_heading_level = heading_level
             state = "PREAMBLE"
             last_section_header = None
 
@@ -241,61 +274,130 @@ class GenericMdParser(BaseRecipeParser):
             is_dash_sep = bool(
                 re.match(r"^-{12,}$", stripped) or re.match(r"^={12,}$", stripped)
             )
-            is_md_header = bool(re.match(r"^#{1,2}\s+", stripped))
+            m_md_h = re.match(r"^(#{1,6})\s+(.*)$", stripped)
+            is_bold_title = bool(re.match(r"^(?:\*{2,3}|_{2,3})[^*_]+(?:\*{2,3}|_{2,3})$", stripped))
 
-            if is_dash_sep or (
-                is_md_header
-                and current_recipe
-                and (current_recipe.ingredients or current_recipe.instructions)
-            ):
+            is_recipe_boundary = False
+            new_heading_level: Optional[int] = None
+
+            if is_dash_sep:
+                is_recipe_boundary = True
+            elif m_md_h:
+                h_lvl = len(m_md_h.group(1))
+                h_text = m_md_h.group(2).strip()
+                if (
+                    not self._is_ingredients_header(h_text)
+                    and not self._is_instructions_header(h_text)
+                    and not self._is_notes_header(h_text)
+                    and not self._is_metadata_line(h_text)
+                    and not self._looks_like_qty_or_ing(h_text)
+                ):
+                    if (
+                        current_recipe
+                        and not current_recipe.ingredients
+                        and not current_recipe.instructions
+                        and recipe_heading_level is not None
+                        and recipe_heading_level <= 2
+                        and h_lvl <= 3
+                    ):
+                        is_recipe_boundary = True
+                        new_heading_level = h_lvl
+                    elif recipe_heading_level is not None:
+                        if h_lvl <= recipe_heading_level:
+                            is_recipe_boundary = True
+                            new_heading_level = h_lvl
+                    else:
+                        is_recipe_boundary = True
+                        new_heading_level = h_lvl
+            elif is_bold_title and (current_recipe is None or state in ("INSTRUCTIONS", "PREAMBLE")):
+                b_text = stripped.strip("*_ ").strip()
+                if (
+                    not self._is_ingredients_header(b_text)
+                    and not self._is_instructions_header(b_text)
+                    and not self._is_notes_header(b_text)
+                    and not self._is_metadata_line(b_text)
+                    and not self._looks_like_qty_or_ing(b_text)
+                    and not self._is_toc_title(b_text)
+                ):
+                    nxt = idx + 1
+                    while nxt < len(lines) and not lines[nxt].strip():
+                        nxt += 1
+                    nxt_line = lines[nxt].strip() if nxt < len(lines) else ""
+                    nxt_is_bold = bool(re.match(r"^(?:\*{2,3}|_{2,3})[^*_]+(?:\*{2,3}|_{2,3})$", nxt_line))
+                    nxt_is_hash = bool(re.match(r"^#{1,6}\s+", nxt_line))
+
+                    if not nxt_is_bold and not nxt_is_hash and nxt_line:
+                        if (
+                            self._looks_like_qty_or_ing(nxt_line)
+                            or self._is_ingredients_header(nxt_line)
+                            or self._is_instructions_header(nxt_line)
+                            or self._is_metadata_line(nxt_line)
+                            or self._looks_like_instruction_start(nxt_line)
+                            or len(nxt_line) > 15
+                        ):
+                            is_recipe_boundary = True
+
+            if is_recipe_boundary:
                 # If we just saw a section header (e.g. boxed header in Pandoc Markdown), skip it
                 if last_section_header is not None and is_dash_sep:
                     last_section_header = None
                     idx += 1
                     continue
 
-                # Look ahead to next non-empty line
-                next_idx = idx + 1
-                while next_idx < len(lines) and not lines[next_idx].strip():
-                    next_idx += 1
-
-                next_line = lines[next_idx].strip() if next_idx < len(lines) else ""
-
-                # If next line is a section header, it's NOT a recipe separator
-                if (
-                    self._is_ingredients_header(next_line)
-                    or self._is_instructions_header(next_line)
-                    or re.match(
-                        r"(?i)^\*{1,3}(?:ingredients|instructions|directions|preparation|special notes|notes)",
-                        next_line,
-                    )
-                ):
-                    idx += 1
-                    continue
-
-                # If separator is followed by an instruction step while we are in instructions, skip
-                if state == "INSTRUCTIONS" and is_dash_sep and not is_md_header:
-                    if self._looks_like_instruction_start(next_line):
+                if is_dash_sep:
+                    next_idx = idx + 1
+                    while next_idx < len(lines) and not lines[next_idx].strip():
+                        next_idx += 1
+                    next_line = lines[next_idx].strip() if next_idx < len(lines) else ""
+                    if (
+                        self._is_ingredients_header(next_line)
+                        or self._is_instructions_header(next_line)
+                        or re.match(
+                            r"(?i)^\*{1,3}(?:ingredients|instructions|directions|preparation|special notes|notes)",
+                            next_line,
+                        )
+                    ):
+                        idx += 1
+                        continue
+                    if state == "INSTRUCTIONS" and self._looks_like_instruction_start(next_line):
                         idx += 1
                         continue
 
-                # Otherwise, if we have an existing recipe with content, finish it!
-                if current_recipe and (
-                    current_recipe.ingredients or current_recipe.instructions
-                ):
                     r = flush_recipe()
                     if r:
                         yield r
-                    if is_dash_sep:
-                        idx = next_idx
-                        if idx < len(lines):
-                            start_new_recipe(lines[idx])
-                            idx += 1
-                        continue
-                    else:
-                        start_new_recipe(stripped)
+                    idx = next_idx
+                    if idx < len(lines):
+                        start_new_recipe(lines[idx])
                         idx += 1
-                        continue
+                    continue
+
+                # Heading or bold boundary
+                if current_recipe and not current_recipe.ingredients and not current_recipe.instructions:
+                    if (
+                        recipe_heading_level is not None
+                        and recipe_heading_level <= 2
+                        and not self._is_toc_title(current_recipe.title)
+                    ):
+                        current_category = current_recipe.title
+                    start_new_recipe(stripped, new_heading_level)
+                    idx += 1
+                    continue
+
+                if current_recipe:
+                    r = flush_recipe()
+                    if r:
+                        yield r
+                    if new_heading_level == 1:
+                        current_category = self._clean_title(stripped)
+                    start_new_recipe(stripped, new_heading_level)
+                    idx += 1
+                    continue
+
+                if not self._is_toc_title(self._clean_title(stripped)):
+                    start_new_recipe(stripped, new_heading_level)
+                idx += 1
+                continue
 
             if current_recipe is None:
                 if (
@@ -303,7 +405,8 @@ class GenericMdParser(BaseRecipeParser):
                     and not re.match(r"^-{3,}$", stripped)
                     and stripped not in {"--", "."}
                 ):
-                    start_new_recipe(stripped)
+                    if not self._is_toc_title(self._clean_title(stripped)):
+                        start_new_recipe(stripped)
                 idx += 1
                 continue
 
@@ -320,7 +423,7 @@ class GenericMdParser(BaseRecipeParser):
                 last_section_header = "INSTRUCTIONS"
                 idx += 1
                 continue
-            elif re.match(r"(?i)^\*{1,3}(?:special notes|notes)\*{1,3}$", stripped):
+            elif self._is_notes_header(stripped):
                 last_section_header = "NOTES"
                 idx += 1
                 continue
@@ -366,19 +469,9 @@ class GenericMdParser(BaseRecipeParser):
                     idx += 1
                     continue
 
-                # Auto-transition to INGREDIENTS or INSTRUCTIONS
-                is_bullet_or_qty = bool(
-                    re.match(
-                        r"^(?:[-*+•·]\s+|\d+[.)]\s+|\d+(?:/\d+)?(?:\s*-\s*\d+(?:/\d+)?)?\s+(?:[a-zA-Z]|½|¼|¾|⅓|⅔|⅛|⅜|⅝|⅞)|[½¼¾⅓⅔⅛⅜⅝⅞]|(?:a|an|some|few|pinch|dash)\s+)",
-                        stripped,
-                    )
-                )
-                if is_bullet_or_qty:
+                if self._looks_like_qty_or_ing(stripped):
                     state = "INGREDIENTS"
                     # fall through to INGREDIENTS handling below
-                elif self._looks_like_instruction_start(stripped):
-                    state = "INSTRUCTIONS"
-                    # fall through to INSTRUCTIONS handling below
                 else:
                     if not current_recipe.description:
                         clean_desc = stripped.strip("*_ \t").strip()

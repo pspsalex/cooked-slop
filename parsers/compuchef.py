@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 import logging
+from pathlib import Path
 import re
 from typing import Iterator, Optional
 from .models import Recipe, Ingredient
@@ -57,9 +58,19 @@ class CompuChefParser(BaseRecipeParser):
     def detect(cls, filepath: str, content_sample: str) -> float:
         if not content_sample:
             return 0.0
+        ext = Path(filepath).suffix.lower()
+        if ext in {'.md', '.markdown', '.htm', '.html'}:
+            return 0.0
         if re.search(r'Recipe Via Compu-Chef', content_sample, re.IGNORECASE):
             return 0.95
-        if re.search(r'^\s*\*{3,}\s*(?![^*]*Exported from)[^*]+\s*\*{3,}', content_sample, re.MULTILINE):
+        # Asterisk header followed by typical CompuChef sections
+        has_asterisk_header = bool(
+            re.search(r'^\s*\*{3,}\s*(?![^*]*Exported from)[^*]+\s*\*{3,}', content_sample, re.MULTILINE)
+        )
+        has_compuchef_markers = bool(
+            re.search(r'(?i)\b(?:INGREDIENTS\s*-+|DIRECTIONS\s*-+|Categories\s*:|Number of Servings\s*:)', content_sample)
+        )
+        if has_asterisk_header and has_compuchef_markers:
             return 0.75
         return 0.0
 

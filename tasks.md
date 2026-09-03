@@ -12,7 +12,18 @@ _No active tasks. Add new tasks here as work is identified._
 ## Archive
 
 <details>
-<summary>Completed specs (19 items)</summary>
+<summary>Completed specs (20 items)</summary>
+
+### SPEC-020: Markdown Multi-Recipe Parser and Detection Fixes ✅
+- **Spec:** [SPEC-020-markdown-multi-recipe-fixes.md](specs/done/SPEC-020-markdown-multi-recipe-fixes.md)
+- **Priority:** P0 | **Tier:** 1 | **Type:** parser | **Impact:** Converted DOCX/MD recipe collections (~370 recipes in salads, ~680 in LowCarb)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Exclude `.md` / `.markdown` and require CompuChef markers in `CompuChefParser.detect()`
+- [x] Add bold title delimiter detection (`**Title**` / `***Title***`) in `GenericMdParser`
+- [x] Expand heading hierarchy support (`###`, `##`, `#`) and category tracking in `GenericMdParser`
+- [x] Filter out 0-ingredient preamble/index blocks and add word boundaries to instruction verb detection
+- [x] Add tests for Markdown multi-recipe parsing and CompuChef detection contract
+- [x] Verify full test suite passes deterministically
 
 ### SPEC-019: Repository Packaging and Tools Reorganization ✅
 - **Spec:** [SPEC-019-packaging-and-tools-reorg.md](specs/done/SPEC-019-packaging-and-tools-reorg.md)

@@ -434,4 +434,125 @@ def test_llm_client_fallback_url():
         assert fallback_call_url == "http://myserver:11434/api/chat"
 
 
+def test_compuchef_excludes_markdown_and_requires_markers():
+    """Verify CompuChefParser.detect excludes .md files and requires CompuChef markers."""
+    from parsers.compuchef import CompuChefParser
+
+    # Markdown file starting with ***Title*** must score 0.0
+    md_sample = "***The Ultimate Salad Recipe Collection***\n\n**24-Hour Slaw**\n\n3/4 cup sugar\n"
+    assert CompuChefParser.detect("salads.docx.md", md_sample) == 0.0
+    assert CompuChefParser.detect("test.markdown", md_sample) == 0.0
+
+    # Non-markdown file with ***Title*** but no CompuChef section headers must score 0.0
+    raw_sample = "*** Just Some Bold Text ***\nSome plain content without markers.\n"
+    assert CompuChefParser.detect("sample.txt", raw_sample) == 0.0
+
+    # Valid CompuChef content with markers scores >= 0.75
+    ccf_sample = (
+        "*** CompuChef Recipe ***\n"
+        "Categories: Salad\n"
+        "INGREDIENTS -------------------\n"
+        "1 cup lettuce\n"
+        "DIRECTIONS --------------------\n"
+        "Toss salad.\n"
+    )
+    assert CompuChefParser.detect("sample.ccf", ccf_sample) >= 0.75
+
+
+def test_generic_md_multi_recipe_bold_delimited(ingredient_parser):
+    """Verify GenericMdParser extracts multiple recipes delimited by bold titles without dashes."""
+    from parsers.generic_md import GenericMdParser
+
+    sample = """***The Ultimate Salad Recipe Collection***
+
+**24-Hour Slaw**
+
+3/4 cup sugar
+1 head cabbage -- shredded
+
+Stir sugar into cabbage. Chill 24 hours. Stir well before serving.
+
+**Adreana's Greek Pasta Salad**
+
+1 pound rotini
+1 pound chicken breasts
+
+Cook noodles and chicken. Drain and mix well.
+"""
+    parser = GenericMdParser(ingredient_parser)
+    recipes = list(parser.parse_content(sample, "salads.md"))
+    assert len(recipes) == 2
+    assert recipes[0].title == "24-Hour Slaw"
+    assert len(recipes[0].ingredients) == 2
+    assert len(recipes[0].instructions) >= 1
+
+    assert recipes[1].title == "Adreana's Greek Pasta Salad"
+    assert len(recipes[1].ingredients) == 2
+    assert len(recipes[1].instructions) >= 1
+
+
+def test_generic_md_multi_recipe_heading_hierarchy(ingredient_parser):
+    """Verify GenericMdParser handles H1 chapters, H3 recipes, and H4 sub-sections."""
+    from parsers.generic_md import GenericMdParser
+
+    sample = """**[RECIPE INDEX]{.underline}**
+
+Chapter 1 - Appetizers 1-1
+Lobster Salad 1-1
+Crab Cocktail 1-2
+
+# Appetizers
+
+### Lobster Salad in Endive
+
+Makes 24 appetizers
+
+3/4 pound lobster meat
+1/2 cup mayonnaise
+
+Combine lobster and mayonnaise. Serve in endive leaves.
+
+### Fresh Crab Cocktail
+
+#### Cocktail Sauce
+
+2 cups tomato sauce
+1 tbsp lemon juice
+
+Mix sauce ingredients.
+
+#### Crab Cocktail
+
+2 fresh crabs
+
+Assemble crab cocktail with sauce.
+
+# Beverages
+
+### Chocolate Shake
+
+1 cup milk
+2 tbsp chocolate syrup
+
+Blend until smooth.
+"""
+    parser = GenericMdParser(ingredient_parser)
+    recipes = list(parser.parse_content(sample, "cookbook.md"))
+    assert len(recipes) == 3
+
+    assert recipes[0].title == "Lobster Salad in Endive"
+    assert recipes[0].categories == ["Appetizers"]
+    assert len(recipes[0].ingredients) == 2
+
+    assert recipes[1].title == "Fresh Crab Cocktail"
+    assert recipes[1].categories == ["Appetizers"]
+    # H4 components should be kept inside the recipe
+    assert len(recipes[1].ingredients) >= 2
+
+    assert recipes[2].title == "Chocolate Shake"
+    assert recipes[2].categories == ["Beverages"]
+    assert len(recipes[2].ingredients) == 2
+
+
+
 
