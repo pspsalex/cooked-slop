@@ -18,14 +18,14 @@ deliverables:
 
 ## Description
 
-Create a `batch_convert.py` script that runs `convert.py` against all processable files in `/home/alex/junk/Recipes/Ingest/ToDo`, logs results, and separates successes from failures.
+Create a `batch_convert.py` script that runs `convert.py` against all processable files in `/example/path/recipes`, logs results, and separates successes from failures.
 
 This is the first step in the pipeline — it identifies which files the existing parsers can already handle and which need Tier 2/3 work.
 
 ## Behavior
 
 ### Input
-- Root directory: `/home/alex/junk/Recipes/Ingest/ToDo`
+- Root directory: `/example/path/recipes`
 - Skip list (directories to exclude):
   - `TXT/breadbakers/splitted/`
   - `TXT/breadbakers/*.txt` (raw unsplit digests — only process `split/`)
@@ -83,7 +83,7 @@ For each non-skipped file:
 - [ ] No crashes on encoding errors or binary files
 
 ## Deliverables
-- `batch_convert.py` in the project root (`/home/alex/junk/Recipes/scripts/`)
+- `batch_convert.py` in the project root (`.`)
 
 ## Reference
 - `tests/test_conversion.py` — subprocess invocation pattern

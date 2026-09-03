@@ -17,20 +17,20 @@ deliverables: []
 
 ## Description
 
-Create a parser for vintage Macintosh Info-Mac archive / BBS recipe collections stored in `.INF` files located in `/home/alex/junk/Recipes/Ingest/ToDo/TXT/`.
+Create a parser for vintage Macintosh Info-Mac archive / BBS recipe collections stored in `.INF` files located in `/example/path/TXT/`.
 
 These files are multi-recipe digests distributed on early Macintosh bulletin board systems (BBS). They use `%` as a file-level marker, backticks (`` ` ``) for recipe titles, `-` (dash) to separate ingredients from instructions, and `~` (tilde) as recipe record terminators.
 
 ## Input Samples
 
 Input files:
-- `/home/alex/junk/Recipes/Ingest/ToDo/TXT/CORNBRE.INF` (23,570 bytes, 27 recipes)
-- `/home/alex/junk/Recipes/Ingest/ToDo/TXT/DUCK.INF` (13,169 bytes, 9 recipes)
-- `/home/alex/junk/Recipes/Ingest/ToDo/TXT/SALAD.INF` (46,672 bytes, 55 recipes)
-- `/home/alex/junk/Recipes/Ingest/ToDo/TXT/SAVORY.INF` (25,184 bytes, 17 recipes)
-- `/home/alex/junk/Recipes/Ingest/ToDo/TXT/STEAK.INF` (13,960 bytes, 12 recipes)
+- `/example/path/TXT/CORNBRE.INF` (23,570 bytes, 27 recipes)
+- `/example/path/TXT/DUCK.INF` (13,169 bytes, 9 recipes)
+- `/example/path/TXT/SALAD.INF` (46,672 bytes, 55 recipes)
+- `/example/path/TXT/SAVORY.INF` (25,184 bytes, 17 recipes)
+- `/example/path/TXT/STEAK.INF` (13,960 bytes, 12 recipes)
 
-Sample content from `/home/alex/junk/Recipes/Ingest/ToDo/TXT/CORNBRE.INF`:
+Sample content from `/example/path/TXT/CORNBRE.INF`:
 
 ```text
 %
@@ -118,8 +118,8 @@ From:    Sandy Colby
 - **Recipe Terminator**: A line containing `~` terminates the recipe.
 
 ### Parser Class Specification
-- **Module**: [parsers/infomac.py](file:///home/alex/junk/Recipes/scripts/parsers/infomac.py)
-- **Class**: `InfoMacParser` inheriting from [BaseRecipeParser](file:///home/alex/junk/Recipes/scripts/parsers/base.py#L18-L66)
+- **Module**: [parsers/infomac.py](parsers/infomac.py)
+- **Class**: `InfoMacParser` inheriting from [BaseRecipeParser](parsers/base.py#L18-L66)
 - **Decorator**: `@ParserRegistry.register`
 - **`format_id()`**: `"infomac"`
 - **`aliases()`**: `['inf', 'bbs_inf']`
@@ -142,20 +142,20 @@ From:    Sandy Colby
 | `recipe.source_file` | `filepath` |
 
 ### Edge Cases & Handling
-1. **Two-Column Ingredient Layout**: Some recipes format ingredients in two columns separated by 3+ spaces or tabs (e.g. `1 8oz package of bacon slices        2 C all purpose flour`). The parser must detect two-column lines (see [parsers/two_col.py](file:///home/alex/junk/Recipes/scripts/parsers/two_col.py)) and split them into separate ingredients.
+1. **Two-Column Ingredient Layout**: Some recipes format ingredients in two columns separated by 3+ spaces or tabs (e.g. `1 8oz package of bacon slices        2 C all purpose flour`). The parser must detect two-column lines (see [parsers/two_col.py](parsers/two_col.py)) and split them into separate ingredients.
 2. **Preamble Text in Ingredient Section**: Some recipes contain preheating notes or subheadings before or between ingredients (e.g. `Preheat the oven to 400 degrees F...`, `Beat together in a large bowl...`). Non-ingredient preamble lines should either be prepended to instructions or parsed cleanly as ingredient notes.
-3. **MealMaster Unit Abbreviations**: Common MealMaster-style unit abbreviations appear throughout (`t`, `T`, `c`, `C`, `Tbsp`, `tsp`, `oz`, `lb`). These are normalized via [parsers/units.py](file:///home/alex/junk/Recipes/scripts/parsers/units.py).
+3. **MealMaster Unit Abbreviations**: Common MealMaster-style unit abbreviations appear throughout (`t`, `T`, `c`, `C`, `Tbsp`, `tsp`, `oz`, `lb`). These are normalized via [parsers/units.py](parsers/units.py).
 4. **Attribution Lines and `\fm` Formatting Codes**:
    - Lines like `From:    Rich Harper`, `From Trude Duckworth to John Hartman  27-Nov-89`, `\fm` before attribution must be stripped from `recipe.instructions` and optionally saved to `recipe.description`.
 5. **Stray Artifact Lines**: Occasional OCR/formatting artifacts such as an `a` on a line by itself immediately following the title line should be skipped.
 
 ## Adding a New Parser Checklist
 
-Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md#L133-L153):
-1. Create [parsers/infomac.py](file:///home/alex/junk/Recipes/scripts/parsers/infomac.py) inheriting from `BaseRecipeParser` with `@ParserRegistry.register`.
-2. Add `from .infomac import InfoMacParser` to [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py).
-3. Add `'InfoMacParser'` to `__all__` in [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py).
-4. Add a sample file at `tests/samples/cornbre.inf` (trimmed to first 5 representative recipes from `/home/alex/junk/Recipes/Ingest/ToDo/TXT/CORNBRE.INF`).
+Follow this checklist from [AGENTS.md](AGENTS.md#L133-L153):
+1. Create [parsers/infomac.py](parsers/infomac.py) inheriting from `BaseRecipeParser` with `@ParserRegistry.register`.
+2. Add `from .infomac import InfoMacParser` to [parsers/__init__.py](parsers/__init__.py).
+3. Add `'InfoMacParser'` to `__all__` in [parsers/__init__.py](parsers/__init__.py).
+4. Add a sample file at `tests/samples/cornbre.inf` (trimmed to first 5 representative recipes from `/example/path/TXT/CORNBRE.INF`).
 5. Generate expected output (always use `--no-nlp`):
    ```bash
    ./venv/bin/python3 convert.py tests/samples/cornbre.inf -o tests/expected/cornbre.inf.json --no-nlp
@@ -166,8 +166,8 @@ Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AG
    ```
 
 ## Acceptance Criteria
-- [ ] [parsers/infomac.py](file:///home/alex/junk/Recipes/scripts/parsers/infomac.py) implemented and registered with `@ParserRegistry.register`
-- [ ] `InfoMacParser` imported and added to `__all__` in [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py)
+- [ ] [parsers/infomac.py](parsers/infomac.py) implemented and registered with `@ParserRegistry.register`
+- [ ] `InfoMacParser` imported and added to `__all__` in [parsers/__init__.py](parsers/__init__.py)
 - [ ] Sample file `tests/samples/cornbre.inf` created with 5 representative recipes (including single-col, two-col, and preamble cases)
 - [ ] Expected output `tests/expected/cornbre.inf.json` generated using `./venv/bin/python3 convert.py tests/samples/cornbre.inf -o tests/expected/cornbre.inf.json --no-nlp`
 - [ ] Detection test passes: `InfoMacParser.detect` returns `0.99` on `.INF` files starting with `%`
@@ -180,14 +180,14 @@ Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AG
 - [ ] All unit and regression tests pass: `./venv/bin/python3 -m pytest tests/ -v`
 
 ## Deliverables
-- `/home/alex/junk/Recipes/scripts/parsers/infomac.py`
-- `/home/alex/junk/Recipes/scripts/parsers/__init__.py` (updated imports and `__all__`)
-- `/home/alex/junk/Recipes/scripts/tests/samples/cornbre.inf`
-- `/home/alex/junk/Recipes/scripts/tests/expected/cornbre.inf.json`
+- `parsers/infomac.py`
+- `parsers/__init__.py` (updated imports and `__all__`)
+- `tests/samples/cornbre.inf`
+- `tests/expected/cornbre.inf.json`
 
 ## Reference
-- Reference implementation: [parsers/cookware.py](file:///home/alex/junk/Recipes/scripts/parsers/cookware.py)
-- Two-column layout splitting reference: [parsers/two_col.py](file:///home/alex/junk/Recipes/scripts/parsers/two_col.py)
-- Base parser class: [parsers/base.py](file:///home/alex/junk/Recipes/scripts/parsers/base.py)
-- Data models: [parsers/models.py](file:///home/alex/junk/Recipes/scripts/parsers/models.py)
-- Project instructions: [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md)
+- Reference implementation: [parsers/cookware.py](parsers/cookware.py)
+- Two-column layout splitting reference: [parsers/two_col.py](parsers/two_col.py)
+- Base parser class: [parsers/base.py](parsers/base.py)
+- Data models: [parsers/models.py](parsers/models.py)
+- Project instructions: [AGENTS.md](AGENTS.md)

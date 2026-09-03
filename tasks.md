@@ -5,6 +5,31 @@
 
 ## Active Tasks
 
+### SPEC-024: Buster Format Parser (MC_Buster / MM_Buster)
+- **Spec:** [SPEC-024-buster-format.md](specs/SPEC-024-buster-format.md)
+- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** Fixes parsing of nux/Test/HTML/rec.mxp
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-024-buster-parser`
+- [ ] Create `parsers/buster.py` with `BusterParser` subclassing `BaseRecipeParser`
+- [ ] Implement detection logic looking for `Converted by MC_Buster` or `Converted by MM_Buster`
+- [ ] Implement `parse_content` extracting Title, Yield, Ingredients, and Instructions
+- [ ] Implement ingredient continuation logic (stripping leading `-` or `1    ;`)
+- [ ] Copy a portion of `nux/Test/HTML/rec.mxp` to `tests/samples/rec.mxp`
+- [ ] Generate expected test fixtures using `--no-nlp`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-023: Generic Markdown Instruction Detection Fixes
+- **Spec:** [SPEC-023-generic-md-instruction-detection.md](specs/SPEC-023-generic-md-instruction-detection.md)
+- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** Improves parsing of converted DOCX/MD recipe collections
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-023-md-instruction-detection`
+- [ ] Add `to\s+prepare\b` and `soften\b` to `instruction_verbs` in `parsers/generic_md.py`
+- [ ] Expand `cooking_keywords` if necessary to better detect narrative instructions
+- [ ] Regenerate expected test fixtures using `--no-nlp` and verify they capture instructions correctly
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
 ### SPEC-021: Reduce NLP Verbosity Under -v Flag
 - **Spec:** [SPEC-021-reduce-nlp-verbosity.md](specs/SPEC-021-reduce-nlp-verbosity.md)
 - **Priority:** P1 | **Tier:** 1 | **Type:** refactor | **Impact:** Clean CLI output under -v; suppresses ingredient-parser trace pollution while supporting -vv and --debug-nlp
@@ -16,6 +41,31 @@
 - [ ] Update `convert_recipe_file` and `process_directory` callers to pass boolean verbosity safely
 - [ ] Add unit tests in `tests/unit/test_logging.py` covering `-v`, `-vv`, `--debug-nlp`, and logger level states
 - [ ] Update CLI options documentation in `AGENTS.md`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-022: Markdown Recipe Line Number URL Fragments
+- **Spec:** [SPEC-022-markdown-recipe-line-urls.md](specs/SPEC-022-markdown-recipe-line-urls.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Enables deep-linking into multi-recipe Markdown documents via #<line> URL tags
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-022-md-line-urls`
+- [ ] Track 1-indexed source line numbers during parsing in `parsers/generic_md.py` and assign `recipe.url = f"file://{filepath}#{start_line}"`
+- [ ] Track 1-indexed source line numbers in `parsers/ricette_md.py` and assign `recipe.url = f"file://{filepath}#{start_line}"`
+- [ ] Ensure empty/missing `filepath` gracefully leaves `recipe.url` without `file://#...`
+- [ ] Create unit tests in `tests/unit/test_markdown_url.py` verifying correct line numbers across single, multi, and heading-delimited markdown files
+- [ ] Regenerate expected test fixtures (`generic_md_recipe.md.json`, `generic_md_multi.md.json`, `ricette_sample.md.json`) using `--no-nlp`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-025: Converter Relative Path Output
+- **Spec:** [SPEC-025-converter-relative-paths.md](specs/SPEC-025-converter-relative-paths.md)
+- **Priority:** P2 | **Tier:** 1 | **Type:** refactor | **Impact:** Prevents absolute local paths from leaking into JSON-LD output and expected test fixtures
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-025-relative-paths`
+- [ ] Audit `converter.py` / `SchemaOrgConverter.convert()` — identify where `filepath` is embedded into `url` and `comment` fields
+- [ ] Audit parsers that set `recipe.url` with `file://{filepath}` (e.g. `sqlite_parser.py`, `generic_md.py`, `cookware.py`)
+- [ ] Refactor to use paths relative to CWD or the input argument (not resolved absolute paths)
+- [ ] Regenerate all expected test fixtures with `./venv/bin/python3 tools/update_expected.py`
 - [ ] Run full test suite and verify deterministic passes
 - [ ] Commit, merge to `main`, remove worktree, and archive spec/task
 

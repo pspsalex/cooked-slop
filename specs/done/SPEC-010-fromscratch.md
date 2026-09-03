@@ -17,16 +17,16 @@ deliverables: []
 
 ## Description
 
-Create a parser for the From Scratch v2.0 recipe text export format (`.FS` and `.FSX` files) located in `/home/alex/junk/Recipes/Ingest/ToDo/TXT/`.
+Create a parser for the From Scratch v2.0 recipe text export format (`.FS` and `.FSX` files) located in `/example/path/TXT/`.
 
 > [!NOTE]
-> [configs/fscratch.yaml](file:///home/alex/junk/Recipes/scripts/configs/fscratch.yaml) is an SQLite database schema configuration for `.sqlite`/`.db` files exported from From Scratch. This new parser ([parsers/fromscratch.py](file:///home/alex/junk/Recipes/scripts/parsers/fromscratch.py)) handles the plaintext `.FS` and `.FSX` multi-recipe export format directly.
+> [configs/fscratch.yaml](configs/fscratch.yaml) is an SQLite database schema configuration for `.sqlite`/`.db` files exported from From Scratch. This new parser ([parsers/fromscratch.py](parsers/fromscratch.py)) handles the plaintext `.FS` and `.FSX` multi-recipe export format directly.
 
 ## Input Samples
 
 Input files:
-- `/home/alex/junk/Recipes/Ingest/ToDo/TXT/BONUSREC.FS` (105,446 bytes, 95 recipes)
-- `/home/alex/junk/Recipes/Ingest/ToDo/TXT/BONUSREC.FSX` (105,270 bytes, 95 recipes)
+- `/example/path/TXT/BONUSREC.FS` (105,446 bytes, 95 recipes)
+- `/example/path/TXT/BONUSREC.FSX` (105,270 bytes, 95 recipes)
 
 Sample content (first 2 recipes from `BONUSREC.FS`):
 
@@ -114,8 +114,8 @@ Notes:
 - **Notes Section**: Begins with `Notes:` up to `********** RECIPE ENDS ********`.
 
 ### Parser Class Specification
-- **Module**: [parsers/fromscratch.py](file:///home/alex/junk/Recipes/scripts/parsers/fromscratch.py)
-- **Class**: `FromScratchParser` inheriting from [BaseRecipeParser](file:///home/alex/junk/Recipes/scripts/parsers/base.py#L18-L66)
+- **Module**: [parsers/fromscratch.py](parsers/fromscratch.py)
+- **Class**: `FromScratchParser` inheriting from [BaseRecipeParser](parsers/base.py#L18-L66)
 - **Decorator**: `@ParserRegistry.register`
 - **`format_id()`**: `"fromscratch"`
 - **`aliases()`**: `['from_scratch', 'fs']`
@@ -131,7 +131,7 @@ Notes:
 | `recipe.title` | Value of `Title    :` line, stripped. |
 | `recipe.yield_amount` | Value of `Serves   :` line, stripped. |
 | `recipe.categories` | Value of `KeyWords :` line, split on commas and stripped (e.g. `['Breads']`). |
-| `recipe.ingredients` | Parse lines between `Ingredients:` and `Instructions:`. Strip leading whitespace, parse quantity (decimal), unit (normalized via [parsers/units.py](file:///home/alex/junk/Recipes/scripts/parsers/units.py)), and ingredient name. Construct `Ingredient(raw=line, quantity=..., unit=..., name=...)` or use `self.ingredient_parser.parse(line)`. |
+| `recipe.ingredients` | Parse lines between `Ingredients:` and `Instructions:`. Strip leading whitespace, parse quantity (decimal), unit (normalized via [parsers/units.py](parsers/units.py)), and ingredient name. Construct `Ingredient(raw=line, quantity=..., unit=..., name=...)` or use `self.ingredient_parser.parse(line)`. |
 | `recipe.instructions` | Lines between `Instructions:` and `Notes:` (or end marker). Join non-empty lines / paragraphs into `list[str]`. |
 | `recipe.description` | Text from `Notes:` section if non-empty; otherwise default description from base class. |
 | `recipe.source_format` | `"From Scratch v2.0"` |
@@ -140,17 +140,17 @@ Notes:
 ### Edge Cases
 - **Empty Nutrition Fields**: Labels such as `Calories :`, `Protein  :`, `Fat      :`, `Carb     :`, `Fiber    :`, `Chol     :`, `Iron     :`, `Sodium   :`, `Calcium  :`, `Sat      :`, `Poly     :`, `Mono     :` are almost always empty in export files and must be safely skipped without creating empty fields.
 - **Empty or Missing Notes**: When `Notes:` is empty (followed immediately by `********** RECIPE ENDS ********`), do not store empty string into description.
-- **Multi-Recipe Parsing**: Files contain dozens of recipes (`BONUSREC.FS` has 95 recipes). `parse_content` must yield each [Recipe](file:///home/alex/junk/Recipes/scripts/parsers/models.py#L20-L34) generator-style using `yield`.
+- **Multi-Recipe Parsing**: Files contain dozens of recipes (`BONUSREC.FS` has 95 recipes). `parse_content` must yield each [Recipe](parsers/models.py#L20-L34) generator-style using `yield`.
 - **Unit Normalization**: Standard abbreviations like `pkg.`, `ea.`, `c`, `T`, `t`, `cup`, `tbsp`, `tsp` should map cleanly through `Ingredient.__post_init__` / `normalize_unit`.
 - **File Extensions**: Both `.FS` and `.FSX` extensions are used.
 
 ## Adding a New Parser Checklist
 
-Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md#L133-L153):
-1. Create [parsers/fromscratch.py](file:///home/alex/junk/Recipes/scripts/parsers/fromscratch.py) inheriting from `BaseRecipeParser` with `@ParserRegistry.register`.
-2. Add `from .fromscratch import FromScratchParser` to [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py).
-3. Add `'FromScratchParser'` to `__all__` in [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py).
-4. Add a sample file at `tests/samples/bonusrec.fs` (copy first 3-5 recipes from `/home/alex/junk/Recipes/Ingest/ToDo/TXT/BONUSREC.FS`).
+Follow this checklist from [AGENTS.md](AGENTS.md#L133-L153):
+1. Create [parsers/fromscratch.py](parsers/fromscratch.py) inheriting from `BaseRecipeParser` with `@ParserRegistry.register`.
+2. Add `from .fromscratch import FromScratchParser` to [parsers/__init__.py](parsers/__init__.py).
+3. Add `'FromScratchParser'` to `__all__` in [parsers/__init__.py](parsers/__init__.py).
+4. Add a sample file at `tests/samples/bonusrec.fs` (copy first 3-5 recipes from `/example/path/TXT/BONUSREC.FS`).
 5. Generate expected output (always use `--no-nlp`):
    ```bash
    ./venv/bin/python3 convert.py tests/samples/bonusrec.fs -o tests/expected/bonusrec.fs.json --no-nlp
@@ -161,26 +161,26 @@ Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AG
    ```
 
 ## Acceptance Criteria
-- [ ] [parsers/fromscratch.py](file:///home/alex/junk/Recipes/scripts/parsers/fromscratch.py) implemented and decorated with `@ParserRegistry.register`
-- [ ] `FromScratchParser` imported and added to `__all__` in [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py)
+- [ ] [parsers/fromscratch.py](parsers/fromscratch.py) implemented and decorated with `@ParserRegistry.register`
+- [ ] `FromScratchParser` imported and added to `__all__` in [parsers/__init__.py](parsers/__init__.py)
 - [ ] Sample file `tests/samples/bonusrec.fs` created with 3-5 recipes
 - [ ] Expected output `tests/expected/bonusrec.fs.json` generated using `./venv/bin/python3 convert.py tests/samples/bonusrec.fs -o tests/expected/bonusrec.fs.json --no-nlp`
 - [ ] Format detection test passes: `FromScratchParser.detect` returns `0.99` for `BONUSREC.FS` and `BONUSREC.FSX`
-- [ ] Full conversion test on `/home/alex/junk/Recipes/Ingest/ToDo/TXT/BONUSREC.FS` extracts all 95 recipes:
+- [ ] Full conversion test on `/example/path/TXT/BONUSREC.FS` extracts all 95 recipes:
   ```bash
-  ./venv/bin/python3 convert.py /home/alex/junk/Recipes/Ingest/ToDo/TXT/BONUSREC.FS -o /tmp/bonusrec_out.json --no-nlp
+  ./venv/bin/python3 convert.py /example/path/TXT/BONUSREC.FS -o /tmp/bonusrec_out.json --no-nlp
   ```
 - [ ] All unit and regression tests pass: `./venv/bin/python3 -m pytest tests/ -v`
 
 ## Deliverables
-- `/home/alex/junk/Recipes/scripts/parsers/fromscratch.py`
-- `/home/alex/junk/Recipes/scripts/parsers/__init__.py` (updated imports and `__all__`)
-- `/home/alex/junk/Recipes/scripts/tests/samples/bonusrec.fs`
-- `/home/alex/junk/Recipes/scripts/tests/expected/bonusrec.fs.json`
+- `parsers/fromscratch.py`
+- `parsers/__init__.py` (updated imports and `__all__`)
+- `tests/samples/bonusrec.fs`
+- `tests/expected/bonusrec.fs.json`
 
 ## Reference
-- Reference implementation: [parsers/cookware.py](file:///home/alex/junk/Recipes/scripts/parsers/cookware.py)
-- Base parser class: [parsers/base.py](file:///home/alex/junk/Recipes/scripts/parsers/base.py)
-- Data models: [parsers/models.py](file:///home/alex/junk/Recipes/scripts/parsers/models.py)
-- Existing text parsers: [parsers/edna.py](file:///home/alex/junk/Recipes/scripts/parsers/edna.py), [parsers/compuchef.py](file:///home/alex/junk/Recipes/scripts/parsers/compuchef.py)
-- Project instructions: [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md)
+- Reference implementation: [parsers/cookware.py](parsers/cookware.py)
+- Base parser class: [parsers/base.py](parsers/base.py)
+- Data models: [parsers/models.py](parsers/models.py)
+- Existing text parsers: [parsers/edna.py](parsers/edna.py), [parsers/compuchef.py](parsers/compuchef.py)
+- Project instructions: [AGENTS.md](AGENTS.md)

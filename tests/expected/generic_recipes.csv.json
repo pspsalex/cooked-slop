@@ -22,7 +22,7 @@
     "Beat eggs in a bowl. Melt butter in a pan over medium heat. Pour in eggs and stir gently until set."
   ],
   "comment": "Imported from tests/samples/generic_recipes.csv",
-  "url": "file:///home/alex/junk/Recipes/scripts/tests/samples/generic_recipes.csv",
+  "url": "file://tests/samples/generic_recipes.csv",
   "description": "Recipe converted from CSV format"
 },
 {
@@ -47,7 +47,7 @@
     "Toast bread until golden brown. Spread jam evenly on each slice."
   ],
   "comment": "Imported from tests/samples/generic_recipes.csv",
-  "url": "file:///home/alex/junk/Recipes/scripts/tests/samples/generic_recipes.csv",
+  "url": "file://tests/samples/generic_recipes.csv",
   "description": "Recipe converted from CSV format"
 }
 ]

@@ -30,7 +30,7 @@ Because each of the 5 layouts uses distinct HTML wrappers and tag structures, 5 
 ## Input Samples
 
 ### Sample 1: `mexican/basic_mexican_salsa_recipe.shtml`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/mexican/basic_mexican_salsa_recipe.shtml`
+**Location:** `/example/path/HTML/mexican/basic_mexican_salsa_recipe.shtml`
 
 ```html
 <p align="center"><font size="5"><b>Basic Salsa with Any Kind of Dry Chiles</b></font> </p>
@@ -56,7 +56,7 @@ Eat first, ask questions later!</i></b> </font></p>
 ```
 
 ### Sample 2: `netrelief/artichoke_dip_appetizer_recipe.shtml`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/netrelief/artichoke_dip_appetizer_recipe.shtml`
+**Location:** `/example/path/HTML/netrelief/artichoke_dip_appetizer_recipe.shtml`
 
 ```html
 <p align="center"><font size="5"><b>Artichoke Dip Appetizer </b></font></p>
@@ -83,7 +83,7 @@ Eat first, ask questions later!</i></b> </font></p>
 ```
 
 ### Sample 3: `bbq/achioterecado.htm`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/bbq/achioterecado.htm`
+**Location:** `/example/path/HTML/bbq/achioterecado.htm`
 
 ```html
 <table border="0" cellpadding="50" width="550">
@@ -111,7 +111,7 @@ Eat first, ask questions later!</i></b> </font></p>
 ```
 
 ### Sample 4: `chile/bad_attitude_chili_recipe.shtml`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/chile/bad_attitude_chili_recipe.shtml`
+**Location:** `/example/path/HTML/chile/bad_attitude_chili_recipe.shtml`
 
 ```html
 <table border="0" cellpadding="30" cellspacing="0" width="750">
@@ -138,7 +138,7 @@ Eat first, ask questions later!</i></b> </font></p>
 ```
 
 ### Sample 5: `The Coffee Shop Recipe Book/000001-cool.html`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/The Coffee Shop Recipe Book/000001-cool.html`
+**Location:** `/example/path/HTML/The Coffee Shop Recipe Book/000001-cool.html`
 
 ```html
 <P ALIGN="left"><FONT FACE="Times New Roman" SIZE="4"><B>Sweet 
@@ -295,24 +295,24 @@ fields:
 ## Acceptance Criteria
 - [ ] `configs/mexican.yaml` converts `mexican/basic_mexican_salsa_recipe.shtml`:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/mexican/basic_mexican_salsa_recipe.shtml' --html-config configs/mexican.yaml -o /tmp/test_mexican.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/mexican/basic_mexican_salsa_recipe.shtml' --html-config configs/mexican.yaml -o /tmp/test_mexican.json --no-nlp
   ```
   Produces valid JSON-LD with title `"Basic Salsa with Any Kind of Dry Chiles"`, 6 ingredients, and instructions.
 - [ ] `configs/netrelief.yaml` converts `netrelief/artichoke_dip_appetizer_recipe.shtml`:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/netrelief/artichoke_dip_appetizer_recipe.shtml' --html-config configs/netrelief.yaml -o /tmp/test_netrelief.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/netrelief/artichoke_dip_appetizer_recipe.shtml' --html-config configs/netrelief.yaml -o /tmp/test_netrelief.json --no-nlp
   ```
 - [ ] `configs/bbq.yaml` converts `bbq/achioterecado.htm`:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/bbq/achioterecado.htm' --html-config configs/bbq.yaml -o /tmp/test_bbq.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/bbq/achioterecado.htm' --html-config configs/bbq.yaml -o /tmp/test_bbq.json --no-nlp
   ```
 - [ ] `configs/chile.yaml` converts `chile/bad_attitude_chili_recipe.shtml`:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/chile/bad_attitude_chili_recipe.shtml' --html-config configs/chile.yaml -o /tmp/test_chile.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/chile/bad_attitude_chili_recipe.shtml' --html-config configs/chile.yaml -o /tmp/test_chile.json --no-nlp
   ```
 - [ ] `configs/coffeeshop.yaml` converts `The Coffee Shop Recipe Book/000001-cool.html`:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/The Coffee Shop Recipe Book/000001-cool.html' --html-config configs/coffeeshop.yaml -o /tmp/test_coffeeshop.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/The Coffee Shop Recipe Book/000001-cool.html' --html-config configs/coffeeshop.yaml -o /tmp/test_coffeeshop.json --no-nlp
   ```
 - [ ] Auto-detection identifies the correct configuration for each directory without explicit `--html-config` flag.
 - [ ] Regression test suite passes:
@@ -328,6 +328,6 @@ fields:
 - `configs/coffeeshop.yaml`
 
 ## Reference
-- [parsers/html_config.py](file:///home/alex/junk/Recipes/scripts/parsers/html_config.py) — YAML configuration subsystem
-- [parsers/html_parser.py](file:///home/alex/junk/Recipes/scripts/parsers/html_parser.py) — `HtmlParser` class
-- [configs/bbc.yaml](file:///home/alex/junk/Recipes/scripts/configs/bbc.yaml) — reference HTML XPath config
+- [parsers/html_config.py](parsers/html_config.py) — YAML configuration subsystem
+- [parsers/html_parser.py](parsers/html_parser.py) — `HtmlParser` class
+- [configs/bbc.yaml](configs/bbc.yaml) — reference HTML XPath config

@@ -18,7 +18,7 @@ deliverables:
 
 ## Description
 
-Create a standalone extraction and preprocessing script `extract/breadbakers.py` to process the massive Bread-Bakers mailing list archive located at `/home/alex/junk/Recipes/Ingest/ToDo/TXT/breadbakers/split/`.
+Create a standalone extraction and preprocessing script `extract/breadbakers.py` to process the massive Bread-Bakers mailing list archive located at `/example/path/TXT/breadbakers/split/`.
 
 With 11,538 split digest message files, this represents the single largest batch of unprocessed files in the ingest repository. Approximately 50% of the files are actual bread recipes (hand-made and automatic bread machine recipes, sourdough starters, pizza doughs, holiday loaves), while the other ~50% consist of administrative announcements, digest tables of contents, subscription instructions, and general conversational email threads.
 
@@ -27,7 +27,7 @@ The script preprocesses each message (stripping RFC headers, quotation blocks, a
 ## Input Samples
 
 ### Sample 1: Recipe Message (`v096n002.txt-split-008`)
-Path: `/home/alex/junk/Recipes/Ingest/ToDo/TXT/breadbakers/split/v096n002.txt-split-008`
+Path: `/example/path/TXT/breadbakers/split/v096n002.txt-split-008`
 
 ```
 --------------- MESSAGE bread-bakers.v096.n002.8 ---------------
@@ -82,7 +82,7 @@ Panasonic book
 ```
 
 ### Sample 2: Non-Recipe Discussion Message (`v096n002.txt-split-002`)
-Path: `/home/alex/junk/Recipes/Ingest/ToDo/TXT/breadbakers/split/v096n002.txt-split-002`
+Path: `/example/path/TXT/breadbakers/split/v096n002.txt-split-002`
 
 ```
 --------------- MESSAGE bread-bakers.v096.n002.2 ---------------
@@ -105,7 +105,7 @@ Rob
 ```
 
 ### Sample 3: Non-Recipe Table of Contents (`v096n002.txt-split-000`)
-Path: `/home/alex/junk/Recipes/Ingest/ToDo/TXT/breadbakers/split/v096n002.txt-split-000`
+Path: `/example/path/TXT/breadbakers/split/v096n002.txt-split-000`
 
 ```
 Date: Sat, 6 Apr 1996 19:21:33 -0800
@@ -178,7 +178,7 @@ Date: Sat, 6 Apr 1996 19:21:33 -0800
 4. **Signature markers without hyphens**: Some users sign off with just their name ("Rob", "Bev in Mn") or BBS tagline without a `-- ` delimiter. The line-count and ingredient-frequency heuristics ensure conversational snippets are rejected even if signature stripping doesn't trigger.
 
 ## Acceptance Criteria
-- [ ] Script processes all 11,538 files in `/home/alex/junk/Recipes/Ingest/ToDo/TXT/breadbakers/split/` without crashing or throwing unhandled exceptions.
+- [ ] Script processes all 11,538 files in `/example/path/TXT/breadbakers/split/` without crashing or throwing unhandled exceptions.
 - [ ] Correctly identifies and skips TOC/index files (e.g., `v096n001.txt-split-000`, `v096n002.txt-split-000`) with reason `toc_only`.
 - [ ] Correctly identifies and skips short conversational messages (e.g., `v096n002.txt-split-002`) with reason `too_short` or `no_ingredients`.
 - [ ] Correctly extracts recipe posts (e.g., `v096n002.txt-split-008`).
@@ -190,11 +190,11 @@ Date: Sat, 6 Apr 1996 19:21:33 -0800
 - [ ] Unit tests for `breadbakers.py` added to test suite and pass `./venv/bin/python3 -m pytest tests/ -v`.
 
 ## Deliverables
-- `/home/alex/junk/Recipes/scripts/extract/breadbakers.py`
-- `/home/alex/junk/Recipes/scripts/tests/test_breadbakers_extract.py`
+- `extract/breadbakers.py`
+- `tests/test_breadbakers_extract.py`
 
 ## Reference
-- [extract/fareshare.py](file:///home/alex/junk/Recipes/scripts/extract/fareshare.py) — extraction script conventions
-- [parsers/units.py](file:///home/alex/junk/Recipes/scripts/parsers/units.py) — `UNIT_MAP` dictionary for MealMaster abbreviations
-- [parsers/generic.py](file:///home/alex/junk/Recipes/scripts/parsers/generic.py) — `GenericTextParser` plain-text handling
-- [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md) — project coding standards and virtual environment rules
+- [extract/fareshare.py](extract/fareshare.py) — extraction script conventions
+- [parsers/units.py](parsers/units.py) — `UNIT_MAP` dictionary for MealMaster abbreviations
+- [parsers/generic.py](parsers/generic.py) — `GenericTextParser` plain-text handling
+- [AGENTS.md](AGENTS.md) — project coding standards and virtual environment rules

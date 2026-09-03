@@ -111,6 +111,7 @@ UNIT_MAP: dict[str, str] = {
     "med":       "medium",
     "medium":    "medium",
     "lg":        "large",
+    "lg.":       "large",
     "lrg":       "large",
     "large":     "large",
     "whole":     "whole",

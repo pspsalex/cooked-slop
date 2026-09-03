@@ -17,14 +17,14 @@ deliverables: []
 
 ## Description
 
-Create a parser for the Mr. Boston Bartending Guide database export file located at `/home/alex/junk/Recipes/Ingest/ToDo/TXT/DRINKS.OUT`.
+Create a parser for the Mr. Boston Bartending Guide database export file located at `/example/path/TXT/DRINKS.OUT`.
 
 This file contains 992 drink and cocktail recipes formatted in a legacy database dump structure: blank-line delimited records, a header line containing the drink name and primary spirit category, key-value metadata lines (`Drink type:`, `Temp:`, `Serve at:`, `Season(s):`), and a long concatenated data line with fixed-width 42-character columns containing ingredients, glassware, and instructions.
 
 ## Input Samples
 
 Input file:
-- `/home/alex/junk/Recipes/Ingest/ToDo/TXT/DRINKS.OUT` (455,483 bytes, 992 drink recipes)
+- `/example/path/TXT/DRINKS.OUT` (455,483 bytes, 992 drink recipes)
 
 Sample content (first 3 records from `DRINKS.OUT`):
 
@@ -79,8 +79,8 @@ Season(s): Spring Summer
   - **Instructions**: Running mixed-case text starting after the glassware entry (e.g. `Combine all ingredients with a cup of crushed ice in a blender...`).
 
 ### Parser Class Specification
-- **Module**: [parsers/drinks_db.py](file:///home/alex/junk/Recipes/scripts/parsers/drinks_db.py)
-- **Class**: `DrinksDbParser` inheriting from [BaseRecipeParser](file:///home/alex/junk/Recipes/scripts/parsers/base.py#L18-L66)
+- **Module**: [parsers/drinks_db.py](parsers/drinks_db.py)
+- **Class**: `DrinksDbParser` inheriting from [BaseRecipeParser](parsers/base.py#L18-L66)
 - **Decorator**: `@ParserRegistry.register`
 - **`format_id()`**: `"drinks_db"`
 - **`aliases()`**: `['mrboston', 'drinks_out']`
@@ -112,11 +112,11 @@ Season(s): Spring Summer
 
 ## Adding a New Parser Checklist
 
-Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md#L133-L153):
-1. Create [parsers/drinks_db.py](file:///home/alex/junk/Recipes/scripts/parsers/drinks_db.py) inheriting from `BaseRecipeParser` with `@ParserRegistry.register`.
-2. Add `from .drinks_db import DrinksDbParser` to [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py).
-3. Add `'DrinksDbParser'` to `__all__` in [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py).
-4. Add a sample file at `tests/samples/drinks.out` (first 10 records from `/home/alex/junk/Recipes/Ingest/ToDo/TXT/DRINKS.OUT`).
+Follow this checklist from [AGENTS.md](AGENTS.md#L133-L153):
+1. Create [parsers/drinks_db.py](parsers/drinks_db.py) inheriting from `BaseRecipeParser` with `@ParserRegistry.register`.
+2. Add `from .drinks_db import DrinksDbParser` to [parsers/__init__.py](parsers/__init__.py).
+3. Add `'DrinksDbParser'` to `__all__` in [parsers/__init__.py](parsers/__init__.py).
+4. Add a sample file at `tests/samples/drinks.out` (first 10 records from `/example/path/TXT/DRINKS.OUT`).
 5. Generate expected output (always use `--no-nlp`):
    ```bash
    ./venv/bin/python3 convert.py tests/samples/drinks.out -o tests/expected/drinks.out.json --no-nlp
@@ -127,27 +127,27 @@ Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AG
    ```
 
 ## Acceptance Criteria
-- [ ] [parsers/drinks_db.py](file:///home/alex/junk/Recipes/scripts/parsers/drinks_db.py) implemented and registered with `@ParserRegistry.register`
-- [ ] `DrinksDbParser` imported and added to `__all__` in [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py)
+- [ ] [parsers/drinks_db.py](parsers/drinks_db.py) implemented and registered with `@ParserRegistry.register`
+- [ ] `DrinksDbParser` imported and added to `__all__` in [parsers/__init__.py](parsers/__init__.py)
 - [ ] Sample file `tests/samples/drinks.out` created with 10 representative drink records
 - [ ] Expected output `tests/expected/drinks.out.json` generated with `--no-nlp`
 - [ ] Format detection test passes: `DrinksDbParser.detect` returns `>= 0.85` on `DRINKS.OUT`
-- [ ] Full conversion test on `/home/alex/junk/Recipes/Ingest/ToDo/TXT/DRINKS.OUT` extracts all 992 cocktail recipes:
+- [ ] Full conversion test on `/example/path/TXT/DRINKS.OUT` extracts all 992 cocktail recipes:
    ```bash
-   ./venv/bin/python3 convert.py /home/alex/junk/Recipes/Ingest/ToDo/TXT/DRINKS.OUT -o /tmp/drinks_out.json --no-nlp
+   ./venv/bin/python3 convert.py /example/path/TXT/DRINKS.OUT -o /tmp/drinks_out.json --no-nlp
    ```
 - [ ] Glassware is properly identified and excluded from ingredients list
 - [ ] Multi-column wrapped ingredients are merged correctly
 - [ ] All unit and regression tests pass: `./venv/bin/python3 -m pytest tests/ -v`
 
 ## Deliverables
-- `/home/alex/junk/Recipes/scripts/parsers/drinks_db.py`
-- `/home/alex/junk/Recipes/scripts/parsers/__init__.py` (updated imports and `__all__`)
-- `/home/alex/junk/Recipes/scripts/tests/samples/drinks.out`
-- `/home/alex/junk/Recipes/scripts/tests/expected/drinks.out.json`
+- `parsers/drinks_db.py`
+- `parsers/__init__.py` (updated imports and `__all__`)
+- `tests/samples/drinks.out`
+- `tests/expected/drinks.out.json`
 
 ## Reference
-- Reference implementation: [parsers/cookware.py](file:///home/alex/junk/Recipes/scripts/parsers/cookware.py)
-- Base parser class: [parsers/base.py](file:///home/alex/junk/Recipes/scripts/parsers/base.py)
-- Data models: [parsers/models.py](file:///home/alex/junk/Recipes/scripts/parsers/models.py)
-- Project instructions: [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md)
+- Reference implementation: [parsers/cookware.py](parsers/cookware.py)
+- Base parser class: [parsers/base.py](parsers/base.py)
+- Data models: [parsers/models.py](parsers/models.py)
+- Project instructions: [AGENTS.md](AGENTS.md)

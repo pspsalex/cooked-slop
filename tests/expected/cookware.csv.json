@@ -61,7 +61,7 @@
   "recipeCategory": "Appetizer ",
   "keywords": "Appetizer , American , Nuts ",
   "comment": "Imported from tests/samples/cookware.csv",
-  "url": "file:///home/alex/junk/Recipes/scripts/tests/samples/cookware.csv#1",
+  "url": "file://tests/samples/cookware.csv#1",
   "description": "Recipe converted from Cookware CSV format"
 }
 ]

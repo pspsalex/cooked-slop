@@ -27,7 +27,7 @@ The goal is to create `configs/cscmu.yaml` to detect and parse these files into 
 ## Input Samples
 
 ### Sample 1: `cs.cmu/appetizers/beer-battered-nuggets.html`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/cs.cmu/appetizers/beer-battered-nuggets.html`
+**Location:** `/example/path/HTML/cs.cmu/appetizers/beer-battered-nuggets.html`
 
 ```html
 <title>Beer Battered Nuggets</title>
@@ -77,7 +77,7 @@ browned.  Drain on paper towels and keep warm.
 ```
 
 ### Sample 2: `cs.cmu/ethnic/morocco-tangine.html`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/cs.cmu/ethnic/morocco-tangine.html`
+**Location:** `/example/path/HTML/cs.cmu/ethnic/morocco-tangine.html`
 
 ```html
 <title>Moroccan Tagine</title>
@@ -123,7 +123,7 @@ Date: Sun, 31 Oct 1993 01:25:12 -0500
 ```
 
 ### Sample 3: `cs.cmu/soup/baked-potato-soup.html`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/cs.cmu/soup/baked-potato-soup.html`
+**Location:** `/example/path/HTML/cs.cmu/soup/baked-potato-soup.html`
 
 ```html
 <title>Baked Potato Soup</title>
@@ -168,7 +168,7 @@ Serve with crusty French Bread and fresh butter.  Mucho Goodo!
 
 ### YAML Layout Schema (`configs/cscmu.yaml`)
 
-Follow the schema in [parsers/html_config.py](file:///home/alex/junk/Recipes/scripts/parsers/html_config.py):
+Follow the schema in [parsers/html_config.py](parsers/html_config.py):
 
 ```yaml
 # SPDX-License-Identifier: MIT
@@ -194,7 +194,7 @@ fields:
 ### Field Mapping
 - **Title**: Extracted from `<h1>` or `<title>`. If `Title:` exists inside `<pre>`, it takes precedence or complements `<h1>`.
 - **Author / Source**: Extracted from `From:` line or SCS footer ("Carnegie Mellon SCS Usenet Recipe Archive").
-- **Ingredients & Instructions**: The recipe text inside `<pre>` is unstructured plain text, single-column ingredient blocks, or two-column MealMaster layouts. Extract the text of `<pre>` and allow the downstream parser pipeline ([parsers/generic.py](file:///home/alex/junk/Recipes/scripts/parsers/generic.py) or [parsers/two_col.py](file:///home/alex/junk/Recipes/scripts/parsers/two_col.py)) to parse ingredients and instructions.
+- **Ingredients & Instructions**: The recipe text inside `<pre>` is unstructured plain text, single-column ingredient blocks, or two-column MealMaster layouts. Extract the text of `<pre>` and allow the downstream parser pipeline ([parsers/generic.py](parsers/generic.py) or [parsers/two_col.py](parsers/two_col.py)) to parse ingredients and instructions.
 
 ### Edge Cases
 1. **Two-Column Ingredient Layouts**: Some Usenet recipes use two columns (quantity + unit on the left column, quantity + unit on the right column).
@@ -208,16 +208,16 @@ fields:
 - [ ] Auto-detection successfully scores `cs.cmu` files >= 0.5 without needing explicit `--html-config`
 - [ ] Running conversion on sample 1 succeeds:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/cs.cmu/appetizers/beer-battered-nuggets.html' --html-config configs/cscmu.yaml -o /tmp/test_cscmu_app.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/cs.cmu/appetizers/beer-battered-nuggets.html' --html-config configs/cscmu.yaml -o /tmp/test_cscmu_app.json --no-nlp
   ```
   Produces valid JSON-LD with title `"Beer Battered Nuggets"` and structured ingredients.
 - [ ] Running conversion on sample 2 succeeds:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/cs.cmu/ethnic/morocco-tangine.html' --html-config configs/cscmu.yaml -o /tmp/test_cscmu_eth.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/cs.cmu/ethnic/morocco-tangine.html' --html-config configs/cscmu.yaml -o /tmp/test_cscmu_eth.json --no-nlp
   ```
 - [ ] Running conversion on sample 3 succeeds:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/cs.cmu/soup/baked-potato-soup.html' --html-config configs/cscmu.yaml -o /tmp/test_cscmu_soup.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/cs.cmu/soup/baked-potato-soup.html' --html-config configs/cscmu.yaml -o /tmp/test_cscmu_soup.json --no-nlp
   ```
 - [ ] Test suite passes cleanly:
   ```bash
@@ -228,8 +228,8 @@ fields:
 - `configs/cscmu.yaml`
 
 ## Reference
-- [parsers/html_config.py](file:///home/alex/junk/Recipes/scripts/parsers/html_config.py) — HTML YAML schema dataclasses and loader
-- [parsers/html_parser.py](file:///home/alex/junk/Recipes/scripts/parsers/html_parser.py) — `HtmlParser` implementation
-- [configs/bbc.yaml](file:///home/alex/junk/Recipes/scripts/configs/bbc.yaml) — example HTML XPath configuration
-- [parsers/two_col.py](file:///home/alex/junk/Recipes/scripts/parsers/two_col.py) — two-column ingredient layout parsing
-- [parsers/generic.py](file:///home/alex/junk/Recipes/scripts/parsers/generic.py) — fallback generic text parser
+- [parsers/html_config.py](parsers/html_config.py) — HTML YAML schema dataclasses and loader
+- [parsers/html_parser.py](parsers/html_parser.py) — `HtmlParser` implementation
+- [configs/bbc.yaml](configs/bbc.yaml) — example HTML XPath configuration
+- [parsers/two_col.py](parsers/two_col.py) — two-column ingredient layout parsing
+- [parsers/generic.py](parsers/generic.py) — fallback generic text parser

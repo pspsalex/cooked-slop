@@ -17,13 +17,13 @@ deliverables: []
 
 ## Description
 
-Create a parser for Diabetic / Nutritional Exchange `.RCP` recipe files located in `/home/alex/junk/Recipes/Ingest/ToDo/TXT/`.
+Create a parser for Diabetic / Nutritional Exchange `.RCP` recipe files located in `/example/path/TXT/`.
 
 Each `.RCP` file contains a single recipe formatted with a title on line 1, serving count on line 2, followed by ingredient lines prefixed with 6 fixed-width floating-point numbers representing American Diabetes Association (ADA) exchange lists (Milk, Vegetable, Fruit, Bread/Starch, Meat, Fat), followed by a `RECIPE_TEXT:` section delimiter and preparation instructions.
 
 ## Input Samples
 
-Input files (9 files in `/home/alex/junk/Recipes/Ingest/ToDo/TXT/`):
+Input files (9 files in `/example/path/TXT/`):
 - `CHILI2.RCP` (1,399 bytes)
 - `CHOWDER.RCP` (711 bytes)
 - `MACARONI.RCP` (775 bytes)
@@ -100,8 +100,8 @@ Cover and cook over low heat for 10 to 15 minutes, or until onions are tender.
 - **Lines N+2 to End**: Instructions / preparation text.
 
 ### Parser Class Specification
-- **Module**: [parsers/rcp_exchange.py](file:///home/alex/junk/Recipes/scripts/parsers/rcp_exchange.py)
-- **Class**: `RcpExchangeParser` inheriting from [BaseRecipeParser](file:///home/alex/junk/Recipes/scripts/parsers/base.py#L18-L66)
+- **Module**: [parsers/rcp_exchange.py](parsers/rcp_exchange.py)
+- **Class**: `RcpExchangeParser` inheriting from [BaseRecipeParser](parsers/base.py#L18-L66)
 - **Decorator**: `@ParserRegistry.register`
 - **`format_id()`**: `"rcp_exchange"`
 - **`aliases()`**: `['rcp', 'exchange']`
@@ -129,11 +129,11 @@ Cover and cook over low heat for 10 to 15 minutes, or until onions are tender.
 
 ## Adding a New Parser Checklist
 
-Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md#L133-L153):
-1. Create [parsers/rcp_exchange.py](file:///home/alex/junk/Recipes/scripts/parsers/rcp_exchange.py) inheriting from `BaseRecipeParser` with `@ParserRegistry.register`.
-2. Add `from .rcp_exchange import RcpExchangeParser` to [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py).
-3. Add `'RcpExchangeParser'` to `__all__` in [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py).
-4. Add a sample file at `tests/samples/chili2.rcp` (copy `/home/alex/junk/Recipes/Ingest/ToDo/TXT/CHILI2.RCP`).
+Follow this checklist from [AGENTS.md](AGENTS.md#L133-L153):
+1. Create [parsers/rcp_exchange.py](parsers/rcp_exchange.py) inheriting from `BaseRecipeParser` with `@ParserRegistry.register`.
+2. Add `from .rcp_exchange import RcpExchangeParser` to [parsers/__init__.py](parsers/__init__.py).
+3. Add `'RcpExchangeParser'` to `__all__` in [parsers/__init__.py](parsers/__init__.py).
+4. Add a sample file at `tests/samples/chili2.rcp` (copy `/example/path/TXT/CHILI2.RCP`).
 5. Generate expected output (always use `--no-nlp`):
    ```bash
    ./venv/bin/python3 convert.py tests/samples/chili2.rcp -o tests/expected/chili2.rcp.json --no-nlp
@@ -144,27 +144,27 @@ Follow this checklist from [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AG
    ```
 
 ## Acceptance Criteria
-- [ ] [parsers/rcp_exchange.py](file:///home/alex/junk/Recipes/scripts/parsers/rcp_exchange.py) implemented and registered with `@ParserRegistry.register`
-- [ ] `RcpExchangeParser` imported and added to `__all__` in [parsers/__init__.py](file:///home/alex/junk/Recipes/scripts/parsers/__init__.py)
+- [ ] [parsers/rcp_exchange.py](parsers/rcp_exchange.py) implemented and registered with `@ParserRegistry.register`
+- [ ] `RcpExchangeParser` imported and added to `__all__` in [parsers/__init__.py](parsers/__init__.py)
 - [ ] Sample file `tests/samples/chili2.rcp` added to `tests/samples/`
 - [ ] Expected output `tests/expected/chili2.rcp.json` generated with `--no-nlp`
 - [ ] Format detection test passes: `RcpExchangeParser.detect` returns `>= 0.90` on all 9 `.RCP` files
 - [ ] All 9 `.RCP` files convert cleanly without errors:
   ```bash
-  for f in /home/alex/junk/Recipes/Ingest/ToDo/TXT/*.RCP; do
+  for f in /example/path/TXT/*.RCP; do
     ./venv/bin/python3 convert.py "$f" -o "/tmp/$(basename "$f").json" --no-nlp
   done
   ```
 - [ ] All unit and regression tests pass: `./venv/bin/python3 -m pytest tests/ -v`
 
 ## Deliverables
-- `/home/alex/junk/Recipes/scripts/parsers/rcp_exchange.py`
-- `/home/alex/junk/Recipes/scripts/parsers/__init__.py` (updated imports and `__all__`)
-- `/home/alex/junk/Recipes/scripts/tests/samples/chili2.rcp`
-- `/home/alex/junk/Recipes/scripts/tests/expected/chili2.rcp.json`
+- `parsers/rcp_exchange.py`
+- `parsers/__init__.py` (updated imports and `__all__`)
+- `tests/samples/chili2.rcp`
+- `tests/expected/chili2.rcp.json`
 
 ## Reference
-- Reference implementation: [parsers/cookware.py](file:///home/alex/junk/Recipes/scripts/parsers/cookware.py)
-- Base parser class: [parsers/base.py](file:///home/alex/junk/Recipes/scripts/parsers/base.py)
-- Data models: [parsers/models.py](file:///home/alex/junk/Recipes/scripts/parsers/models.py)
-- Project instructions: [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md)
+- Reference implementation: [parsers/cookware.py](parsers/cookware.py)
+- Base parser class: [parsers/base.py](parsers/base.py)
+- Data models: [parsers/models.py](parsers/models.py)
+- Project instructions: [AGENTS.md](AGENTS.md)

@@ -18,7 +18,7 @@ deliverables:
 
 ## Description
 
-Extract recipes from the Garvick.com recipe compilation archive located at `/home/alex/junk/Recipes/Ingest/ToDo/HTML/garvick.com/`.
+Extract recipes from the Garvick.com recipe compilation archive located at `/example/path/HTML/garvick.com/`.
 
 The archive contains 27 HTML files (e.g., `cakes.htm`, `barbecue.htm`, `candies.htm`, `cookie-recipes.htm`, `dinners.htm`, `pies.htm`, `picnic.htm`, `valentines-recipes.htm`). Unlike single-recipe pages, each Garvick file is an article compiling **multiple distinct recipes** (typically 5 to 10 recipes per file, e.g., "7 Father's Day Recipes for Cakes", "7 Fourth of July Recipes: Barbecue").
 
@@ -27,7 +27,7 @@ The deliverable is a YAML layout configuration `configs/garvick.yaml` (and any r
 ## Input Samples
 
 ### Sample 1: `garvick.com/cakes.htm`
-Path: `/home/alex/junk/Recipes/Ingest/ToDo/HTML/garvick.com/cakes.htm`
+Path: `/example/path/HTML/garvick.com/cakes.htm`
 
 ```html
 <HTML>
@@ -85,7 +85,7 @@ WIDTH="90%" HEIGHT="24" BORDER="0"></P>
 ```
 
 ### Sample 2: `garvick.com/barbecue.htm`
-Path: `/home/alex/junk/Recipes/Ingest/ToDo/HTML/garvick.com/barbecue.htm`
+Path: `/example/path/HTML/garvick.com/barbecue.htm`
 
 ```html
 <HTML>
@@ -186,17 +186,17 @@ fields:
   ./venv/bin/python3 convert.py tests/samples/garvick_cakes.htm -o tests/expected/garvick_cakes.htm.json --no-nlp
   ./venv/bin/python3 -m pytest tests/ -v
   ```
-- [ ] All 27 files in `/home/alex/junk/Recipes/Ingest/ToDo/HTML/garvick.com/` parse without unhandled exceptions.
+- [ ] All 27 files in `/example/path/HTML/garvick.com/` parse without unhandled exceptions.
 
 ## Deliverables
-- `/home/alex/junk/Recipes/scripts/configs/garvick.yaml`
-- `/home/alex/junk/Recipes/scripts/tests/samples/garvick_cakes.htm`
-- `/home/alex/junk/Recipes/scripts/tests/expected/garvick_cakes.htm.json`
+- `configs/garvick.yaml`
+- `tests/samples/garvick_cakes.htm`
+- `tests/expected/garvick_cakes.htm.json`
 
 ## Reference
-- [configs/bbc.yaml](file:///home/alex/junk/Recipes/scripts/configs/bbc.yaml) — existing HTML YAML schema
-- [parsers/html_config.py](file:///home/alex/junk/Recipes/scripts/parsers/html_config.py) — `HtmlConfigRegistry` and `HtmlRecipeSchema`
-- [parsers/html_parser.py](file:///home/alex/junk/Recipes/scripts/parsers/html_parser.py) — `HtmlParser`
-- [parsers/units.py](file:///home/alex/junk/Recipes/scripts/parsers/units.py) — `UNIT_MAP` for MealMaster units
-- [extract/garvick1.py](file:///home/alex/junk/Recipes/scripts/extract/garvick1.py) and [extract/garvick2.py](file:///home/alex/junk/Recipes/scripts/extract/garvick2.py) — prior extraction scripts
-- [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md) — project conventions
+- [configs/bbc.yaml](configs/bbc.yaml) — existing HTML YAML schema
+- [parsers/html_config.py](parsers/html_config.py) — `HtmlConfigRegistry` and `HtmlRecipeSchema`
+- [parsers/html_parser.py](parsers/html_parser.py) — `HtmlParser`
+- [parsers/units.py](parsers/units.py) — `UNIT_MAP` for MealMaster units
+- [extract/garvick1.py](extract/garvick1.py) and [extract/garvick2.py](extract/garvick2.py) — prior extraction scripts
+- [AGENTS.md](AGENTS.md) — project conventions

@@ -26,7 +26,7 @@ The goal is to create `configs/topsecret.yaml` to detect and parse these files i
 ## Input Samples
 
 ### Sample 1: `Top Secret/1000islepv.htm`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/Top Secret/1000islepv.htm`
+**Location:** `/example/path/HTML/Top Secret/1000islepv.htm`
 
 ```html
 <html>
@@ -79,7 +79,7 @@ The goal is to create `configs/topsecret.yaml` to detect and parse these files i
 ```
 
 ### Sample 2: `Top Secret/IHOP1pv.htm`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/Top Secret/IHOP1pv.htm`
+**Location:** `/example/path/HTML/Top Secret/IHOP1pv.htm`
 
 ```html
 <html>
@@ -141,7 +141,7 @@ The goal is to create `configs/topsecret.yaml` to detect and parse these files i
 ```
 
 ### Sample 3: `Top Secret/kfccrisppv.htm`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/Top Secret/kfccrisppv.htm`
+**Location:** `/example/path/HTML/Top Secret/kfccrisppv.htm`
 
 ```html
 <title>Top Secret Recipes version of KFC Extra Crispy Chicken - Printer Friendly Page</title>
@@ -204,20 +204,20 @@ fields:
 
 ## Acceptance Criteria
 - [ ] `configs/topsecret.yaml` exists and conforms to the `HtmlRecipeSchema` schema
-- [ ] Auto-detection identifies files in `/home/alex/junk/Recipes/Ingest/ToDo/HTML/Top Secret/`
+- [ ] Auto-detection identifies files in `/example/path/HTML/Top Secret/`
 - [ ] Sample 1 conversion succeeds:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/Top Secret/1000islepv.htm' --html-config configs/topsecret.yaml -o /tmp/test_ts_1000isle.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/Top Secret/1000islepv.htm' --html-config configs/topsecret.yaml -o /tmp/test_ts_1000isle.json --no-nlp
   ```
   Produces valid JSON-LD with title containing `"Kraft Thousand Island Dressing"`, 8 ingredients, 2 instructions steps, and yield `"about 3/4 cup"`.
 - [ ] Sample 2 conversion succeeds:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/Top Secret/IHOP1pv.htm' --html-config configs/topsecret.yaml -o /tmp/test_ts_ihop.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/Top Secret/IHOP1pv.htm' --html-config configs/topsecret.yaml -o /tmp/test_ts_ihop.json --no-nlp
   ```
   Produces valid JSON-LD with title containing `"Pancakes"`, ingredients, and 5 instruction steps.
 - [ ] Sample 3 conversion succeeds:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/Top Secret/kfccrisppv.htm' --html-config configs/topsecret.yaml -o /tmp/test_ts_kfc.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/Top Secret/kfccrisppv.htm' --html-config configs/topsecret.yaml -o /tmp/test_ts_kfc.json --no-nlp
   ```
 - [ ] All tests pass:
   ```bash
@@ -228,6 +228,6 @@ fields:
 - `configs/topsecret.yaml`
 
 ## Reference
-- [parsers/html_config.py](file:///home/alex/junk/Recipes/scripts/parsers/html_config.py) — YAML schema and field extractor
-- [parsers/html_parser.py](file:///home/alex/junk/Recipes/scripts/parsers/html_parser.py) — HTML parser
-- [configs/bbc.yaml](file:///home/alex/junk/Recipes/scripts/configs/bbc.yaml) — reference HTML config
+- [parsers/html_config.py](parsers/html_config.py) — YAML schema and field extractor
+- [parsers/html_parser.py](parsers/html_parser.py) — HTML parser
+- [configs/bbc.yaml](configs/bbc.yaml) — reference HTML config

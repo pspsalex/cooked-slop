@@ -19,7 +19,7 @@ Provide a clear explanation of what this specification accomplishes, what data o
 ## Input Samples
 
 ### Sample 1: `path/to/sample.ext`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/...`
+**Location:** `/example/path/...`
 
 ```text
 [Paste representative raw input data here]

@@ -17,7 +17,7 @@ deliverables: []
 
 ## Description
 
-Extract recipes from Mike McNalley's archived personal recipe collection located at `/home/alex/junk/Recipes/Ingest/ToDo/HTML/mcnalley/`.
+Extract recipes from Mike McNalley's archived personal recipe collection located at `/example/path/HTML/mcnalley/`.
 
 The collection comprises 34 files across two distinct subdirectories with different HTML/CSS layouts:
 1. **`Archives/`** (27 files, `.htm`): Classic 1990s table-based HTML layout with CSS styling (`Rally.css`) featuring custom CSS classes such as `recipeTitle`, `RecipeHead`, `RecipeIngred`, and `RecipeTxt`. Contains structured ingredient tables (often 2 columns) and yield info.
@@ -28,7 +28,7 @@ The deliverable is YAML XPath configuration file(s) for the `HtmlParser` subsyst
 ## Input Samples
 
 ### Sample 1: `mcnalley/Archives/albondigas.htm`
-Path: `/home/alex/junk/Recipes/Ingest/ToDo/HTML/mcnalley/Archives/albondigas.htm`
+Path: `/example/path/HTML/mcnalley/Archives/albondigas.htm`
 
 ```html
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -85,7 +85,7 @@ Path: `/home/alex/junk/Recipes/Ingest/ToDo/HTML/mcnalley/Archives/albondigas.htm
 ```
 
 ### Sample 2: `mcnalley/MomsRecipes/CandiedSweetPotatoes.html`
-Path: `/home/alex/junk/Recipes/Ingest/ToDo/HTML/mcnalley/MomsRecipes/CandiedSweetPotatoes.html`
+Path: `/example/path/HTML/mcnalley/MomsRecipes/CandiedSweetPotatoes.html`
 
 ```html
 <html>
@@ -195,17 +195,17 @@ fields:
   ./venv/bin/python3 convert.py tests/samples/mcnalley_candied_sweet_potatoes.html -o tests/expected/mcnalley_candied_sweet_potatoes.html.json --no-nlp
   ./venv/bin/python3 -m pytest tests/ -v
   ```
-- [ ] All 34 files in `/home/alex/junk/Recipes/Ingest/ToDo/HTML/mcnalley/` parse without unhandled exceptions.
+- [ ] All 34 files in `/example/path/HTML/mcnalley/` parse without unhandled exceptions.
 
 ## Deliverables
-- `/home/alex/junk/Recipes/scripts/configs/mcnalley.yaml` (or `configs/mcnalley_archives.yaml` and `configs/mcnalley_moms.yaml`)
-- `/home/alex/junk/Recipes/scripts/tests/samples/mcnalley_albondigas.htm`
-- `/home/alex/junk/Recipes/scripts/tests/expected/mcnalley_albondigas.htm.json`
-- `/home/alex/junk/Recipes/scripts/tests/samples/mcnalley_candied_sweet_potatoes.html`
-- `/home/alex/junk/Recipes/scripts/tests/expected/mcnalley_candied_sweet_potatoes.html.json`
+- `configs/mcnalley.yaml` (or `configs/mcnalley_archives.yaml` and `configs/mcnalley_moms.yaml`)
+- `tests/samples/mcnalley_albondigas.htm`
+- `tests/expected/mcnalley_albondigas.htm.json`
+- `tests/samples/mcnalley_candied_sweet_potatoes.html`
+- `tests/expected/mcnalley_candied_sweet_potatoes.html.json`
 
 ## Reference
-- [configs/bbc.yaml](file:///home/alex/junk/Recipes/scripts/configs/bbc.yaml) — reference HTML YAML configuration
-- [parsers/html_config.py](file:///home/alex/junk/Recipes/scripts/parsers/html_config.py) — `HtmlRecipeSchema`, `FieldConfig`, `HtmlDetectionConfig`
-- [parsers/html_parser.py](file:///home/alex/junk/Recipes/scripts/parsers/html_parser.py) — `HtmlParser` class
-- [AGENTS.md](file:///home/alex/junk/Recipes/scripts/AGENTS.md) — project conventions and testing standards
+- [configs/bbc.yaml](configs/bbc.yaml) — reference HTML YAML configuration
+- [parsers/html_config.py](parsers/html_config.py) — `HtmlRecipeSchema`, `FieldConfig`, `HtmlDetectionConfig`
+- [parsers/html_parser.py](parsers/html_parser.py) — `HtmlParser` class
+- [AGENTS.md](AGENTS.md) — project conventions and testing standards

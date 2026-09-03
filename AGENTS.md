@@ -304,7 +304,7 @@ git add <changed-files>
 git commit -m "feat(<scope>): descriptive commit message"
 
 # 5. Return to main repository and merge cleanly
-cd /home/alex/junk/Recipes/scripts
+cd /path/to/repo
 git merge --ff-only feat/<task-id>-<slug>
 
 # 6. Clean up worktree and feature branch

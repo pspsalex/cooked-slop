@@ -174,3 +174,7 @@ venv/
 .venv/
 venv
 .venv
+
+# LLM configs with credentials (keep only the example template)
+configs/llm_*.yaml
+!configs/llm_example.yaml

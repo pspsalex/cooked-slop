@@ -3,6 +3,7 @@
 
 import csv
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -217,8 +218,11 @@ def test_integration_with_convert(tmp_path):
     in_dir.mkdir()
 
     sample_src = Path(
-        "/home/alex/junk/Recipes/Ingest/ToDo/TXT/breadbakers/split/v096n002.txt-split-008"
-    )
+        os.environ.get(
+            "BREADBAKERS_SAMPLES",
+            "/example/path/TXT/breadbakers/split",
+        )
+    ) / "v096n002.txt-split-008"
     if not sample_src.exists():
         pytest.skip("Sample file not present in repository")
 

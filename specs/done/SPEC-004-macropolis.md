@@ -26,7 +26,7 @@ The goal is to create `configs/macropolis.yaml` (and ensure the HTML parser supp
 ## Input Samples
 
 ### Sample 1: `macropolis/afghan.htm`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/macropolis/afghan.htm`
+**Location:** `/example/path/HTML/macropolis/afghan.htm`
 
 ```html
 <html><!-- #BeginTemplate "/Templates/allcook.dwt" -->
@@ -76,7 +76,7 @@ The goal is to create `configs/macropolis.yaml` (and ensure the HTML parser supp
 ```
 
 ### Sample 2: `macropolis/cajun.htm`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/macropolis/cajun.htm`
+**Location:** `/example/path/HTML/macropolis/cajun.htm`
 
 ```html
 <td valign="top" width="47%"><font size="2"><b>Title: 
@@ -97,7 +97,7 @@ The goal is to create `configs/macropolis.yaml` (and ensure the HTML parser supp
 ```
 
 ### Sample 3: `macropolis/maroc.htm`
-**Location:** `/home/alex/junk/Recipes/Ingest/ToDo/HTML/macropolis/maroc.htm`
+**Location:** `/example/path/HTML/macropolis/maroc.htm`
 
 ```html
 <td valign="top" width="47%"><font size="2"><b>Title: 
@@ -155,15 +155,15 @@ fields:
 - [ ] `configs/macropolis.yaml` exists and conforms to the layout schema
 - [ ] Multi-recipe extraction from `macropolis/afghan.htm` yields at least 2 recipes (and ideally all 7+ recipes):
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/macropolis/afghan.htm' --html-config configs/macropolis.yaml -o /tmp/test_macro_afghan.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/macropolis/afghan.htm' --html-config configs/macropolis.yaml -o /tmp/test_macro_afghan.json --no-nlp
   ```
 - [ ] Multi-recipe extraction from `macropolis/maroc.htm` succeeds:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/macropolis/maroc.htm' --html-config configs/macropolis.yaml -o /tmp/test_macro_maroc.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/macropolis/maroc.htm' --html-config configs/macropolis.yaml -o /tmp/test_macro_maroc.json --no-nlp
   ```
 - [ ] Multi-recipe extraction from `macropolis/cajun.htm` succeeds:
   ```bash
-  ./venv/bin/python3 convert.py '/home/alex/junk/Recipes/Ingest/ToDo/HTML/macropolis/cajun.htm' --html-config configs/macropolis.yaml -o /tmp/test_macro_cajun.json --no-nlp
+  ./venv/bin/python3 convert.py '/example/path/HTML/macropolis/cajun.htm' --html-config configs/macropolis.yaml -o /tmp/test_macro_cajun.json --no-nlp
   ```
 - [ ] Output recipes have populated `title`, `categories`, `yield_amount`, structured `ingredients`, and `instructions`.
 - [ ] Regression and detection test suites pass:
@@ -175,7 +175,7 @@ fields:
 - `configs/macropolis.yaml`
 
 ## Reference
-- [parsers/html_config.py](file:///home/alex/junk/Recipes/scripts/parsers/html_config.py) — HTML YAML schema registry
-- [parsers/html_parser.py](file:///home/alex/junk/Recipes/scripts/parsers/html_parser.py) — HTML parser implementation
-- [parsers/mealmaster.py](file:///home/alex/junk/Recipes/scripts/parsers/mealmaster.py) — MealMaster format parsing logic
-- [parsers/units.py](file:///home/alex/junk/Recipes/scripts/parsers/units.py) — unit normalization mapping
+- [parsers/html_config.py](parsers/html_config.py) — HTML YAML schema registry
+- [parsers/html_parser.py](parsers/html_parser.py) — HTML parser implementation
+- [parsers/mealmaster.py](parsers/mealmaster.py) — MealMaster format parsing logic
+- [parsers/units.py](parsers/units.py) — unit normalization mapping
