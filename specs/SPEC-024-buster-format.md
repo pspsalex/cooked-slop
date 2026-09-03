@@ -19,8 +19,7 @@ The format is distinctive in how it wraps long ingredient lines into continuatio
 
 ## Input Samples
 
-### Sample 1: `nux/Test/HTML/rec.mxp`
-**Location:** `nux/Test/HTML/rec.mxp`
+### Sample 1: `rec.mxp`
 
 ```text
 ══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -44,6 +43,28 @@ Ingredients
 Instructions
 
 Scald milk. Mix together meal and molasses and stir into hot milk.
+Cook until it thickens stir constantly. Remove from heat, add sugar,
+egg, butter, salt, ginger, and cinnamon. Mix thoroughly. Pour into
+buttered baking dish and bake 1/2 hour at 300 degrees. Pour over it
+one cup of milk and continue baking for 2 hours. Serve with cream or
+ice cream.
+
+SHARED BY:Jim Bodle 3/92
+
+
+
+
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+                                     [5][Home]  Baked Indian Pudding With Old Fashioned Custard Sauce  [6][Home]  
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Title: Baked Indian Pudding With Old Fashioned Custard Sauce
+Yield: 4 Servings
+...
 ```
 
 ## Expected Behavior
@@ -86,7 +107,12 @@ Scald milk. Mix together meal and molasses and stir into hot milk.
     {
       "@type": "HowToStep",
       "position": 1,
-      "text": "Scald milk. Mix together meal and molasses and stir into hot milk."
+      "text": "Scald milk. Mix together meal and molasses and stir into hot milk.
+      Cook until it thickens stir constantly. Remove from heat, add sugar,
+      egg, butter, salt, ginger, and cinnamon. Mix thoroughly. Pour into
+      buttered baking dish and bake 1/2 hour at 300 degrees. Pour over it
+      one cup of milk and continue baking for 2 hours. Serve with cream or
+      ice cream."
     }
   ]
 }
