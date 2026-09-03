@@ -5,7 +5,19 @@
 
 ## Active Tasks
 
-_No active tasks. Add new tasks here as work is identified._
+### SPEC-021: Reduce NLP Verbosity Under -v Flag
+- **Spec:** [SPEC-021-reduce-nlp-verbosity.md](specs/SPEC-021-reduce-nlp-verbosity.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** refactor | **Impact:** Clean CLI output under -v; suppresses ingredient-parser trace pollution while supporting -vv and --debug-nlp
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-021-nlp-verbosity`
+- [ ] Change `-v`/`--verbose` CLI argument to `action="count", default=0` in `convert.py`
+- [ ] Add `--debug-nlp` CLI flag in `convert.py`
+- [ ] Implement `configure_logging()` in `convert.py` suppressing `ingredient-parser`, `ingredient_parser`, and `nltk` to `INFO` unless `-vv` or `--debug-nlp` is passed
+- [ ] Update `convert_recipe_file` and `process_directory` callers to pass boolean verbosity safely
+- [ ] Add unit tests in `tests/unit/test_logging.py` covering `-v`, `-vv`, `--debug-nlp`, and logger level states
+- [ ] Update CLI options documentation in `AGENTS.md`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ---
 
