@@ -4,7 +4,7 @@ title: "Reduce NLP Verbosity Under -v Flag"
 tier: 1
 type: refactor
 priority: P1
-status: active
+status: done
 impact: "Reduces noisy stdout debug output from ingredient-parser under -v while providing -vv and --debug-nlp for troubleshooting"
 deliverables:
   - convert.py
@@ -112,13 +112,13 @@ After implementation and verification, commit with conventional commit message (
 
 ## Acceptance Criteria
 
-- [ ] CLI argument `-v` / `--verbose` uses `action="count", default=0` in `convert.py`.
-- [ ] New CLI argument `--debug-nlp` is registered in `convert.py`.
-- [ ] A single `-v` outputs conversion details and application debug logs without `ingredient-parser` preprocessing debug lines.
-- [ ] Multiple `-v`s (e.g. `-vv`) or `--debug-nlp` outputs `ingredient-parser` debug logs.
-- [ ] Unit tests in `tests/unit/test_logging.py` verify verbosity counting, flag handling, and logger level configurations.
-- [ ] Existing test suites (`tests/test_conversion.py`, `tests/test_detection.py`, `tests/test_specs.py`) pass without regressions.
-- [ ] Documentation in `AGENTS.md` and `CLAUDE.md` updated with `--debug-nlp` and `-vv` usage.
+- [x] CLI argument `-v` / `--verbose` uses `action="count", default=0` in `convert.py`.
+- [x] New CLI argument `--debug-nlp` is registered in `convert.py`.
+- [x] A single `-v` outputs conversion details and application debug logs without `ingredient-parser` preprocessing debug lines.
+- [x] Multiple `-v`s (e.g. `-vv`) or `--debug-nlp` outputs `ingredient-parser` debug logs.
+- [x] Unit tests in `tests/unit/test_logging.py` verify verbosity counting, flag handling, and logger level configurations.
+- [x] Existing test suites (`tests/test_conversion.py`, `tests/test_detection.py`, `tests/test_specs.py`) pass without regressions.
+- [x] Documentation in `AGENTS.md` and `CLAUDE.md` updated with `--debug-nlp` and `-vv` usage.
 
 ## Deliverables
 
