@@ -39,6 +39,8 @@ __all__ = [
     "_minhash_bucket",
     "_get_tokens",
     "parse_arguments",
+    "configure_logging",
+    "NLP_LOGGERS",
     "convert_recipe_file",
     "process_directory",
     "main",
@@ -56,6 +58,31 @@ def trace(self, message, *args, **kws):
 
 logging.Logger.trace = trace
 logger = logging.getLogger(__name__)
+
+NLP_LOGGERS = ("ingredient-parser", "ingredient_parser", "nltk")
+
+
+def configure_logging(
+    verbose: int = 0, debug_sql: bool = False, debug_nlp: bool = False
+) -> None:
+    """Configure root and library logger levels according to verbosity flags."""
+    if debug_sql:
+        log_level = TRACE_LEVEL
+    elif verbose >= 1:
+        log_level = logging.DEBUG
+    else:
+        log_level = logging.INFO
+
+    logging.basicConfig(
+        level=log_level,
+        format="%(name)s - %(levelname)s - %(message)s",
+        force=True,
+    )
+
+    # NLP logging: only DEBUG if -vv (verbose >= 2) or --debug-nlp
+    nlp_level = logging.DEBUG if (debug_nlp or verbose >= 2) else logging.INFO
+    for logger_name in NLP_LOGGERS:
+        logging.getLogger(logger_name).setLevel(nlp_level)
 
 
 # --- CLI and Processing Logic ---
@@ -94,7 +121,17 @@ def parse_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument("--chunk", action="store_true", help="Split output into chunks")
     parser.add_argument(
-        "-v", "--verbose", action="store_true", help="Show verbose output"
+        "-v",
+        "--verbose",
+        action="count",
+        default=0,
+        help="Verbosity level: -v for conversion/app details, -vv for deep NLP debug traces",
+    )
+    parser.add_argument(
+        "--debug-nlp",
+        action="store_true",
+        default=False,
+        help="Explicitly enable detailed NLP ingredient parser debug logging",
     )
     parser.add_argument(
         "--debug-sql",
@@ -146,7 +183,7 @@ def convert_recipe_file(
     input_path: Path,
     output_dir: Path,
     one_file_per_recipe: bool,
-    verbose: bool,
+    verbose: Union[bool, int],
     parse_ingredients: bool,
     ingredient_parser: BaseIngredientParser,
     format_name: Optional[str] = None,
@@ -263,7 +300,7 @@ def process_directory(
     input_dir: Path,
     output_dir: Path,
     one_file_per_recipe: bool,
-    verbose: bool,
+    verbose: Union[bool, int],
     recursive: bool,
     parse_ingredients: bool,
     ingredient_parser: BaseIngredientParser,
@@ -325,7 +362,7 @@ def process_directory(
             recipe_file,
             output_dir,
             one_file_per_recipe,
-            verbose,
+            bool(verbose),
             parse_ingredients,
             ingredient_parser,
             format_name,
@@ -358,17 +395,10 @@ def main(argv: Optional[List[str]] = None):
     args = parse_arguments(argv)
 
     # Configure logging based on flags
-    # -v/--verbose sets INFO level, but doesn't enable TRACE for SQL
-    # --debug-sql explicitly enables TRACE level for SQL queries
-    if args.debug_sql:
-        log_level = TRACE_LEVEL
-    elif args.verbose:
-        log_level = logging.DEBUG
-    else:
-        log_level = logging.INFO
-
-    logging.basicConfig(
-        level=log_level, format="%(name)s - %(levelname)s - %(message)s"
+    configure_logging(
+        verbose=args.verbose,
+        debug_sql=args.debug_sql,
+        debug_nlp=args.debug_nlp,
     )
 
     print("")
@@ -434,7 +464,7 @@ def main(argv: Optional[List[str]] = None):
                 input_path,
                 output_dir,
                 one_file_per_recipe,
-                args.verbose,
+                bool(args.verbose),
                 args.recursive,
                 not args.no_parse_ingredients,
                 ingredient_parser,
@@ -454,7 +484,7 @@ def main(argv: Optional[List[str]] = None):
                 input_path,
                 output_dir,
                 one_file_per_recipe,
-                args.verbose,
+                bool(args.verbose),
                 not args.no_parse_ingredients,
                 ingredient_parser,
                 format_name=args.format,
