@@ -5,19 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-024: Buster Format Parser (MC_Buster / MM_Buster)
-- **Spec:** [SPEC-024-buster-format.md](specs/SPEC-024-buster-format.md)
-- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** Fixes parsing of nux/Test/HTML/rec.mxp
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-024-buster-parser`
-- [ ] Create `parsers/buster.py` with `BusterParser` subclassing `BaseRecipeParser`
-- [ ] Implement detection logic looking for `Converted by MC_Buster` or `Converted by MM_Buster`
-- [ ] Implement `parse_content` extracting Title, Yield, Ingredients, and Instructions
-- [ ] Implement ingredient continuation logic (stripping leading `-` or `1    ;`)
-- [ ] Copy a portion of `nux/Test/HTML/rec.mxp` to `tests/samples/rec.mxp`
-- [ ] Generate expected test fixtures using `--no-nlp`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
 ### SPEC-022: Markdown Recipe Line Number URL Fragments
 - **Spec:** [SPEC-022-markdown-recipe-line-urls.md](specs/SPEC-022-markdown-recipe-line-urls.md)
 - **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Enables deep-linking into multi-recipe Markdown documents via #<line> URL tags
@@ -48,7 +35,21 @@
 ## Archive
 
 <details>
-<summary>Completed specs (22 items)</summary>
+<summary>Completed specs (23 items)</summary>
+
+### SPEC-024: Buster Format Parser (MC_Buster / MM_Buster) ✅
+- **Spec:** [SPEC-024-buster-format.md](specs/done/SPEC-024-buster-format.md)
+- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** Fixes parsing of nux/Test/HTML/rec.mxp
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-024-buster-parser`
+- [x] Create `parsers/buster.py` with `BusterParser` subclassing `BaseRecipeParser`
+- [x] Implement detection logic looking for `Converted by MC_Buster` or `Converted by MM_Buster`
+- [x] Implement `parse_content` extracting Title, Yield, Ingredients, and Instructions
+- [x] Implement ingredient continuation logic (stripping leading `-` or `1    ;`)
+- [x] Copy a portion of `nux/Test/HTML/rec.mxp` to `tests/samples/rec.mxp`
+- [x] Generate expected test fixtures using `--no-nlp`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ### SPEC-021: Reduce NLP Verbosity Under -v Flag ✅
 - **Spec:** [SPEC-021-reduce-nlp-verbosity.md](specs/done/SPEC-021-reduce-nlp-verbosity.md)
