@@ -1,10 +1,14 @@
 ---
 id: SPEC-025
 title: "Converter Relative Path Output"
-status: draft
-priority: P2
+tier: 1
 type: refactor
-created: 2026-09-04
+priority: P2
+status: active
+impact: "Prevents absolute local paths from leaking into JSON-LD output and expected test fixtures"
+deliverables:
+  - convert.py
+  - converter.py
 ---
 
 # Spec: Converter Relative Path Output
