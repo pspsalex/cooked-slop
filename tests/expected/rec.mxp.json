@@ -1,0 +1,385 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Baked Plaice With Salted Beans And Chinese Greens",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "head bok choi",
+      "value": 8,
+      "unitText": "small"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "soy sauce",
+      "value": 4,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "oil",
+      "value": 1,
+      "unitText": "sesame"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salted black beans; (1oz)",
+      "value": 30,
+      "unitText": "gr"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "caster sugar",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "red chilli; deseeded and finely chopped",
+      "value": 1,
+      "unitText": "small"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "spring onions; finely sliced",
+      "value": "1/2",
+      "unitText": "bunch"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "coriander; chopped",
+      "value": 1,
+      "unitText": "bunch"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "ball sized knob of ginger; peeled and",
+      "value": 1,
+      "unitText": "golf"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chopped",
+      "value": 1,
+      "unitText": "finely"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cloves",
+      "value": 2,
+      "unitText": "garlic"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "vegetable oil; plus little extra for frying (5fl oz)",
+      "value": 150,
+      "unitText": "ml"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "lemon; zest of",
+      "value": "1/2"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "200 g; (70z) fillets of plaice",
+      "value": 4
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "lemon; quartered",
+      "value": 1
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Pre heat the oven to 180oC/350oF/gas mark 4. Blanch the bok choi in boiling salted water for 2 minutes, or until cooked through, drain, refresh under cold water and pat dry. Place in a shallow, ovenproof dish and drizzle over the soy sauce and 1 tbsp of sesame oil."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Roughly mash the black beans with the caster sugar in a bowl. Mix in the chilli, spring onions and coriander with half the ginger and garlic. Stir in the vegetable oil, lemon zest and 4 tbsp of sesame oil."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Arrange the bok choi into 4 moulds. Fold the fish fillets into neat bundles and place on top of the bok choi. Spoon the dressing over each bundle, cover the dish with foil and bake for 20 minutes, or until the fish is opaque right through to the centre."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "Heat a little vegetable oil in a frying pan and when hot, saut, the remaining garlic and ginger until crsipy and golden. Spoon it over the fish and serve with lemon quarters."
+    }
+  ],
+  "recipeYield": "4",
+  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
+  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
+  "description": "Recipe converted from Buster format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Baked Shrimp In Phyllo With Indian Spice Shrimp Wraps And To",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "phyllo dough",
+      "value": 3,
+      "unitText": "sheet"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 1,
+      "unitText": "melted"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "ground hazelnuts",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garam masala",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "head-on gulf shrimp",
+      "value": 5
+    },
+    "-------------------------TOMATO CHUTNEY-------------------------------",
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "ginger; chopped",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "shallots; chopped",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic; chopped",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tomato paste",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "tomato concasse",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "lime juice",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cilantro; chopped",
+      "value": "1/4",
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Lay a sheet of phyllo out and brush with melted butter. Sprinkle one-third of the hazelnuts and then one-third of the garam masala. Repeat process two more times, placing each new phyllo dough sheet directly on top of the seasoned phyllo sheets. Cut the stack widthwise into 5 strips, place one shrimp on the near end of each strip, and roll. Place the rolls on a lightly greased baking sheet. Bake in a 375 degree oven for 8 minutes."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "To make the chutney, melt the butter in a saute pan, and sweat the ginger, shallots and garlic. Add sugar, tomato paste, tomato concasse and cilantro."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "Spoon some chutney over each roll before serving it."
+    }
+  ],
+  "recipeYield": "1",
+  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
+  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
+  "description": "Recipe converted from Buster format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Baked Thai Tofu With Cucumber Relish",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "firm tofu",
+      "value": 2,
+      "unitText": "pound"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "in 12 flat rectangles",
+      "value": 1,
+      "unitText": "cut"
+    },
+    "----------------------------MARINADE----------------------------------",
+    {
+      "@type": "PropertyValue",
+      "name": "vegetable stock",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "soy sauce",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chile paste",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "spray",
+      "value": 1,
+      "unitText": "cooking"
+    },
+    "------------------------CUCUMBER RELISH-------------------------------",
+    {
+      "@type": "PropertyValue",
+      "name": "rice wine vinegar",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "water",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "stems",
+      "value": 10,
+      "unitText": "cilantro"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic; minced",
+      "value": 2,
+      "unitText": "clove"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt; to taste",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cucumber",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "in half lengthwise",
+      "value": 1,
+      "unitText": "cut"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "removed; thinly sliced",
+      "value": 1,
+      "unitText": "seeds"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "minced ginger root",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chile paste",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "coarsely chopped cilantro leaves; (optional)",
+      "value": 2,
+      "unitText": "tablespoon"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Makes 6 servings"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Most Thai recipes include the instructions \"brung tam chop jai,\" or season to taste. \" In older recipes, no quantities were given. Thais believe each cook tends to favor one of the four basic seasonings (hot. sweet, sour, or salty) and will season to his or her own preference."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "1. Arrange tofu slices in a large shallow dish. Mix together marinade ingredients, pour over tofu, cover, and refrigerate overnight."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "2. Preheat oven to 400g. Spray a baking sheet with cooking spray. Drain tofu and gently place slices on sheet. Spray lightly with cooking spray. Bake about one hour, turning occasionally, until lightly browned."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "3. While tofu is baking, prepare Cucumber Relish. In a medium pan, combine vinegar, sugar, water, cilantro stems, garlic, and salt. Bring to a boil; stir until sugar dissolves. Strain and cool."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "text": "4. In a medium bowl, mix together cucumber, ginger, chile paste, and chopped cilantro, if desired. Pour vinegar mixture over, and let stand, uncovered, while tofu bakes. Serve tofu with relish."
+    }
+  ],
+  "recipeYield": "6",
+  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
+  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
+  "description": "Recipe converted from Buster format"
+}
+]
