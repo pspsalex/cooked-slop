@@ -5,19 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-022: Markdown Recipe Line Number URL Fragments
-- **Spec:** [SPEC-022-markdown-recipe-line-urls.md](specs/SPEC-022-markdown-recipe-line-urls.md)
-- **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Enables deep-linking into multi-recipe Markdown documents via #<line> URL tags
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-022-md-line-urls`
-- [ ] Track 1-indexed source line numbers during parsing in `parsers/generic_md.py` and assign `recipe.url = f"file://{filepath}#{start_line}"`
-- [ ] Track 1-indexed source line numbers in `parsers/ricette_md.py` and assign `recipe.url = f"file://{filepath}#{start_line}"`
-- [ ] Ensure empty/missing `filepath` gracefully leaves `recipe.url` without `file://#...`
-- [ ] Create unit tests in `tests/unit/test_markdown_url.py` verifying correct line numbers across single, multi, and heading-delimited markdown files
-- [ ] Regenerate expected test fixtures (`generic_md_recipe.md.json`, `generic_md_multi.md.json`, `ricette_sample.md.json`) using `--no-nlp`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
 ### SPEC-025: Converter Relative Path Output
 - **Spec:** [SPEC-025-converter-relative-paths.md](specs/SPEC-025-converter-relative-paths.md)
 - **Priority:** P2 | **Tier:** 1 | **Type:** refactor | **Impact:** Prevents absolute local paths from leaking into JSON-LD output and expected test fixtures
@@ -35,7 +22,20 @@
 ## Archive
 
 <details>
-<summary>Completed specs (23 items)</summary>
+<summary>Completed specs (24 items)</summary>
+
+### SPEC-022: Markdown Recipe Line Number URL Fragments ✅
+- **Spec:** [SPEC-022-markdown-recipe-line-urls.md](specs/done/SPEC-022-markdown-recipe-line-urls.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Enables deep-linking into multi-recipe Markdown documents via #<line> URL tags
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-022-md-line-urls`
+- [x] Track 1-indexed source line numbers during parsing in `parsers/generic_md.py` and assign `recipe.url = f"file://{filepath}#{start_line}"`
+- [x] Track 1-indexed source line numbers in `parsers/ricette_md.py` and assign `recipe.url = f"file://{filepath}#{start_line}"`
+- [x] Ensure empty/missing `filepath` gracefully leaves `recipe.url` without `file://#...`
+- [x] Create unit tests in `tests/unit/test_markdown_url.py` verifying correct line numbers across single, multi, and heading-delimited markdown files
+- [x] Regenerate expected test fixtures (`generic_md_recipe.md.json`, `generic_md_multi.md.json`, `ricette_sample.md.json`) using `--no-nlp`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ### SPEC-024: Buster Format Parser (MC_Buster / MM_Buster) ✅
 - **Spec:** [SPEC-024-buster-format.md](specs/done/SPEC-024-buster-format.md)
