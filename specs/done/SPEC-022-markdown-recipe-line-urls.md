@@ -4,7 +4,7 @@ title: "Markdown Recipe Line Number URL Fragments"
 tier: 1
 type: parser
 priority: P1
-status: active
+status: done
 impact: "Enables precise deep-linking into Markdown recipe documents by tagging URL with the extraction start line number (#<line>)"
 deliverables:
   - parsers/generic_md.py
@@ -85,7 +85,7 @@ This specification introduces start-line tracking to Markdown parsers so that ev
   if filepath:
       recipe.url = f"file://{filepath}#{start_line}"
   ```
-- If `filepath` is empty (in-memory parsing), leave `recipe.url` as `None` or `f"#{start_line}"`.
+- If `filepath` is empty, leave `recipe.url` as `None`.
 
 ### 2. `RicetteMdParser` (`parsers/ricette_md.py`)
 
@@ -191,12 +191,12 @@ git branch -d feat/spec-022-md-line-urls
 
 ## Acceptance Criteria
 
-- [ ] `GenericMdParser` sets `recipe.url = f"file://{filepath}#{start_line}"` with 1-indexed source line numbers.
-- [ ] `RicetteMdParser` sets `recipe.url = f"file://{filepath}#{start_line}"` with 1-indexed source line numbers.
-- [ ] Multi-recipe markdown files correctly assign distinct `#<line>` numbers to each recipe.
-- [ ] Unit tests in `tests/unit/test_markdown_url.py` verify line number extraction across headings, bold titles, and Italian markdown.
-- [ ] Expected fixture outputs for `tests/expected/generic_md_recipe.md.json`, `tests/expected/generic_md_multi.md.json`, and `tests/expected/ricette_sample.md.json` are regenerated and match with line numbers.
-- [ ] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`.
+- [x] `GenericMdParser` sets `recipe.url = f"file://{filepath}#{start_line}"` with 1-indexed source line numbers.
+- [x] `RicetteMdParser` sets `recipe.url = f"file://{filepath}#{start_line}"` with 1-indexed source line numbers.
+- [x] Multi-recipe markdown files correctly assign distinct `#<line>` numbers to each recipe.
+- [x] Unit tests in `tests/unit/test_markdown_url.py` verify line number extraction across headings, bold titles, and Italian markdown.
+- [x] Expected fixture outputs for `tests/expected/generic_md_recipe.md.json`, `tests/expected/generic_md_multi.md.json`, and `tests/expected/ricette_sample.md.json` are regenerated and match with line numbers.
+- [x] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`.
 
 ## Deliverables
 
