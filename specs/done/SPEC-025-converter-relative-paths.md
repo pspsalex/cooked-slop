@@ -4,7 +4,7 @@ title: "Converter Relative Path Output"
 tier: 1
 type: refactor
 priority: P2
-status: active
+status: done
 impact: "Prevents absolute local paths from leaking into JSON-LD output and expected test fixtures"
 deliverables:
   - convert.py
@@ -63,11 +63,11 @@ Output should use the path **as provided by the user** (or relative to CWD):
 - Test normalization in `test_conversion.py` can be simplified once paths are relative
 
 ## Acceptance Criteria
-- [ ] No absolute paths appear in JSON-LD output when input is given as a relative path
-- [ ] `file://` URLs in output use the path as provided (relative or absolute)
-- [ ] `comment` fields use the path as provided
-- [ ] All expected test fixtures regenerated and contain only relative paths
-- [ ] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
+- [x] No absolute paths appear in JSON-LD output when input is given as a relative path
+- [x] `file://` URLs in output use the path as provided (relative or absolute)
+- [x] `comment` fields use the path as provided
+- [x] All expected test fixtures regenerated and contain only relative paths
+- [x] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
 
 ## Deliverables
 - Modified `convert.py`, `converter.py`, and affected parsers
