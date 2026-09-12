@@ -5,24 +5,26 @@
 
 ## Active Tasks
 
-### SPEC-025: Converter Relative Path Output
-- **Spec:** [SPEC-025-converter-relative-paths.md](specs/SPEC-025-converter-relative-paths.md)
-- **Priority:** P2 | **Tier:** 1 | **Type:** refactor | **Impact:** Prevents absolute local paths from leaking into JSON-LD output and expected test fixtures
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-025-relative-paths`
-- [ ] Audit `converter.py` / `SchemaOrgConverter.convert()` — identify where `filepath` is embedded into `url` and `comment` fields
-- [ ] Audit parsers that set `recipe.url` with `file://{filepath}` (e.g. `sqlite_parser.py`, `generic_md.py`, `cookware.py`)
-- [ ] Refactor to use paths relative to CWD or the input argument (not resolved absolute paths)
-- [ ] Regenerate all expected test fixtures with `./venv/bin/python3 tools/update_expected.py`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+*No active tasks.*
 
 ---
 
 ## Archive
 
 <details>
-<summary>Completed specs (24 items)</summary>
+<summary>Completed specs (25 items)</summary>
+
+### SPEC-025: Converter Relative Path Output ✅
+- **Spec:** [SPEC-025-converter-relative-paths.md](specs/done/SPEC-025-converter-relative-paths.md)
+- **Priority:** P2 | **Tier:** 1 | **Type:** refactor | **Impact:** Prevents absolute local paths from leaking into JSON-LD output and expected test fixtures
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-025-relative-paths`
+- [x] Audit `converter.py` / `SchemaOrgConverter.convert()` — identify where `filepath` is embedded into `url` and `comment` fields
+- [x] Audit parsers that set `recipe.url` with `file://{filepath}` (e.g. `sqlite_parser.py`, `generic_md.py`, `cookware.py`)
+- [x] Refactor to use paths relative to CWD or the input argument (not resolved absolute paths)
+- [x] Regenerate all expected test fixtures with `./venv/bin/python3 tools/update_expected.py`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ### SPEC-022: Markdown Recipe Line Number URL Fragments ✅
 - **Spec:** [SPEC-022-markdown-recipe-line-urls.md](specs/done/SPEC-022-markdown-recipe-line-urls.md)
