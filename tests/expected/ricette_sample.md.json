@@ -27,8 +27,8 @@
     "**Scalzare** la parte finale più grossa dell'aletta. **Rigirare** la parte di carne staccata dall'osso verso la fine dell'osso, aromatizzare e farcire nella parte rovesciata della carne. **Battere** l'uovo con il latte (non salare). **Pannare** l'ala con l'uovo e il pangrattato. **Friggere** in olio a 160 gradi per 10 minuti, scolare, salare e servire."
   ],
   "recipeYield": "4",
-  "comment": "Imported from tests/samples/ricette_sample.md",
-  "url": "file://tests/samples/ricette_sample.md",
+  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/ricette_sample.md",
+  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/ricette_sample.md#16",
   "description": "Recipe converted from RicetteMD format"
 },
 {
@@ -79,8 +79,8 @@
     "**Lavare** accuratamente le ali di pollo e passarle alla fiamma per strizzarle. **Fare** soffriggere dell'aglio tritato finemente in un wok ben oliato. Appena sarà ben rosolato (non bruciato) aggiungere (in sequenza) lo zenzero, la salsa di soia e continuando a mescolare il miele lo sherry e le ali di pollo. **Aggiustare** di sale e lasciare cuocere a fiamma bassissima per circa 25 minuti. **Suddividere** sui piatti di portata le ali di pollo, ricoprirle del loro sughetto, e portarle in tavola caldissime, con delle ciotoline di riso bollito."
   ],
   "recipeYield": "4",
-  "comment": "Imported from tests/samples/ricette_sample.md",
-  "url": "file://tests/samples/ricette_sample.md",
+  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/ricette_sample.md",
+  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/ricette_sample.md#50",
   "description": "Recipe converted from RicetteMD format"
 }
 ]

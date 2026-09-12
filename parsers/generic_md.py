@@ -200,18 +200,18 @@ class GenericMdParser(BaseRecipeParser):
 
     def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
         # Pre-process any ASCII/Markdown grid tables into unrolled linear text
-        clean_content = unroll_markdown_tables(content)
-        raw_lines = clean_content.splitlines()
+        raw_lines_with_numbers = unroll_markdown_tables_with_lines(content)
 
-        lines = []
-        for l in raw_lines:
+        lines: list[tuple[str, int]] = []
+        for l, line_no in raw_lines_with_numbers:
             s = l.strip()
             # Ignore explicit format tag lines
             if re.match(r"(?i)^\s*(?:\[format:|<!--\s*format:|#generic[-_]?md)", s):
                 continue
-            lines.append(l)
+            lines.append((l, line_no))
 
         current_recipe: Optional[Recipe] = None
+        current_recipe_start_line: Optional[int] = None
         state = "PREAMBLE"  # PREAMBLE -> INGREDIENTS -> INSTRUCTIONS
         current_instruction_step: list[str] = []
         last_section_header: Optional[str] = None
@@ -231,7 +231,7 @@ class GenericMdParser(BaseRecipeParser):
                 current_instruction_step.clear()
 
         def flush_recipe() -> Optional[Recipe]:
-            nonlocal current_recipe, state, last_section_header, recipe_heading_level
+            nonlocal current_recipe, current_recipe_start_line, state, last_section_header, recipe_heading_level
             finished_recipe = None
             if current_recipe:
                 flush_instruction(current_recipe)
@@ -240,21 +240,31 @@ class GenericMdParser(BaseRecipeParser):
                     and current_recipe.ingredients
                     and not self._is_toc_title(current_recipe.title)
                 ):
+                    if filepath and current_recipe_start_line is not None and not current_recipe.url:
+                        current_recipe.url = f"file://{filepath}#{current_recipe_start_line}"
                     finished_recipe = current_recipe
                 current_recipe = None
+                current_recipe_start_line = None
                 state = "PREAMBLE"
                 last_section_header = None
                 recipe_heading_level = None
             return finished_recipe
 
-        def start_new_recipe(title_line: str, heading_level: Optional[int] = None):
-            nonlocal current_recipe, state, last_section_header, recipe_heading_level
+        def start_new_recipe(
+            title_line: str,
+            heading_level: Optional[int] = None,
+            start_line: Optional[int] = None,
+        ):
+            nonlocal current_recipe, current_recipe_start_line, state, last_section_header, recipe_heading_level
             title = self._clean_title(title_line)
             current_recipe = Recipe(
                 title=title,
                 source_format=self.source_format,
                 source_file=filepath,
             )
+            if filepath and start_line is not None:
+                current_recipe.url = f"file://{filepath}#{start_line}"
+            current_recipe_start_line = start_line
             if current_category:
                 current_recipe.categories = [current_category]
             recipe_heading_level = heading_level
@@ -263,7 +273,7 @@ class GenericMdParser(BaseRecipeParser):
 
         idx = 0
         while idx < len(lines):
-            line = lines[idx]
+            line, line_num = lines[idx]
             stripped = line.strip()
 
             if not stripped:
@@ -322,9 +332,9 @@ class GenericMdParser(BaseRecipeParser):
                     and not self._is_toc_title(b_text)
                 ):
                     nxt = idx + 1
-                    while nxt < len(lines) and not lines[nxt].strip():
+                    while nxt < len(lines) and not lines[nxt][0].strip():
                         nxt += 1
-                    nxt_line = lines[nxt].strip() if nxt < len(lines) else ""
+                    nxt_line = lines[nxt][0].strip() if nxt < len(lines) else ""
                     nxt_is_bold = bool(re.match(r"^(?:\*{2,3}|_{2,3})[^*_]+(?:\*{2,3}|_{2,3})$", nxt_line))
                     nxt_is_hash = bool(re.match(r"^#{1,6}\s+", nxt_line))
 
@@ -348,9 +358,9 @@ class GenericMdParser(BaseRecipeParser):
 
                 if is_dash_sep:
                     next_idx = idx + 1
-                    while next_idx < len(lines) and not lines[next_idx].strip():
+                    while next_idx < len(lines) and not lines[next_idx][0].strip():
                         next_idx += 1
-                    next_line = lines[next_idx].strip() if next_idx < len(lines) else ""
+                    next_line = lines[next_idx][0].strip() if next_idx < len(lines) else ""
                     if (
                         self._is_ingredients_header(next_line)
                         or self._is_instructions_header(next_line)
@@ -370,7 +380,7 @@ class GenericMdParser(BaseRecipeParser):
                         yield r
                     idx = next_idx
                     if idx < len(lines):
-                        start_new_recipe(lines[idx])
+                        start_new_recipe(lines[idx][0], start_line=lines[idx][1])
                         idx += 1
                     continue
 
@@ -382,7 +392,7 @@ class GenericMdParser(BaseRecipeParser):
                         and not self._is_toc_title(current_recipe.title)
                     ):
                         current_category = current_recipe.title
-                    start_new_recipe(stripped, new_heading_level)
+                    start_new_recipe(stripped, new_heading_level, start_line=line_num)
                     idx += 1
                     continue
 
@@ -392,12 +402,12 @@ class GenericMdParser(BaseRecipeParser):
                         yield r
                     if new_heading_level == 1:
                         current_category = self._clean_title(stripped)
-                    start_new_recipe(stripped, new_heading_level)
+                    start_new_recipe(stripped, new_heading_level, start_line=line_num)
                     idx += 1
                     continue
 
                 if not self._is_toc_title(self._clean_title(stripped)):
-                    start_new_recipe(stripped, new_heading_level)
+                    start_new_recipe(stripped, new_heading_level, start_line=line_num)
                 idx += 1
                 continue
 
@@ -408,7 +418,7 @@ class GenericMdParser(BaseRecipeParser):
                     and stripped not in {"--", "."}
                 ):
                     if not self._is_toc_title(self._clean_title(stripped)):
-                        start_new_recipe(stripped)
+                        start_new_recipe(stripped, start_line=line_num)
                 idx += 1
                 continue
 
@@ -623,17 +633,31 @@ def _process_grid_table_rows(table_rows: list[list[str]]) -> list[str]:
     return res
 
 
-def unroll_markdown_tables(text: str) -> str:
-    """Pre-processes text to unroll ASCII grid tables (+---+, +===+) and pipe tables into linear text."""
+def _process_grid_table_rows_with_lines(table_rows: list[list[tuple[str, int]]]) -> list[tuple[str, int]]:
+    res: list[tuple[str, int]] = []
+    for row in table_rows:
+        if not row:
+            continue
+        row_line_num = row[0][1]
+        row_lines = [line for line, _ in row]
+        unrolled = _process_grid_table_rows([row_lines])
+        for item in unrolled:
+            res.append((item, row_line_num))
+    return res
+
+
+def unroll_markdown_tables_with_lines(text: str) -> list[tuple[str, int]]:
+    """Pre-processes text to unroll ASCII grid tables (+---+, +===+) and pipe tables into linear text with 1-indexed line numbers."""
     lines = text.splitlines()
-    out = []
+    out: list[tuple[str, int]] = []
     table_border_re = re.compile(r"^\+[-+=:]+\+$")
     in_grid_table = False
-    table_rows = []
-    current_row = []
+    table_rows: list[list[tuple[str, int]]] = []
+    current_row: list[tuple[str, int]] = []
     i = 0
     while i < len(lines):
         line = lines[i]
+        orig_line_num = i + 1
         stripped = line.strip()
         if table_border_re.match(stripped):
             if not in_grid_table:
@@ -647,24 +671,29 @@ def unroll_markdown_tables(text: str) -> str:
             continue
         if in_grid_table:
             if stripped.startswith("|"):
-                current_row.append(line)
+                current_row.append((line, orig_line_num))
                 i += 1
                 continue
             else:
                 if current_row:
                     table_rows.append(current_row)
                     current_row = []
-                out.extend(_process_grid_table_rows(table_rows))
+                out.extend(_process_grid_table_rows_with_lines(table_rows))
                 table_rows = []
                 in_grid_table = False
-                out.append(line)
+                out.append((line, orig_line_num))
                 i += 1
                 continue
         else:
-            out.append(line)
+            out.append((line, orig_line_num))
             i += 1
     if in_grid_table and (table_rows or current_row):
         if current_row:
             table_rows.append(current_row)
-        out.extend(_process_grid_table_rows(table_rows))
-    return "\n".join(out)
+        out.extend(_process_grid_table_rows_with_lines(table_rows))
+    return out
+
+
+def unroll_markdown_tables(text: str) -> str:
+    """Pre-processes text to unroll ASCII grid tables (+---+, +===+) and pipe tables into linear text."""
+    return "\n".join(line for line, _ in unroll_markdown_tables_with_lines(text))
