@@ -167,9 +167,10 @@ If you change a parser's output, regenerate its expected file with the same comm
 |------|-------------|
 | `-o`, `--output` | Output file or directory path |
 | `-f`, `--format` | Override auto-detection (choices populated dynamically from registry) |
-| `-v`, `--verbose` | Verbose output |
+| `-v`, `--verbose` | Verbose output (`-v` for conversion/app details, `-vv` for deep NLP debug traces) |
 | `-r`, `--recursive` | Process directories recursively |
 | `--no-nlp` | Force regex ingredient parser (deterministic) |
+| `--debug-nlp` | Explicitly enable detailed NLP ingredient parser debug logging |
 | `--chunk` | Split large output into chunked part-files (35K recipes or 50MB) |
 | `--shard` | Shard output into MinHash-bucketed subdirectories (xx/yy/file.json) |
 | `--multiple-per-file` | Write multiple recipes into a single JSON file |
