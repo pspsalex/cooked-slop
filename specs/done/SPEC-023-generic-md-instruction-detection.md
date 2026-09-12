@@ -4,7 +4,7 @@ title: "Generic Markdown Instruction Detection Fixes"
 tier: 2
 type: parser
 priority: P1
-status: active
+status: done
 impact: "Improves parsing of converted DOCX/MD recipe collections"
 deliverables:
   - parsers/generic_md.py
@@ -60,10 +60,10 @@ water. Mix gelatine with mayonnaise, lime and lemon juice, parsley,
 1. **Brenna's Antipasto Platter (Line 1571)**: The format contains a list of foods (e.g., `Sliced cheeses`, `Salami`) without explicit quantities or bullets. The parser fails to enter the `INGREDIENTS` state. **This format is considered too complex/irregular and can be explicitly ignored for this implementation.**
 
 ## Acceptance Criteria
-- [ ] Add `to\s+prepare\b` and `soften\b` (and any other missing common preparation verbs) to `instruction_verbs` in `parsers/generic_md.py`.
-- [ ] Expand `cooking_keywords` if necessary to better detect narrative instructions.
-- [ ] Generate expected test fixtures using `--no-nlp` and verify they capture instructions correctly.
-- [ ] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Add `to\s+prepare\b` and `soften\b` (and any other missing common preparation verbs) to `instruction_verbs` in `parsers/generic_md.py`.
+- [x] Expand `cooking_keywords` if necessary to better detect narrative instructions.
+- [x] Generate expected test fixtures using `--no-nlp` and verify they capture instructions correctly.
+- [x] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
 
 ## Deliverables
 - Modified `parsers/generic_md.py`
