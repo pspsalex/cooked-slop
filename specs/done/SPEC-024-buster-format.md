@@ -4,7 +4,7 @@ title: "Buster Text Format Parser (MC_Buster / MM_Buster)"
 tier: 2
 type: parser
 priority: P1
-status: active
+status: done
 impact: "1 file (~30 recipes) - rec.mxp"
 deliverables:
   - parsers/buster.py
@@ -119,11 +119,11 @@ Yield: 4 Servings
 ```
 
 ## Acceptance Criteria
-- [ ] `parsers/buster.py` created and adheres to format rules (especially ingredient continuations).
-- [ ] Auto-detection correctly matches the `.mxp` sample containing Buster signatures (score >= 0.99).
-- [ ] Converted `rec.mxp` properly outputs discrete recipes instead of one massive lump.
-- [ ] Ingredient continuations correctly reassembled.
-- [ ] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
+- [x] `parsers/buster.py` created and adheres to format rules (especially ingredient continuations).
+- [x] Auto-detection correctly matches the `.mxp` sample containing Buster signatures (score >= 0.99).
+- [x] Converted `rec.mxp` properly outputs discrete recipes instead of one massive lump.
+- [x] Ingredient continuations correctly reassembled.
+- [x] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
 
 ## Deliverables
 - `parsers/buster.py`
