@@ -49,25 +49,30 @@ class RicetteMdParser(BaseRecipeParser):
         return text.replace(r'\(', '(').replace(r'\)', ')')
 
     def parse_content(self, content: str, filepath: str = "") -> Iterator[Recipe]:
-        # Split by level 1 headings
-        sections = re.split(r'^#\s+', content, flags=re.MULTILINE)
+        matches = list(re.finditer(r'^#\s+(.*)$', content, flags=re.MULTILINE))
+        if not matches:
+            return
 
-        for section in sections:
-            section = section.strip()
-            if not section:
-                continue
+        for idx, match in enumerate(matches):
+            start_pos = match.end()
+            end_pos = matches[idx + 1].start() if idx + 1 < len(matches) else len(content)
+            section = content[start_pos:end_pos]
+            start_line = content[:match.start()].count('\n') + 1
 
-            lines = section.splitlines()
-            title = self._unescape(lines[0].strip()) if lines else "Untitled"
+            raw_title = match.group(1).strip()
+            title = self._unescape(raw_title) if raw_title else "Untitled"
 
             recipe = Recipe(
                 title=title,
                 source_format=self.source_format,
-                source_file=filepath
+                source_file=filepath,
             )
+            if filepath:
+                recipe.url = f"file://{filepath}#{start_line}"
 
+            lines = section.splitlines()
             current_header = None
-            i = 1
+            i = 0
             while i < len(lines):
                 line = lines[i]
 

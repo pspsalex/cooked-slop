@@ -45,8 +45,8 @@
       "text": "Bake at 350F for 20 minutes."
     }
   ],
-  "comment": "Imported from tests/samples/generic_md_multi.md",
-  "url": "file://tests/samples/generic_md_multi.md",
+  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/generic_md_multi.md",
+  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/generic_md_multi.md#1",
   "description": "Recipe converted from Generic Markdown format"
 },
 {
@@ -90,8 +90,8 @@
       "text": "Broil for 5 minutes until golden."
     }
   ],
-  "comment": "Imported from tests/samples/generic_md_multi.md",
-  "url": "file://tests/samples/generic_md_multi.md",
+  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/generic_md_multi.md",
+  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/generic_md_multi.md#21",
   "description": "Recipe converted from Generic Markdown format"
 }
 ]
