@@ -92,7 +92,7 @@ class CsvParser(BaseRecipeParser):
             if not recipe.description:
                 recipe.description = f"Imported from {self.source_format}"
             if not recipe.url:
-                recipe.url = f"file://{Path(filepath).absolute()}"
+                recipe.url = f"file://{filepath}"
             yield recipe
 
     def _parse_generic_csv(self, filepath: str) -> Iterator[Recipe]:

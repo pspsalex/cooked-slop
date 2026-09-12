@@ -63,8 +63,8 @@
       "text": "Top with cheese and bake at 450F for 15 minutes."
     }
   ],
-  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/generic_md_recipe.md",
-  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-022/tests/samples/generic_md_recipe.md#1",
+  "comment": "Imported from tests/samples/generic_md_recipe.md",
+  "url": "file://tests/samples/generic_md_recipe.md#1",
   "description": "Recipe converted from Generic Markdown format"
 }
 ]

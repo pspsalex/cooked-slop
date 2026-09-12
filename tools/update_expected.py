@@ -23,15 +23,25 @@ def update_expected():
         expected_path = EXPECTED_DIR / f"{sample_path.name}.json"
         print(f"Updating {expected_path} from {sample_path}")
 
+        try:
+            sample_rel = sample_path.relative_to(REPO_ROOT)
+        except ValueError:
+            sample_rel = sample_path
+
+        try:
+            expected_rel = expected_path.relative_to(REPO_ROOT)
+        except ValueError:
+            expected_rel = expected_path
+
         cmd = [
             sys.executable,
             str(CONVERT_SCRIPT),
-            str(sample_path),
-            "--output", str(expected_path),
+            str(sample_rel),
+            "--output", str(expected_rel),
             "--no-nlp"
         ]
 
-        subprocess.run(cmd, check=True)
+        subprocess.run(cmd, check=True, cwd=str(REPO_ROOT))
 
 
 def main():

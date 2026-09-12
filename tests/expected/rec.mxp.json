@@ -115,8 +115,8 @@
     }
   ],
   "recipeYield": "4",
-  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
-  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
+  "comment": "Imported from tests/samples/rec.mxp",
+  "url": "file://tests/samples/rec.mxp",
   "description": "Recipe converted from Buster format"
 },
 {
@@ -227,8 +227,8 @@
     }
   ],
   "recipeYield": "1",
-  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
-  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
+  "comment": "Imported from tests/samples/rec.mxp",
+  "url": "file://tests/samples/rec.mxp",
   "description": "Recipe converted from Buster format"
 },
 {
@@ -378,8 +378,8 @@
     }
   ],
   "recipeYield": "6",
-  "comment": "Imported from /home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
-  "url": "file:///home/alex/junk/Recipes/scripts/.worktrees/spec-024/tests/samples/rec.mxp",
+  "comment": "Imported from tests/samples/rec.mxp",
+  "url": "file://tests/samples/rec.mxp",
   "description": "Recipe converted from Buster format"
 }
 ]

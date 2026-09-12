@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Schema.org JSON-LD recipe converter."""
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, List
 from parsers.models import Recipe
 
@@ -70,15 +71,18 @@ class SchemaOrgConverter:
             schema_recipe["keywords"] = ", ".join(recipe.categories)
 
         if recipe.source_file:
-            schema_recipe["comment"] = f"Imported from {recipe.source_file}"
+            source_file = self._format_path(recipe.source_file)
+            schema_recipe["comment"] = f"Imported from {source_file}"
             if recipe.url:
-                schema_recipe["url"] = recipe.url
+                schema_recipe["url"] = self._format_url(recipe.url)
             elif recipe.sqlite_table and recipe.sqlite_id:
                 schema_recipe["url"] = (
-                    f"file://{recipe.source_file}#{recipe.sqlite_table},{recipe.sqlite_id}"
+                    f"file://{source_file}#{recipe.sqlite_table},{recipe.sqlite_id}"
                 )
             else:
-                schema_recipe["url"] = f"file://{recipe.source_file}"
+                schema_recipe["url"] = f"file://{source_file}"
+        elif recipe.url:
+            schema_recipe["url"] = self._format_url(recipe.url)
 
         if add_date:
             schema_recipe["datePublished"] = datetime.now().isoformat()
@@ -107,3 +111,35 @@ class SchemaOrgConverter:
             {"@type": "HowToStep", "position": position, "text": instruction}
             for position, instruction in enumerate(instructions, 1)
         ]
+
+    @staticmethod
+    def _format_path(path_str: str) -> str:
+        """Format path relative to CWD if inside CWD, otherwise as-is."""
+        try:
+            p = Path(path_str)
+            if p.is_absolute():
+                cwd = Path.cwd()
+                if p.is_relative_to(cwd):
+                    return str(p.relative_to(cwd))
+        except (ValueError, TypeError):
+            pass
+        return path_str
+
+    @classmethod
+    def _format_url(cls, url_str: str) -> str:
+        """Format file:// URL relative to CWD if inside CWD, otherwise as-is."""
+        if url_str.startswith("file://"):
+            raw_path = url_str[len("file://"):]
+            frag = ""
+            if "#" in raw_path:
+                raw_path, frag = raw_path.split("#", 1)
+                frag = f"#{frag}"
+            try:
+                p = Path(raw_path)
+                if p.is_absolute():
+                    cwd = Path.cwd()
+                    if p.is_relative_to(cwd):
+                        return f"file://{p.relative_to(cwd)}{frag}"
+            except (ValueError, TypeError):
+                pass
+        return url_str

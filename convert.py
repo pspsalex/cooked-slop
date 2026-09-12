@@ -352,14 +352,26 @@ def process_directory(
     )
 
     for file_idx, recipe_file in enumerate(recipe_files, 1):
-        rel_path = (
-            recipe_file.relative_to(input_dir)
-            if input_dir in recipe_file.parents
-            else recipe_file
-        )
+        target_file = recipe_file
+        if target_file.is_absolute():
+            try:
+                cwd = Path.cwd()
+                if target_file.is_relative_to(cwd):
+                    target_file = target_file.relative_to(cwd)
+            except (ValueError, TypeError):
+                pass
+
+        try:
+            rel_path = (
+                recipe_file.relative_to(input_dir)
+                if input_dir in recipe_file.parents
+                else target_file
+            )
+        except ValueError:
+            rel_path = target_file
 
         bytes_processed = convert_recipe_file(
-            recipe_file,
+            target_file,
             output_dir,
             one_file_per_recipe,
             bool(verbose),
@@ -376,7 +388,7 @@ def process_directory(
             display_path=str(rel_path),
         )
         processed_bytes += (
-            recipe_file.stat().st_size if bytes_processed == 0 else bytes_processed
+            target_file.stat().st_size if bytes_processed == 0 else bytes_processed
         )
 
         if not verbose:
@@ -384,7 +396,7 @@ def process_directory(
                 processed_bytes,
                 total_bytes,
                 prefix="Converting",
-                suffix=recipe_file.name,
+                suffix=target_file.name,
             )
 
     if not verbose:
@@ -432,7 +444,14 @@ def main(argv: Optional[List[str]] = None):
     else:
         print(f"  {Colors.CYAN}ℹ Using Spacy NLP Ingredient Parser{Colors.ENDC}")
 
-    input_path = args.input.resolve()
+    input_path = args.input
+    if input_path.is_absolute():
+        try:
+            cwd = Path.cwd()
+            if input_path.is_relative_to(cwd):
+                input_path = input_path.relative_to(cwd)
+        except (ValueError, TypeError):
+            pass
 
     if not input_path.exists():
         print(f"{Colors.RED}Input path does not exist: {input_path}{Colors.ENDC}")

@@ -89,3 +89,28 @@ def test_sharded_conversion(tmp_path: Path):
         assert len(rel.parts) == 3, f"Expected 3 path components (xx/yy/file.json), got {rel.parts}"
 
 
+def test_relative_path_output(tmp_path: Path):
+    """Test that relative path input yields relative paths in comment and url (SPEC-025)."""
+    rel_sample = Path("tests/samples/spaghetti")
+    actual_path = tmp_path / "actual.json"
+
+    cmd = [
+        str(rel_sample),
+        "--output", str(actual_path),
+        "--no-nlp",
+    ]
+    ret_code = convert_main(cmd)
+    assert ret_code == 0
+
+    with open(actual_path, "r") as f:
+        data = json.load(f)
+
+    for recipe in data:
+        if "comment" in recipe:
+            assert not recipe["comment"].startswith("Imported from /"), f"Absolute path in comment: {recipe['comment']}"
+            assert recipe["comment"].startswith("Imported from tests/samples/")
+        if "url" in recipe:
+            assert not recipe["url"].startswith("file:///"), f"Absolute path in url: {recipe['url']}"
+            assert recipe["url"].startswith("file://tests/samples/")
+
+

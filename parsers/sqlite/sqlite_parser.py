@@ -96,7 +96,7 @@ class SqliteRecipeParser(BaseRecipeParser):
                 logger.warning(f"Could not detect SQLite schema for {filepath}")
                 return
 
-        self.sqlite_db_path = str(db_path.resolve())
+        self.sqlite_db_path = str(filepath)
         self.sqlite_table = self.schema.recipes_table
         yield from self.parse_content("", filepath)
 

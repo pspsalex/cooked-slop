@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Unit tests for SchemaOrgConverter."""
 from datetime import datetime
+from pathlib import Path
 import pytest
 from converter import SchemaOrgConverter
 from parsers.models import Recipe, Ingredient
@@ -185,6 +186,52 @@ def test_converter_url_priority():
     res_none = converter.convert(r_none)
     assert "url" not in res_none
     assert "comment" not in res_none
+
+
+def test_converter_relative_paths():
+    """Test relative path preservation and CWD-relative conversion for URLs and comments."""
+    converter = SchemaOrgConverter()
+    cwd = Path.cwd()
+
+    # 1. Relative source_file stays relative
+    r_rel = Recipe(
+        title="Relative Test",
+        source_file="tests/samples/spaghetti",
+    )
+    res_rel = converter.convert(r_rel)
+    assert res_rel["comment"] == "Imported from tests/samples/spaghetti"
+    assert res_rel["url"] == "file://tests/samples/spaghetti"
+
+    # 2. Absolute source_file inside CWD is converted to relative
+    abs_inside = str(cwd / "tests" / "samples" / "spaghetti")
+    r_abs_inside = Recipe(
+        title="Abs Inside CWD Test",
+        source_file=abs_inside,
+    )
+    res_abs_inside = converter.convert(r_abs_inside)
+    assert res_abs_inside["comment"] == "Imported from tests/samples/spaghetti"
+    assert res_abs_inside["url"] == "file://tests/samples/spaghetti"
+
+    # 3. Absolute file:// URL inside CWD is converted to relative with fragment preserved
+    abs_url_inside = f"file://{cwd / 'tests' / 'samples' / 'generic_md.md'}#15"
+    r_url_inside = Recipe(
+        title="URL Inside CWD Test",
+        source_file=abs_inside,
+        url=abs_url_inside,
+    )
+    res_url_inside = converter.convert(r_url_inside)
+    assert res_url_inside["url"] == "file://tests/samples/generic_md.md#15"
+
+    # 4. SQLite anchor with absolute path inside CWD
+    r_sql_inside = Recipe(
+        title="SQLite Inside CWD Test",
+        source_file=str(cwd / "tests" / "samples" / "recipes.db"),
+        sqlite_table="recipes",
+        sqlite_id="42",
+    )
+    res_sql_inside = converter.convert(r_sql_inside)
+    assert res_sql_inside["comment"] == "Imported from tests/samples/recipes.db"
+    assert res_sql_inside["url"] == "file://tests/samples/recipes.db#recipes,42"
 
 
 def test_converter_add_date():

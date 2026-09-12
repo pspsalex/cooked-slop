@@ -59,7 +59,7 @@ class CookwareCSVParser(BaseRecipeParser):
             for row_number, row in enumerate(csv_reader, start=1):
                 recipe = self._parse_csv_row(row, filepath)
                 if recipe.title:
-                    recipe.url = f"file://{Path(filepath).absolute()}#{row_number}"
+                    recipe.url = f"file://{filepath}#{row_number}"
                     yield recipe
         except Exception as e:
             logger.warning("Error parsing Cookware CSV %s: %s", filepath, e)
