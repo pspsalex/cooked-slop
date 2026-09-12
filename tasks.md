@@ -18,32 +18,6 @@
 - [ ] Generate expected test fixtures using `--no-nlp`
 - [ ] Run full test suite and verify deterministic passes
 - [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
-### SPEC-023: Generic Markdown Instruction Detection Fixes
-- **Spec:** [SPEC-023-generic-md-instruction-detection.md](specs/SPEC-023-generic-md-instruction-detection.md)
-- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** Improves parsing of converted DOCX/MD recipe collections
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-023-md-instruction-detection`
-- [ ] Add `to\s+prepare\b` and `soften\b` to `instruction_verbs` in `parsers/generic_md.py`
-- [ ] Expand `cooking_keywords` if necessary to better detect narrative instructions
-- [ ] Regenerate expected test fixtures using `--no-nlp` and verify they capture instructions correctly
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
-### SPEC-021: Reduce NLP Verbosity Under -v Flag
-- **Spec:** [SPEC-021-reduce-nlp-verbosity.md](specs/SPEC-021-reduce-nlp-verbosity.md)
-- **Priority:** P1 | **Tier:** 1 | **Type:** refactor | **Impact:** Clean CLI output under -v; suppresses ingredient-parser trace pollution while supporting -vv and --debug-nlp
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-021-nlp-verbosity`
-- [ ] Change `-v`/`--verbose` CLI argument to `action="count", default=0` in `convert.py`
-- [ ] Add `--debug-nlp` CLI flag in `convert.py`
-- [ ] Implement `configure_logging()` in `convert.py` suppressing `ingredient-parser`, `ingredient_parser`, and `nltk` to `INFO` unless `-vv` or `--debug-nlp` is passed
-- [ ] Update `convert_recipe_file` and `process_directory` callers to pass boolean verbosity safely
-- [ ] Add unit tests in `tests/unit/test_logging.py` covering `-v`, `-vv`, `--debug-nlp`, and logger level states
-- [ ] Update CLI options documentation in `AGENTS.md`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
 ### SPEC-022: Markdown Recipe Line Number URL Fragments
 - **Spec:** [SPEC-022-markdown-recipe-line-urls.md](specs/SPEC-022-markdown-recipe-line-urls.md)
 - **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Enables deep-linking into multi-recipe Markdown documents via #<line> URL tags
@@ -74,7 +48,32 @@
 ## Archive
 
 <details>
-<summary>Completed specs (20 items)</summary>
+<summary>Completed specs (22 items)</summary>
+
+### SPEC-021: Reduce NLP Verbosity Under -v Flag ✅
+- **Spec:** [SPEC-021-reduce-nlp-verbosity.md](specs/done/SPEC-021-reduce-nlp-verbosity.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** refactor | **Impact:** Clean CLI output under -v; suppresses ingredient-parser trace pollution while supporting -vv and --debug-nlp
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-021-nlp-verbosity`
+- [x] Change `-v`/`--verbose` CLI argument to `action="count", default=0` in `convert.py`
+- [x] Add `--debug-nlp` CLI flag in `convert.py`
+- [x] Implement `configure_logging()` in `convert.py` suppressing `ingredient-parser`, `ingredient_parser`, and `nltk` to `INFO` unless `-vv` or `--debug-nlp` is passed
+- [x] Update `convert_recipe_file` and `process_directory` callers to pass boolean verbosity safely
+- [x] Add unit tests in `tests/unit/test_logging.py` covering `-v`, `-vv`, `--debug-nlp`, and logger level states
+- [x] Update CLI options documentation in `AGENTS.md`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-023: Generic Markdown Instruction Detection Fixes ✅
+- **Spec:** [SPEC-023-generic-md-instruction-detection.md](specs/done/SPEC-023-generic-md-instruction-detection.md)
+- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** Improves parsing of converted DOCX/MD recipe collections
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-023-md-instruction-detection`
+- [x] Add `to\s+prepare\b` and `soften\b` to `instruction_verbs` in `parsers/generic_md.py`
+- [x] Expand `cooking_keywords` if necessary to better detect narrative instructions
+- [x] Regenerate expected test fixtures using `--no-nlp` and verify they capture instructions correctly
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ### SPEC-020: Markdown Multi-Recipe Parser and Detection Fixes ✅
 - **Spec:** [SPEC-020-markdown-multi-recipe-fixes.md](specs/done/SPEC-020-markdown-multi-recipe-fixes.md)
