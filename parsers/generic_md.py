@@ -172,13 +172,14 @@ class GenericMdParser(BaseRecipeParser):
 
     def _looks_like_instruction_start(self, stripped: str) -> bool:
         """Detect whether a line is likely the start of an instruction step/paragraph."""
-        if re.match(r"^\d+[.)]\s+", stripped):
+        if re.match(r"^(?:(?:\*{1,3}|_{1,3})\s*)?\d+[.)]\s+", stripped):
             return True
         instruction_verbs = (
-            r"(?i)^(?:in\s+an?\s+|meanwhile\b|transfer\b|combine\b|place\b|pour\b|mix\b|stir\b|whisk\b|"
+            r"(?i)^(?:(?:\*{1,3}|_{1,3})\s*)?(?:in\s+an?\s+|meanwhile\b|transfer\b|combine\b|place\b|pour\b|mix\b|stir\b|whisk\b|"
             r"heat\b|cook\b|bake\b|preheat\b|add\b|bring\b|boil\b|simmer\b|serve\b|drain\b|remove\b|beat\b|blend\b|"
             r"cut\b|chop\b|peel\b|roll\b|spread\b|melt\b|sprinkle\b|brown\b|cover\b|toss\b|fold\b|cool\b|chill\b|"
             r"refrigerate\b|divide\b|arrange\b|season\b|garnish\b|sift\b|using\s+|with\s+a\s+|to\s+make\b|"
+            r"to\s+prepare\b|soften\b|to\s+serve\b|to\s+assemble\b|dissolve\b|marinate\b|rinse\b|sauté\b|saute\b|"
             r"make\s+the\s+|assemble\s+|get\s+out\s+|soak\s+|put\s+the\s+|grease\s+|"
             r"line\s+a\s+|set\s+aside\b|let\s+|allow\s+|layer\s+|in\s+a\s+)"
         )
@@ -190,7 +191,8 @@ class GenericMdParser(BaseRecipeParser):
         if len(stripped) > 60 and not is_qty_start:
             cooking_keywords = [
                 "skillet", "saucepan", "bowl", "oven", "minutes", "hours",
-                "heat", "degrees", "bake", "cook", "stir"
+                "heat", "degrees", "bake", "cook", "stir",
+                "blender", "processor", "microwave", "double boiler", "refrigerator",
             ]
             if any(term in stripped.lower() for term in cooking_keywords):
                 return True

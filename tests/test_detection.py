@@ -554,5 +554,48 @@ Blend until smooth.
     assert len(recipes[2].ingredients) == 2
 
 
+def test_generic_md_instruction_detection_to_prepare_and_soften(ingredient_parser):
+    """Verify GenericMdParser correctly transitions to INSTRUCTIONS for 'To prepare...' and 'Soften...' (SPEC-023)."""
+    from parsers.generic_md import GenericMdParser
 
+    sample = """### Grilled Salmon with Jalapeno Butter
 
+3/4 inch fresh gingerroot
+2 large cloves garlic
+1 jalapeno, halved and seeded
+1/4 cup loosely packed fresh cilantro leaves
+1/2 cup butter, softened
+1 lb fresh salmon fillets
+
+To prepare the butter: Combine gingerroot, garlic and jalapeno in a blender container or food processor bowl; cover and process till finely chopped. Add cilantro; cover and blend or process till combined.
+
+### Crab Meat Mousse
+
+1 T gelatine
+3 T cold water
+1/4 C mayonnaise
+2 avocados, mashed
+
+Soften gelatine in cold water and dissolve in double boiler over hot water. Mix gelatine with mayonnaise, lime and lemon juice, parsley, chives, mustard, salt, and pepper to taste. Fold in crab meat and whipped cream.
+"""
+    parser = GenericMdParser(ingredient_parser)
+    recipes = list(parser.parse_content(sample, "test_spec_023.md"))
+    assert len(recipes) == 2
+
+    # Verify first recipe: instructions must not be in ingredients
+    salmon = recipes[0]
+    assert salmon.title == "Grilled Salmon with Jalapeno Butter"
+    assert len(salmon.ingredients) == 6
+    assert any("gingerroot" in ing.raw for ing in salmon.ingredients)
+    assert not any("blender container" in ing.raw for ing in salmon.ingredients)
+    assert len(salmon.instructions) == 1
+    assert "To prepare the butter:" in salmon.instructions[0]
+
+    # Verify second recipe: instructions must not be in ingredients
+    mousse = recipes[1]
+    assert mousse.title == "Crab Meat Mousse"
+    assert len(mousse.ingredients) == 4
+    assert any("avocados" in ing.raw for ing in mousse.ingredients)
+    assert not any("Soften gelatine" in ing.raw for ing in mousse.ingredients)
+    assert len(mousse.instructions) == 1
+    assert mousse.instructions[0].startswith("Soften gelatine")
