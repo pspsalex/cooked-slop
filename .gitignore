@@ -162,6 +162,7 @@ test_output.json
 chunk_test*.json
 failing4_output.json
 output/**
+converted_recipes/
 
 # Duplicate AI instruction files (CLAUDE.md is the single source of truth)
 .cursorrules
