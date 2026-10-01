@@ -4,7 +4,7 @@ title: "InfoMac Recipe Collection"
 tier: 3
 type: parser
 priority: P1
-status: active
+status: done
 impact: "5 files (~120 recipes)"
 deliverables:
   - parsers/infomac.py

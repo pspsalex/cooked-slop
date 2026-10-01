@@ -5,45 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-012: RCP Nutritional Exchange Format Parser
-- **Spec:** [SPEC-012-rcp.md](specs/SPEC-012-rcp.md)
-- **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 9 files in Ingest/ToDo/TXT/ (~9 recipes)
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-012-rcp-parser`
-- [ ] Implement `RcpExchangeParser` in `parsers/rcp_exchange.py` with `@ParserRegistry.register`
-- [ ] Implement detection logic checking for `.rcp` extension and `RECIPE_TEXT:` delimiter
-- [ ] Implement `parse_content` extracting Line 1 (title), Line 2 (yield), floating point exchange stripped ingredients, and instructions
-- [ ] Add `rcp_exchange.py` to `parsers/__init__.py` and export in `__all__`
-- [ ] Add test sample `tests/samples/chili2.rcp` and generate expected output with `--no-nlp`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
-### SPEC-010: FromScratch v2.0 Format Parser
-- **Spec:** [SPEC-010-fromscratch.md](specs/SPEC-010-fromscratch.md)
-- **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 2 files in Ingest/ToDo/TXT/ (~190 recipes)
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-010-fromscratch-parser`
-- [ ] Implement `FromScratchParser` in `parsers/fromscratch.py` with `@ParserRegistry.register`
-- [ ] Implement detection logic looking for `********** FROM SCRATCH V 2.0 RECIPE BEGINS ********`
-- [ ] Implement `parse_content` extracting Title, Serves, KeyWords, Ingredients, and Preparation blocks
-- [ ] Add `fromscratch.py` to `parsers/__init__.py` and export in `__all__`
-- [ ] Add test sample `tests/samples/fromscratch_sample.fs` and generate expected output with `--no-nlp`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
-### SPEC-011: InfoMac BBS Recipe Parser
-- **Spec:** [SPEC-011-infomac.md](specs/SPEC-011-infomac.md)
-- **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 5 files in Ingest/ToDo/TXT/ (~120 recipes)
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-011-infomac-parser`
-- [ ] Implement `InfoMacParser` in `parsers/infomac.py` with `@ParserRegistry.register`
-- [ ] Implement detection logic looking for `%` header, backtick recipe titles, and tilde record delimiters
-- [ ] Implement `parse_content` extracting backtick titles, dash-separated ingredient/instruction sections, and tilde delimiters
-- [ ] Add `infomac.py` to `parsers/__init__.py` and export in `__all__`
-- [ ] Add test sample `tests/samples/infomac_sample.inf` and generate expected output with `--no-nlp`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
 ### SPEC-009: Mr. Boston Drinks Database Parser
 - **Spec:** [SPEC-009-drinksdb.md](specs/SPEC-009-drinksdb.md)
 - **Priority:** P2 | **Tier:** 3 | **Type:** parser | **Impact:** 1 file in Ingest/ToDo/TXT/drinks/RECIPE.LST (~992 recipes)
@@ -62,7 +23,46 @@
 ## Archive
 
 <details>
-<summary>Completed specs (24 items)</summary>
+<summary>Completed specs (27 items)</summary>
+
+### SPEC-012: RCP Nutritional Exchange Format Parser ✅
+- **Spec:** [SPEC-012-rcp.md](specs/done/SPEC-012-rcp.md)
+- **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 9 files in Ingest/ToDo/TXT/ (~9 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-012-rcp-parser`
+- [x] Implement `RcpExchangeParser` in `parsers/rcp_exchange.py` with `@ParserRegistry.register`
+- [x] Implement detection logic checking for `.rcp` extension and `RECIPE_TEXT:` delimiter
+- [x] Implement `parse_content` extracting Line 1 (title), Line 2 (yield), floating point exchange stripped ingredients, and instructions
+- [x] Add `rcp_exchange.py` to `parsers/__init__.py` and export in `__all__`
+- [x] Add test sample `tests/samples/chili2.rcp` and generate expected output with `--no-nlp`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-010: FromScratch v2.0 Format Parser ✅
+- **Spec:** [SPEC-010-fromscratch.md](specs/done/SPEC-010-fromscratch.md)
+- **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 2 files in Ingest/ToDo/TXT/ (~190 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-010-fromscratch-parser`
+- [x] Implement `FromScratchParser` in `parsers/fromscratch.py` with `@ParserRegistry.register`
+- [x] Implement detection logic looking for `********** FROM SCRATCH V 2.0 RECIPE BEGINS ********`
+- [x] Implement `parse_content` extracting Title, Serves, KeyWords, Ingredients, and Preparation blocks
+- [x] Add `fromscratch.py` to `parsers/__init__.py` and export in `__all__`
+- [x] Add test sample `tests/samples/fromscratch_sample.fs` and generate expected output with `--no-nlp`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-011: InfoMac BBS Recipe Parser ✅
+- **Spec:** [SPEC-011-infomac.md](specs/done/SPEC-011-infomac.md)
+- **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 5 files in Ingest/ToDo/TXT/ (~120 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-011-infomac-parser`
+- [x] Implement `InfoMacParser` in `parsers/infomac.py` with `@ParserRegistry.register`
+- [x] Implement detection logic looking for `%` header, backtick recipe titles, and tilde record delimiters
+- [x] Implement `parse_content` extracting backtick titles, dash-separated ingredient/instruction sections, and tilde delimiters
+- [x] Add `infomac.py` to `parsers/__init__.py` and export in `__all__`
+- [x] Add test sample `tests/samples/infomac_sample.inf` and generate expected output with `--no-nlp`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ### SPEC-026: Generic Markdown Parser Refinements ✅
 - **Spec:** [SPEC-026-generic-md-refinements.md](specs/done/SPEC-026-generic-md-refinements.md)

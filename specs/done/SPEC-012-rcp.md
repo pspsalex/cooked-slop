@@ -4,7 +4,7 @@ title: "RCP Recipe Collection"
 tier: 3
 type: parser
 priority: P1
-status: active
+status: done
 impact: "9 files (~9 recipes)"
 deliverables:
   - parsers/rcp_exchange.py

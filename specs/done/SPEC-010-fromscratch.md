@@ -4,7 +4,7 @@ title: "FromScratch Recipe Collection"
 tier: 3
 type: parser
 priority: P1
-status: active
+status: done
 impact: "2 files (~190 recipes)"
 deliverables:
   - parsers/fromscratch.py
