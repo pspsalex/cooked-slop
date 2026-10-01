@@ -1,0 +1,128 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Road Kill Chili",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "ground beef, drained",
+      "value": 2,
+      "unitText": "pound"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "red chile peppers",
+      "value": 2,
+      "unitText": "mild"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "pepper",
+      "value": 1,
+      "unitText": "jalepeno"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cumin",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cayenne pepper",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "onion, chopped",
+      "value": 1,
+      "unitText": "small"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "clove, crushed",
+      "value": 1,
+      "unitText": "garlic"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "bell pepper",
+      "value": 1,
+      "unitText": "green"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "can olives, chopped",
+      "value": 4,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "can pinto beans",
+      "value": "15 1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "can kidney beans, drained",
+      "value": "15 1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "can tomato sauce",
+      "value": 15,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "water",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "1. Brown the beef, and drain."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "2. Blend the chile, peppers,  jalepeno peppers, tomatoe sauce, and water to make the chile sauce."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "3. Add the chile sauce to the beef, along with the onions, bell peppers, garlic, and olives."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "text": "4.  Bring to a boil, then simmer for 1 hour with the cover off the pan, stirring occasionally.  You will probably have to add water to keep it from boiling off."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "text": "5.  Add the beans and simmer for another 15 minutes."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "text": "6.  Let set in fridge overnight and reheat before serving."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "text": "For true chili hot heads, try adding a Habenero pepper or two, but stir fast to keep from losing the spoon!"
+    }
+  ],
+  "recipeYield": "8 servings",
+  "comment": "Imported from tests/samples/chili2.rcp",
+  "url": "file://tests/samples/chili2.rcp",
+  "description": "Recipe converted from RCP Exchange format"
+}
+]
