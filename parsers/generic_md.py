@@ -98,7 +98,7 @@ class GenericMdParser(BaseRecipeParser):
             )
             has_cooking_terms = bool(
                 re.search(
-                    r"(?i)\b(?:skillet|saucepan|preheat|bake|cook|stir|whisk|boil|simmer|servings?|makes)\b",
+                    r"(?i)\b(?:skillet|saucepan|pre-?heat|bake|cook|stir|whisk|boil|simmer|servings?|makes)\b",
                     content_sample,
                 )
             )
@@ -115,8 +115,10 @@ class GenericMdParser(BaseRecipeParser):
         title = raw_title.strip()
         # Remove leading Markdown headings (# Title, ## Title)
         title = re.sub(r"^#+\s*", "", title)
-        # Unescape quotes
-        title = title.replace(r"\'", "'").replace(r'\"', '"')
+        # Strip Markdown/Pandoc image syntax ![...](...){...}
+        title = re.sub(r"!\[.*?\](?:\(.*?\))?(?:\{.*?\})?", "", title)
+        # Unescape quotes and dots
+        title = title.replace(r"\'", "'").replace(r'\"', '"').replace(r"\.", ".")
         # Remove trailing backslash if present (from Pandoc hard line breaks)
         title = title.rstrip("\\").strip()
         # Remove Pandoc link/underline syntax like [Title]{.underline} or [Title]
@@ -125,13 +127,35 @@ class GenericMdParser(BaseRecipeParser):
         title = re.sub(r"^(?:\*{1,3}|_{1,3})(.*?)(?:\*{1,3}|_{1,3})$", r"\1", title.strip())
         return title.strip()
 
-    def _clean_line(self, line: str) -> str:
+    def _clean_line(self, line: str, is_ingredient: bool = False) -> str:
         """Clean list markers, backslashes, and bullet formatting from line."""
         text = line.strip()
-        text = text.replace(r"\'", "'").replace(r'\"', '"')
+        text = text.replace(r"\'", "'").replace(r'\"', '"').replace(r"\--", "-").replace(r"\-", "-")
         text = text.rstrip("\\").strip()
-        # Remove bullet points or step numbers (- , * , + , 1. , 2) , • , · )
-        text = re.sub(r"^(?:[-*+•·]|\d+[.)])\s+", "", text)
+        # Strip leading blockquote markers (> )
+        text = re.sub(r"^(?:>\s*)+", "", text)
+        # Remove bullet points (- , * , + , • , · )
+        text = re.sub(r"^[-*+•·]\s+", "", text)
+        if is_ingredient:
+            # Remove or normalize numbered list items in ingredients (e.g. 1. or 1\. or 2) )
+            m_num = re.match(r"^(\d+)\\?[.)]\s+(.*)$", text)
+            if m_num:
+                num_str, rest = m_num.group(1), m_num.group(2)
+                # If rest starts with a number/fraction, the leading number is a list bullet (e.g. "2. 1/2 cup")
+                if re.match(r"^(?:\d|[½¼¾⅓⅔⅛⅜⅝⅞])", rest):
+                    text = rest
+                elif re.match(
+                    r"(?i)^(?:cups?|tbsp?\.?|tsp?\.?|tablespoons?|teaspoons?|lbs?\.?|pounds?|oz\.?|ounces?|grams?|g|kg|ml|pinch|dash|cloves?|slices?|cans?|pkgs?\.?|packages?)\b",
+                    rest,
+                ):
+                    text = f"{num_str} {rest}"
+                else:
+                    text = rest
+        else:
+            # In instructions or other text, always strip numbered list bullets
+            text = re.sub(r"^(?:[-*+•·]|\d+\\?[.)])\s+", "", text)
+        # Remove outer bold/italic markup
+        text = re.sub(r"^(?:\*{1,3}|_{1,3})(.*?)(?:\*{1,3}|_{1,3})$", r"\1", text.strip())
         return text.strip(" -*")
 
     def _is_ingredients_header(self, line: str) -> bool:
@@ -163,38 +187,42 @@ class GenericMdParser(BaseRecipeParser):
         } or bool(re.match(r"(?i)^(?:recipe index|table of contents)\b", clean))
 
     def _looks_like_qty_or_ing(self, stripped: str) -> bool:
+        s = stripped.strip()
+        s = re.sub(r"^(?:>\s*)+", "", s).strip()
+        s = re.sub(r"^(?:\*{1,3}|_{1,3})(.*?)(?:\*{1,3}|_{1,3})$", r"\1", s).strip()
         return bool(
             re.match(
-                r"^(?:[-*+•·]\s+|\d+[.)]\s+|\d+(?:/\d+)?(?:\s*-\s*\d+(?:/\d+)?)?\s+(?:[a-zA-Z]|½|¼|¾|⅓|⅔|⅛|⅜|⅝|⅞)|[½¼¾⅓⅔⅛⅜⅝⅞]|(?:a|an|some|few|pinch|dash)\s+)",
-                stripped,
+                r"^(?:[-*+•·]\s+|\d+\\?[.)]\s+|\d+(?:\s+\d+/\d+|\.\d+|/\d+)?(?:\s*-\s*\d+(?:\s+\d+/\d+|\.\d+|/\d+)?)?\s+(?:[a-zA-Z]|½|¼|¾|⅓|⅔|⅛|⅜|⅝|⅞)|[½¼¾⅓⅔⅛⅜⅝⅞]|(?:a|an|some|few|pinch|dash)\s+)",
+                s,
             )
         )
 
     def _looks_like_instruction_start(self, stripped: str) -> bool:
         """Detect whether a line is likely the start of an instruction step/paragraph."""
-        if re.match(r"^(?:(?:\*{1,3}|_{1,3})\s*)?\d+[.)]\s+", stripped):
+        s = re.sub(r"^(?:>\s*)+", "", stripped).strip()
+        if re.match(r"^(?:(?:\*{1,3}|_{1,3})\s*)?\d+[.)]\s+", s):
             return True
         instruction_verbs = (
             r"(?i)^(?:(?:\*{1,3}|_{1,3})\s*)?(?:in\s+an?\s+|meanwhile\b|transfer\b|combine\b|place\b|pour\b|mix\b|stir\b|whisk\b|"
-            r"heat\b|cook\b|bake\b|preheat\b|add\b|bring\b|boil\b|simmer\b|serve\b|drain\b|remove\b|beat\b|blend\b|"
+            r"heat\b|cook\b|bake\b|pre-?heat\b|add\b|bring\b|boil\b|simmer\b|serve\b|drain\b|remove\b|beat\b|blend\b|"
             r"cut\b|chop\b|peel\b|roll\b|spread\b|melt\b|sprinkle\b|brown\b|cover\b|toss\b|fold\b|cool\b|chill\b|"
             r"refrigerate\b|divide\b|arrange\b|season\b|garnish\b|sift\b|using\s+|with\s+a\s+|to\s+make\b|"
             r"to\s+prepare\b|soften\b|to\s+serve\b|to\s+assemble\b|dissolve\b|marinate\b|rinse\b|sauté\b|saute\b|"
             r"make\s+the\s+|assemble\s+|get\s+out\s+|soak\s+|put\s+the\s+|grease\s+|"
             r"line\s+a\s+|set\s+aside\b|let\s+|allow\s+|layer\s+|in\s+a\s+)"
         )
-        if re.match(instruction_verbs, stripped):
+        if re.match(instruction_verbs, s):
             return True
 
         # Narrative cooking sentences without bullet or quantity start
-        is_qty_start = self._looks_like_qty_or_ing(stripped)
-        if len(stripped) > 60 and not is_qty_start:
+        is_qty_start = self._looks_like_qty_or_ing(s)
+        if len(s) > 60 and not is_qty_start:
             cooking_keywords = [
                 "skillet", "saucepan", "bowl", "oven", "minutes", "hours",
                 "heat", "degrees", "bake", "cook", "stir",
                 "blender", "processor", "microwave", "double boiler", "refrigerator",
             ]
-            if any(term in stripped.lower() for term in cooking_keywords):
+            if any(term in s.lower() for term in cooking_keywords):
                 return True
         return False
 
@@ -284,7 +312,7 @@ class GenericMdParser(BaseRecipeParser):
 
             # Check if this line is a multi-recipe separator
             is_dash_sep = bool(
-                re.match(r"^-{12,}$", stripped) or re.match(r"^={12,}$", stripped)
+                re.match(r"^(?:-{12,}|={12,}|(?:\\?~){12,})$", stripped)
             )
             m_md_h = re.match(r"^(#{1,6})\s+(.*)$", stripped)
             is_bold_title = bool(re.match(r"^(?:\*{2,3}|_{2,3})[^*_]+(?:\*{2,3}|_{2,3})$", stripped))
@@ -321,7 +349,7 @@ class GenericMdParser(BaseRecipeParser):
                     else:
                         is_recipe_boundary = True
                         new_heading_level = h_lvl
-            elif is_bold_title and (current_recipe is None or state in ("INSTRUCTIONS", "PREAMBLE")):
+            elif is_bold_title and (current_recipe is None or state in ("INSTRUCTIONS", "INGREDIENTS", "PREAMBLE")):
                 b_text = stripped.strip("*_ ").strip()
                 if (
                     not self._is_ingredients_header(b_text)
@@ -329,6 +357,7 @@ class GenericMdParser(BaseRecipeParser):
                     and not self._is_notes_header(b_text)
                     and not self._is_metadata_line(b_text)
                     and not self._looks_like_qty_or_ing(b_text)
+                    and not self._looks_like_instruction_start(b_text)
                     and not self._is_toc_title(b_text)
                 ):
                     nxt = idx + 1
@@ -338,16 +367,27 @@ class GenericMdParser(BaseRecipeParser):
                     nxt_is_bold = bool(re.match(r"^(?:\*{2,3}|_{2,3})[^*_]+(?:\*{2,3}|_{2,3})$", nxt_line))
                     nxt_is_hash = bool(re.match(r"^#{1,6}\s+", nxt_line))
 
-                    if not nxt_is_bold and not nxt_is_hash and nxt_line:
+                    if (
+                        self._looks_like_qty_or_ing(nxt_line)
+                        or self._is_ingredients_header(nxt_line)
+                        or self._is_instructions_header(nxt_line)
+                        or self._is_metadata_line(nxt_line)
+                    ):
+                        is_recipe_boundary = True
+                    elif not nxt_is_bold and not nxt_is_hash and nxt_line:
                         if (
-                            self._looks_like_qty_or_ing(nxt_line)
-                            or self._is_ingredients_header(nxt_line)
-                            or self._is_instructions_header(nxt_line)
-                            or self._is_metadata_line(nxt_line)
-                            or self._looks_like_instruction_start(nxt_line)
+                            self._looks_like_instruction_start(nxt_line)
                             or len(nxt_line) > 15
                         ):
                             is_recipe_boundary = True
+                    elif current_recipe and (current_recipe.ingredients or current_recipe.instructions):
+                        look_ahead = nxt
+                        while look_ahead < min(len(lines), nxt + 5) and lines[look_ahead][0].strip():
+                            la_line = lines[look_ahead][0].strip()
+                            if self._looks_like_qty_or_ing(la_line) or self._is_ingredients_header(la_line):
+                                is_recipe_boundary = True
+                                break
+                            look_ahead += 1
 
             if is_recipe_boundary:
                 # If we just saw a section header (e.g. boxed header in Pandoc Markdown), skip it
@@ -372,8 +412,9 @@ class GenericMdParser(BaseRecipeParser):
                         idx += 1
                         continue
                     if state == "INSTRUCTIONS" and self._looks_like_instruction_start(next_line):
-                        idx += 1
-                        continue
+                        if not re.match(r"^\d+\\?[.)]\s+[A-Za-z]", next_line):
+                            idx += 1
+                            continue
 
                     r = flush_recipe()
                     if r:
@@ -510,7 +551,7 @@ class GenericMdParser(BaseRecipeParser):
                     state = "INSTRUCTIONS"
                     # fall through to INSTRUCTIONS below
                 else:
-                    ing_text = self._clean_line(stripped.replace("--", "-"))
+                    ing_text = self._clean_line(stripped.replace("--", "-"), is_ingredient=True)
                     ing_text = re.sub(r"^#+\s*", "", ing_text)
                     if ing_text and ing_text != "." and not re.match(r"^-{3,}$", ing_text):
                         current_recipe.ingredients.append(
@@ -528,11 +569,11 @@ class GenericMdParser(BaseRecipeParser):
                     idx += 1
                     continue
 
-                is_new_list_item = bool(re.match(r"^(?:[-*+•·]|\d+[.)]|#+)\s+", stripped))
+                is_new_list_item = bool(re.match(r"^(?:[-*+•·]|\d+\\?[.)]|#+)\s+", stripped))
                 if is_new_list_item and current_instruction_step:
                     flush_instruction(current_recipe)
 
-                inst_text = self._clean_line(stripped)
+                inst_text = self._clean_line(stripped, is_ingredient=False)
                 inst_text = re.sub(r"^#+\s*", "", inst_text)
                 if inst_text and not re.match(r"^-{3,}$", inst_text):
                     current_instruction_step.append(inst_text)
