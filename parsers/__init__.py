@@ -8,6 +8,7 @@ from .models import Recipe, Ingredient
 from .base import BaseIngredientParser, BaseRecipeParser
 from .ingredients import get_ingredient_parser
 from .registry import ParserRegistry
+from .accuchef import AccuChefParser
 
 # Auto-discover and import all modules in parsers/ so @ParserRegistry.register fires
 _package_dir = str(Path(__file__).parent)
@@ -29,4 +30,6 @@ __all__ = [
     'BaseRecipeParser',
     'get_ingredient_parser',
     'ParserRegistry',
+    'AccuChefParser',
 ]
+

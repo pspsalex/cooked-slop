@@ -1,0 +1,77 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Taste Of Thailand",
+  "recipeIngredient": [
+    "Vegetable cooking spray",
+    {
+      "@type": "PropertyValue",
+      "name": "Chicken broth",
+      "value": 1.5,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Rice",
+      "value": 1.0,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "green onions",
+      "value": 0.25,
+      "unitText": "cup",
+      "description": "Chopped"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Soy sauce",
+      "value": 2.0,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Ground red pepper",
+      "value": 0.25,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Carrot",
+      "value": 1.0,
+      "description": "cut into thin strips"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Garlic",
+      "value": 1.0,
+      "unitText": "clove",
+      "description": "minced"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "1 Spray a nonstick skillet with cooking spray. Heat over medium-high heat."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "2 Add chicken broth, rice, green onions, soy sauce, and pepper. Bring to a boil."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "text": "3 Reduce heat, cover, and simmer 15 minutes. Stir in carrots and garlic; cover and simmer 5 minutes longer."
+    }
+  ],
+  "recipeYield": "6 Servings",
+  "recipeCategory": "Vegetables",
+  "keywords": "Vegetables",
+  "comment": "Imported from tests/samples/accuchef_sample.out",
+  "url": "file://tests/samples/accuchef_sample.out",
+  "description": "Recipe converted from AccuChef format"
+}
+]
