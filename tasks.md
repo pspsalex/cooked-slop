@@ -5,25 +5,27 @@
 
 ## Active Tasks
 
-### SPEC-009: Mr. Boston Drinks Database Parser
-- **Spec:** [SPEC-009-drinksdb.md](specs/SPEC-009-drinksdb.md)
-- **Priority:** P2 | **Tier:** 3 | **Type:** parser | **Impact:** 1 file in Ingest/ToDo/TXT/drinks/RECIPE.LST (~992 recipes)
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-009-drinksdb-parser`
-- [ ] Implement `DrinksDbParser` in `parsers/drinksdb.py` with `@ParserRegistry.register`
-- [ ] Implement detection logic for fixed-column drink catalog format
-- [ ] Implement `parse_content` extracting drink titles, measurements, glassware/instructions
-- [ ] Add `drinksdb.py` to `parsers/__init__.py` and export in `__all__`
-- [ ] Add test sample `tests/samples/drinksdb_sample.lst` and generate expected output with `--no-nlp`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+*No active tasks.*
 
 ---
 
 ## Archive
 
 <details>
-<summary>Completed specs (27 items)</summary>
+<summary>Completed specs (28 items)</summary>
+
+### SPEC-009: Mr. Boston Drinks Database Parser ✅
+- **Spec:** [SPEC-009-drinksdb.md](specs/done/SPEC-009-drinksdb.md)
+- **Priority:** P2 | **Tier:** 3 | **Type:** parser | **Impact:** 1 file in Ingest/ToDo/TXT/drinks/RECIPE.LST / DRINKS.OUT (~992 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-009-drinksdb-parser`
+- [x] Implement `DrinksDbParser` in `parsers/drinks_db.py` with `@ParserRegistry.register`
+- [x] Implement detection logic for fixed-column drink catalog format
+- [x] Implement `parse_content` extracting drink titles, measurements, glassware/instructions
+- [x] Add `drinks_db.py` to `parsers/__init__.py` and export in `__all__`
+- [x] Add test sample `tests/samples/drinks.out` and generate expected output with `--no-nlp`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ### SPEC-012: RCP Nutritional Exchange Format Parser ✅
 - **Spec:** [SPEC-012-rcp.md](specs/done/SPEC-012-rcp.md)
