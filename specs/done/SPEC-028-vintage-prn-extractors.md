@@ -4,7 +4,7 @@ title: "Vintage Recipe PRN Print Dump Normalizer and Extractor"
 tier: 2
 type: script
 priority: P1
-status: active
+status: done
 impact: "~10 printer dump files in Ingest/ToDo/TXT/ unlocking ~500 vintage recipes"
 deliverables:
   - tools/extract/prn_normalizer.py

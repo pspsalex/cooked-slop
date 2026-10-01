@@ -4,7 +4,7 @@ title: "AccuChef Format Parser"
 tier: 2
 type: parser
 priority: P1
-status: active
+status: done
 impact: "1 large archive file (thai-converted-mmf.out), 544 recipes"
 deliverables:
   - parsers/accuchef.py

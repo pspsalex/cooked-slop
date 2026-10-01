@@ -5,49 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-026: Generic Markdown Parser Refinements
-- **Spec:** [SPEC-026-generic-md-refinements.md](specs/SPEC-026-generic-md-refinements.md)
-- **Priority:** P0 | **Tier:** 1 | **Type:** parser | **Impact:** ~180 missed DOCX files; unlocks 550 CROCKPOT RECIPES (+549 recipes)
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-026-generic-md-refinements`
-- [ ] Update `_looks_like_qty_or_ing()` to match pandoc escaped numbers `\d+\\?[.)]`
-- [ ] Update `_clean_line()` to strip leading blockquote markers `>\s*`
-- [ ] Update `_clean_title()` to strip Pandoc image markdown `!\[.*?\](?:\(.*?\))?(?:\{.*?\})?`
-- [ ] Update `_looks_like_instruction_start()` to match hyphenated verbs like `pre-?heat\b`
-- [ ] Update bold title detection to avoid flagging bold ingredients as titles in all-bold recipes
-- [ ] Update separator regex `is_dash_sep` to detect tilde lines `(?:\\?~){12,}` and capture plain numbered titles following them
-- [ ] Add sample fixture `tests/samples/generic_md_edge_cases.md` and generate expected output with `--no-nlp`
-- [ ] Create unit tests in `tests/unit/test_generic_md_edge_cases.py`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
-### SPEC-027: AccuChef Format Parser
-- **Spec:** [SPEC-027-accuchef-format.md](specs/SPEC-027-accuchef-format.md)
-- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** 1 archive file (thai-converted-mmf.out), 544 recipes
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-027-accuchef-parser`
-- [ ] Implement `AccuChefParser` in `parsers/accuchef.py` with `@ParserRegistry.register`
-- [ ] Implement detection logic looking for `*****AccuChef` and `AA ` tags
-- [ ] Implement generator `parse_content` handling `AA` (title), `B` (category), `D`/`M` (yield), `H`/`I`/`K` (ingredients), `J` (instructions), `Z` (record terminator)
-- [ ] Add `accuchef.py` to `parsers/__init__.py` and export in `__all__`
-- [ ] Add test sample `tests/samples/accuchef_sample.out` and generate expected output with `--no-nlp`
-- [ ] Add unit test `tests/unit/test_accuchef.py`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
-### SPEC-028: Vintage Recipe PRN Print Dump Normalizer and Extractor
-- **Spec:** [SPEC-028-vintage-prn-extractors.md](specs/SPEC-028-vintage-prn-extractors.md)
-- **Priority:** P1 | **Tier:** 2 | **Type:** script | **Impact:** ~10 printer dump files unlocking ~500 vintage recipes
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-028-vintage-prn`
-- [ ] Create `tools/extract/prn_normalizer.py` supporting CLI and library imports
-- [ ] Implement PCL escape sequence cleaner (`\x1b\([a-zA-Z0-9]+` / `\x1b&[a-zA-Z0-9.]+`)
-- [ ] Implement normalizer handlers for: MasterCook printouts (`holiday.prn`), form-feed card dumps (`cb_100.prn`), boxed cards (`mmm150.prn.txt`), recipe printouts (`prcb.prn`), and asterisk separated dumps (`tcs.prn`)
-- [ ] Output converted files to generic markdown with `<!-- format: generic_md -->` or clean MasterCook
-- [ ] Add unit tests in `tests/unit/test_prn_normalizer.py`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
-
 ### SPEC-012: RCP Nutritional Exchange Format Parser
 - **Spec:** [SPEC-012-rcp.md](specs/SPEC-012-rcp.md)
 - **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 9 files in Ingest/ToDo/TXT/ (~9 recipes)
@@ -105,7 +62,50 @@
 ## Archive
 
 <details>
-<summary>Completed specs (21 items)</summary>
+<summary>Completed specs (24 items)</summary>
+
+### SPEC-026: Generic Markdown Parser Refinements ✅
+- **Spec:** [SPEC-026-generic-md-refinements.md](specs/done/SPEC-026-generic-md-refinements.md)
+- **Priority:** P0 | **Tier:** 1 | **Type:** parser | **Impact:** ~180 missed DOCX files; unlocks 550 CROCKPOT RECIPES (+549 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-026-generic-md-refinements`
+- [x] Update `_looks_like_qty_or_ing()` to match pandoc escaped numbers `\d+\\?[.)]`
+- [x] Update `_clean_line()` to strip leading blockquote markers `>\s*`
+- [x] Update `_clean_title()` to strip Pandoc image markdown `!\[.*?\](?:\(.*?\))?(?:\{.*?\})?`
+- [x] Update `_looks_like_instruction_start()` to match hyphenated verbs like `pre-?heat\b`
+- [x] Update bold title detection to avoid flagging bold ingredients as titles in all-bold recipes
+- [x] Update separator regex `is_dash_sep` to detect tilde lines `(?:\\?~){12,}` and capture plain numbered titles following them
+- [x] Add sample fixture `tests/samples/generic_md_edge_cases.md` and generate expected output with `--no-nlp`
+- [x] Create unit tests in `tests/unit/test_generic_md_edge_cases.py`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-027: AccuChef Format Parser ✅
+- **Spec:** [SPEC-027-accuchef-format.md](specs/done/SPEC-027-accuchef-format.md)
+- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** 1 archive file (thai-converted-mmf.out), 544 recipes
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-027-accuchef-parser`
+- [x] Implement `AccuChefParser` in `parsers/accuchef.py` with `@ParserRegistry.register`
+- [x] Implement detection logic looking for `*****AccuChef` and `AA ` tags
+- [x] Implement generator `parse_content` handling `AA` (title), `B` (category), `D`/`M` (yield), `H`/`I`/`K` (ingredients), `J` (instructions), `Z` (record terminator)
+- [x] Add `accuchef.py` to `parsers/__init__.py` and export in `__all__`
+- [x] Add test sample `tests/samples/accuchef_sample.out` and generate expected output with `--no-nlp`
+- [x] Add unit test `tests/unit/test_accuchef.py`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-028: Vintage Recipe PRN Print Dump Normalizer and Extractor ✅
+- **Spec:** [SPEC-028-vintage-prn-extractors.md](specs/done/SPEC-028-vintage-prn-extractors.md)
+- **Priority:** P1 | **Tier:** 2 | **Type:** script | **Impact:** ~10 printer dump files unlocking ~500 vintage recipes
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-028-vintage-prn`
+- [x] Create `tools/extract/prn_normalizer.py` supporting CLI and library imports
+- [x] Implement PCL escape sequence cleaner (`\x1b\([a-zA-Z0-9]+` / `\x1b&[a-zA-Z0-9.]+`)
+- [x] Implement normalizer handlers for: MasterCook printouts (`holiday.prn`), form-feed card dumps (`cb_100.prn`), boxed cards (`mmm150.prn.txt`), recipe printouts (`prcb.prn`), and asterisk separated dumps (`tcs.prn`)
+- [x] Output converted files to generic markdown with `<!-- format: generic_md -->` or clean MasterCook
+- [x] Add unit tests in `tests/unit/test_prn_normalizer.py`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ### SPEC-025: Converter Relative Path Output ✅
 - **Spec:** [SPEC-025-converter-relative-paths.md](specs/done/SPEC-025-converter-relative-paths.md)

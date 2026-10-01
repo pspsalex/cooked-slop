@@ -4,7 +4,7 @@ title: "Generic Markdown Parser Refinements"
 tier: 1
 type: parser
 priority: P0
-status: active
+status: done
 impact: "~180 missed DOCX files; unlocks 550 CROCKPOT RECIPES (+549 recipes)"
 deliverables:
   - parsers/generic_md.py
