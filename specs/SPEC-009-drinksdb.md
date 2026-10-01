@@ -4,9 +4,12 @@ title: "Mr. Boston Drinks Database Parser"
 tier: 3
 type: parser
 priority: P2
-status: done
+status: active
 impact: "1 file (~992 recipes)"
-deliverables: []
+deliverables:
+  - parsers/drinksdb.py
+  - tests/samples/drinksdb_sample.lst
+  - tests/expected/drinksdb_sample.lst.json
 ---
 
 # Spec: Mr. Boston Drinks Database Parser

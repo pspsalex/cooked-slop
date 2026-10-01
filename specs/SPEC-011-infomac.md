@@ -4,9 +4,12 @@ title: "InfoMac Recipe Collection"
 tier: 3
 type: parser
 priority: P1
-status: done
-impact: "TBD"
-deliverables: []
+status: active
+impact: "5 files (~120 recipes)"
+deliverables:
+  - parsers/infomac.py
+  - tests/samples/infomac_sample.inf
+  - tests/expected/infomac_sample.inf.json
 ---
 
 # Spec: Info-Mac / BBS .INF Recipe Parser

@@ -4,9 +4,12 @@ title: "FromScratch Recipe Collection"
 tier: 3
 type: parser
 priority: P1
-status: done
-impact: "TBD"
-deliverables: []
+status: active
+impact: "2 files (~190 recipes)"
+deliverables:
+  - parsers/fromscratch.py
+  - tests/samples/fromscratch_sample.fs
+  - tests/expected/fromscratch_sample.fs.json
 ---
 
 # Spec: From Scratch v2.0 Parser

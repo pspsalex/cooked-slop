@@ -4,9 +4,12 @@ title: "RCP Recipe Collection"
 tier: 3
 type: parser
 priority: P1
-status: done
-impact: "TBD"
-deliverables: []
+status: active
+impact: "9 files (~9 recipes)"
+deliverables:
+  - parsers/rcp_exchange.py
+  - tests/samples/chili2.rcp
+  - tests/expected/chili2.rcp.json
 ---
 
 # Spec: RCP Nutritional Exchange Format Parser

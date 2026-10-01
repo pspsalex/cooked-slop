@@ -5,14 +5,107 @@
 
 ## Active Tasks
 
-*No active tasks.*
+### SPEC-026: Generic Markdown Parser Refinements
+- **Spec:** [SPEC-026-generic-md-refinements.md](specs/SPEC-026-generic-md-refinements.md)
+- **Priority:** P0 | **Tier:** 1 | **Type:** parser | **Impact:** ~180 missed DOCX files; unlocks 550 CROCKPOT RECIPES (+549 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-026-generic-md-refinements`
+- [ ] Update `_looks_like_qty_or_ing()` to match pandoc escaped numbers `\d+\\?[.)]`
+- [ ] Update `_clean_line()` to strip leading blockquote markers `>\s*`
+- [ ] Update `_clean_title()` to strip Pandoc image markdown `!\[.*?\](?:\(.*?\))?(?:\{.*?\})?`
+- [ ] Update `_looks_like_instruction_start()` to match hyphenated verbs like `pre-?heat\b`
+- [ ] Update bold title detection to avoid flagging bold ingredients as titles in all-bold recipes
+- [ ] Update separator regex `is_dash_sep` to detect tilde lines `(?:\\?~){12,}` and capture plain numbered titles following them
+- [ ] Add sample fixture `tests/samples/generic_md_edge_cases.md` and generate expected output with `--no-nlp`
+- [ ] Create unit tests in `tests/unit/test_generic_md_edge_cases.py`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-027: AccuChef Format Parser
+- **Spec:** [SPEC-027-accuchef-format.md](specs/SPEC-027-accuchef-format.md)
+- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** 1 archive file (thai-converted-mmf.out), 544 recipes
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-027-accuchef-parser`
+- [ ] Implement `AccuChefParser` in `parsers/accuchef.py` with `@ParserRegistry.register`
+- [ ] Implement detection logic looking for `*****AccuChef` and `AA ` tags
+- [ ] Implement generator `parse_content` handling `AA` (title), `B` (category), `D`/`M` (yield), `H`/`I`/`K` (ingredients), `J` (instructions), `Z` (record terminator)
+- [ ] Add `accuchef.py` to `parsers/__init__.py` and export in `__all__`
+- [ ] Add test sample `tests/samples/accuchef_sample.out` and generate expected output with `--no-nlp`
+- [ ] Add unit test `tests/unit/test_accuchef.py`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-028: Vintage Recipe PRN Print Dump Normalizer and Extractor
+- **Spec:** [SPEC-028-vintage-prn-extractors.md](specs/SPEC-028-vintage-prn-extractors.md)
+- **Priority:** P1 | **Tier:** 2 | **Type:** script | **Impact:** ~10 printer dump files unlocking ~500 vintage recipes
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-028-vintage-prn`
+- [ ] Create `tools/extract/prn_normalizer.py` supporting CLI and library imports
+- [ ] Implement PCL escape sequence cleaner (`\x1b\([a-zA-Z0-9]+` / `\x1b&[a-zA-Z0-9.]+`)
+- [ ] Implement normalizer handlers for: MasterCook printouts (`holiday.prn`), form-feed card dumps (`cb_100.prn`), boxed cards (`mmm150.prn.txt`), recipe printouts (`prcb.prn`), and asterisk separated dumps (`tcs.prn`)
+- [ ] Output converted files to generic markdown with `<!-- format: generic_md -->` or clean MasterCook
+- [ ] Add unit tests in `tests/unit/test_prn_normalizer.py`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-012: RCP Nutritional Exchange Format Parser
+- **Spec:** [SPEC-012-rcp.md](specs/SPEC-012-rcp.md)
+- **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 9 files in Ingest/ToDo/TXT/ (~9 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-012-rcp-parser`
+- [ ] Implement `RcpExchangeParser` in `parsers/rcp_exchange.py` with `@ParserRegistry.register`
+- [ ] Implement detection logic checking for `.rcp` extension and `RECIPE_TEXT:` delimiter
+- [ ] Implement `parse_content` extracting Line 1 (title), Line 2 (yield), floating point exchange stripped ingredients, and instructions
+- [ ] Add `rcp_exchange.py` to `parsers/__init__.py` and export in `__all__`
+- [ ] Add test sample `tests/samples/chili2.rcp` and generate expected output with `--no-nlp`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-010: FromScratch v2.0 Format Parser
+- **Spec:** [SPEC-010-fromscratch.md](specs/SPEC-010-fromscratch.md)
+- **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 2 files in Ingest/ToDo/TXT/ (~190 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-010-fromscratch-parser`
+- [ ] Implement `FromScratchParser` in `parsers/fromscratch.py` with `@ParserRegistry.register`
+- [ ] Implement detection logic looking for `********** FROM SCRATCH V 2.0 RECIPE BEGINS ********`
+- [ ] Implement `parse_content` extracting Title, Serves, KeyWords, Ingredients, and Preparation blocks
+- [ ] Add `fromscratch.py` to `parsers/__init__.py` and export in `__all__`
+- [ ] Add test sample `tests/samples/fromscratch_sample.fs` and generate expected output with `--no-nlp`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-011: InfoMac BBS Recipe Parser
+- **Spec:** [SPEC-011-infomac.md](specs/SPEC-011-infomac.md)
+- **Priority:** P1 | **Tier:** 3 | **Type:** parser | **Impact:** 5 files in Ingest/ToDo/TXT/ (~120 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-011-infomac-parser`
+- [ ] Implement `InfoMacParser` in `parsers/infomac.py` with `@ParserRegistry.register`
+- [ ] Implement detection logic looking for `%` header, backtick recipe titles, and tilde record delimiters
+- [ ] Implement `parse_content` extracting backtick titles, dash-separated ingredient/instruction sections, and tilde delimiters
+- [ ] Add `infomac.py` to `parsers/__init__.py` and export in `__all__`
+- [ ] Add test sample `tests/samples/infomac_sample.inf` and generate expected output with `--no-nlp`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
+
+### SPEC-009: Mr. Boston Drinks Database Parser
+- **Spec:** [SPEC-009-drinksdb.md](specs/SPEC-009-drinksdb.md)
+- **Priority:** P2 | **Tier:** 3 | **Type:** parser | **Impact:** 1 file in Ingest/ToDo/TXT/drinks/RECIPE.LST (~992 recipes)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-009-drinksdb-parser`
+- [ ] Implement `DrinksDbParser` in `parsers/drinksdb.py` with `@ParserRegistry.register`
+- [ ] Implement detection logic for fixed-column drink catalog format
+- [ ] Implement `parse_content` extracting drink titles, measurements, glassware/instructions
+- [ ] Add `drinksdb.py` to `parsers/__init__.py` and export in `__all__`
+- [ ] Add test sample `tests/samples/drinksdb_sample.lst` and generate expected output with `--no-nlp`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ---
 
 ## Archive
 
 <details>
-<summary>Completed specs (25 items)</summary>
+<summary>Completed specs (21 items)</summary>
 
 ### SPEC-025: Converter Relative Path Output ✅
 - **Spec:** [SPEC-025-converter-relative-paths.md](specs/done/SPEC-025-converter-relative-paths.md)
@@ -204,27 +297,6 @@
 - [x] RFC header stripping, quotation block removal
 - [x] Recipe vs non-recipe classification
 - [x] Failure report generation
-
-### SPEC-009: Mr. Boston Drinks Database Parser ✅
-- **Spec:** [SPEC-009-drinksdb.md](specs/done/SPEC-009-drinksdb.md)
-- **Priority:** P2 | **Tier:** 3 | **Type:** parser | **Impact:** 1 file (~992 recipes)
-- [x] Parser for fixed-width column drink database format
-- [x] Test sample and expected output
-
-### SPEC-010: FromScratch Recipe Collection ✅
-- **Spec:** [SPEC-010-fromscratch.md](specs/done/SPEC-010-fromscratch.md)
-- **Priority:** P1 | **Tier:** 3 | **Type:** parser
-- [x] Implementation complete
-
-### SPEC-011: InfoMac Recipe Collection ✅
-- **Spec:** [SPEC-011-infomac.md](specs/done/SPEC-011-infomac.md)
-- **Priority:** P1 | **Tier:** 3 | **Type:** parser
-- [x] Implementation complete
-
-### SPEC-012: RCP Recipe Collection ✅
-- **Spec:** [SPEC-012-rcp.md](specs/done/SPEC-012-rcp.md)
-- **Priority:** P1 | **Tier:** 3 | **Type:** parser
-- [x] Implementation complete
 
 ### SPEC-013: Code Review Fixes — Unpushed Commits ✅
 - **Spec:** [SPEC-013-review-fixes.md](specs/done/SPEC-013-review-fixes.md)
