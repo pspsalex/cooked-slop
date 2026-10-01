@@ -1,0 +1,304 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "AMANDA COCKERELL'S CORN PONE",
+  "recipeIngredient": [
+    "Corn meal",
+    "buttermilk",
+    "sugar"
+  ],
+  "recipeInstructions": [
+    "mix buttermilk with corn meal and about a teaspoon of sugar till the consistancy of good sandcastle building sand (neither one of us could find a better description) and fry on medium heat in grease/oil about 5-10 min a side, depending on thickness  Serve with lots of butter melted on the top. went really well with breakfast."
+  ],
+  "comment": "Imported from tests/samples/infomac_sample.inf",
+  "url": "file://tests/samples/infomac_sample.inf",
+  "description": "Recipe converted from Info-Mac format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "BUTTERMILK CORN BREAD",
+  "recipeIngredient": [
+    "Preheat the oven to 400 degrees F.  Grease a 9 X 12-inch baking dish.  Sift",
+    "together the following:",
+    {
+      "@type": "PropertyValue",
+      "name": "Unbleached All Purpose Flour",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Baking Powder",
+      "value": 2,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Baking Soda",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Salt",
+      "value": "3/4",
+      "unitText": "teaspoon"
+    },
+    "Beat together in a large bowl, in the order given,",
+    {
+      "@type": "PropertyValue",
+      "name": "Eggs",
+      "value": 2,
+      "unitText": "large"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Sugar",
+      "value": "3/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Butter or Sour Milk",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Melted Butter, Slightly Cooled",
+      "value": "1/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Stone or Coarsely Ground Corn Meal",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Stir dry ingredients into the buttermilk mixture.  Turn into prepared pan. Bake at 400 degrees for 25 to 30 minutes or until a wooden pick inserted in the center comes out clean.  Serve warm."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "I found this recipe in a cookbook called The Wooden Spoon Bread Book by Marilyn M Moore.  And I really do like it.  I have made it with sour milk and also with the dried Buttermilk powder that is available at the grocery stores here.  I much prefer the buttermilk in it.  One place to get true stone ground corn meal, unless you grind it yourself, is at Walnut Acres Penns Creek PA 17862.  And they did have a free catalog that they would send you that gives the prices.  It is a little expensive, but they have many things that you do not find in the shopping mall supermarkets."
+    }
+  ],
+  "recipeYield": "12 Servings",
+  "comment": "Imported from tests/samples/infomac_sample.inf",
+  "url": "file://tests/samples/infomac_sample.inf",
+  "description": "Recipe converted from Info-Mac format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "BACONY CORN BREAD",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "8oz package of bacon slices",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "all purpose flour",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "cornmeal",
+      "value": "1 1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": "1/4"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "double acting baking powder",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 2
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "milk",
+      "value": "1 1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salad oil",
+      "value": "1/4",
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Preheat oven to 400.  Cook bacon crisp, and crumble; set aside. Reserve 1/4 C bacon drippings. Grease 13x9 baking pan.  In a large bowl, with fork, mix flour, cornmeal, sugar, baking powder, and salt. In medium bowl, with fork, beat together eggs, milk, salad oil and reserved bacon drippings. Pour this mixture all at once into flour mixture, stirring until flour is just moistened.  Quickly pour batter into baking pan, spreading evenly.  Sprinkle with crumbled bacon.  Bake about 25 minutes, or until golden and toothpick inserted comes out clean. Cool on wireracks 10 minutes.  Makes 15 servings."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Here are a couple from _The Good Housekeeping Cookbook_"
+    }
+  ],
+  "recipeYield": "15 servings",
+  "comment": "Imported from tests/samples/infomac_sample.inf",
+  "url": "file://tests/samples/infomac_sample.inf",
+  "description": "Recipe converted from Info-Mac format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "CORNBREAD STICKS",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "cornmeal",
+      "value": "1/3",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "well-beaten egg",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "flour",
+      "value": "1/2",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": 3,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "melted butter;or oil",
+      "value": 2,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "baking powder",
+      "value": 2,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "milk",
+      "value": "1/2",
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "Heat cornbread stick pan in oven as you are preheating the oven; brush with some of the melted butter and then pour in the batter(after adding the rest of the melted butter to the batter.) Bake 425  20-25 min. The best cornbread sticks I ever made were made from a cornbread that our son brought back from Texas..so good........haven't been able to find it ...........anyone from Texas know the cornmeal I'm referring to? I can't even remember it's name now/Evidentally they sold it at a tourist entertainment area."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Jody Diehl"
+    }
+  ],
+  "comment": "Imported from tests/samples/infomac_sample.inf",
+  "url": "file://tests/samples/infomac_sample.inf",
+  "description": "Recipe converted from Info-Mac format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "CORNBREAD STUFFING",
+  "recipeIngredient": [
+    "turkey giblets and neck",
+    {
+      "@type": "PropertyValue",
+      "name": "finely chopped onions",
+      "value": 3,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "boiling water",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chopped parsely",
+      "value": 3,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "leaf",
+      "value": 1,
+      "unitText": "bay"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "melted butter",
+      "value": 6,
+      "unitText": "tablespoon"
+    },
+    "celery stalks and leaves",
+    {
+      "@type": "PropertyValue",
+      "name": "pepper",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "dry cornbread chunks",
+      "value": "5-6",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chopped celery",
+      "value": "1-1/2",
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    "Cook giblets and neck in 2 cups boiling water with bay leaf, celery stalks and leaves, and salt to taste, until they are tender.  Drain the stock, and reserve.  The giblets can be cut up into very small pieces and used in the gravy. Add to the cornbread crumbs the following:  the onions, parsley, melted butter, pepper, and chopped celery.  Mix thoroughly.  Moisten slightly with the giblet stock.  Any excess stuffing can be baked separately in a buttered casserole, dotting the top of the mixture with dabs of extra butter."
+  ],
+  "comment": "Imported from tests/samples/infomac_sample.inf",
+  "url": "file://tests/samples/infomac_sample.inf",
+  "description": "Recipe converted from Info-Mac format"
+}
+]
