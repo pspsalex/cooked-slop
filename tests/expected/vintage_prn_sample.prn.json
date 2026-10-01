@@ -1,0 +1,40 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Chocolate Fudge Brownies",
+  "recipeIngredient": [
+    "125g butter",
+    "185g dark cooking chocolate",
+    {
+      "@type": "PropertyValue",
+      "name": "sugar",
+      "value": "3/4",
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "eggs",
+      "value": 2
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "plain flour",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chopped walnuts",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    "Melt chocolate and butter together in pan over low heat, stir in sugar and eggs one at a time, beat well with wooden spoon, then stir in sifted flour and walnuts. Pour into greased 20cm square baking tin. Bake in moderate oven 30 minuts, cool in tin."
+  ],
+  "comment": "Imported from tests/samples/vintage_prn_sample.prn",
+  "url": "file://tests/samples/vintage_prn_sample.prn#1",
+  "description": "Recipe converted from Generic Markdown format"
+}
+]
