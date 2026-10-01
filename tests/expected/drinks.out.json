@@ -1,0 +1,391 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Frozen Pineapple Daiquiri",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "1-1/2 OZ. MR. BOSTON RUM",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "CHUNKS, (CANNED)",
+      "value": 4,
+      "unitText": "PINEAPPLE"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "LIME JUICE",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "SUGAR",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    }
+  ],
+  "recipeInstructions": [
+    "Combine all ingredients with a cup of crushed ice in a blender. Blend at low speed and pour into champagne glass."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Rum",
+  "keywords": "Rum, Blender Cocktail",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Alexander Cocktail #One",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON GIN",
+      "value": 1,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON CREME DE CACAO, (WHITE)",
+      "value": 1,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "LIGHT CREAM",
+      "value": 1,
+      "unitText": "ounce"
+    },
+    "NUTMEG"
+  ],
+  "recipeInstructions": [
+    "Shake with ice and strain into cocktail glass. Sprinkle nutmeg on top."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Gin",
+  "keywords": "Gin, Cocktail Creme",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Bacardi Cocktail",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "BACARDI RUM",
+      "value": "1-1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "(JUICE ONLY)",
+      "value": "1/2",
+      "unitText": "LIME"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "GRENADINE",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    }
+  ],
+  "recipeInstructions": [
+    "Shake with ice and strain into cocktail glass."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Rum",
+  "keywords": "Rum, Cocktail",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Banana Daiquiri",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON RUM",
+      "value": "1-1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON TRIPLE SEC",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "LIME JUICE",
+      "value": "1-1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "SUGAR",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "SIZE RIPE BANANA, SLICED",
+      "value": 1,
+      "unitText": "medium"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "CRUSHED ICE",
+      "value": 1,
+      "unitText": "cup"
+    }
+  ],
+  "recipeInstructions": [
+    "Combine ingredients in an electric blender and blend at low speed for five seconds. Then blend at high speed until firm. Pour into champagne glass. Top with a cherry."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Rum",
+  "keywords": "Rum, Blender Cocktail",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Beachcomber",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "1-1/2 OZ. MR. BOSTON RUM",
+      "value": 1
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "LIME JUICE",
+      "value": "1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON TRIPLE SEC",
+      "value": "1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "MARASCHINO",
+      "value": 1,
+      "unitText": "dash"
+    },
+    "SUGAR"
+  ],
+  "recipeInstructions": [
+    "Shake with cracked ice and strain into cocktailglass rimmed with lime juice and sugar."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Rum",
+  "keywords": "Rum, Cocktail",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Black Russian",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON VODKA",
+      "value": "1-1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON COFFEE FLAVORED BRANDY",
+      "value": "3/4",
+      "unitText": "ounce"
+    }
+  ],
+  "recipeInstructions": [
+    "Pour over ice cubes in old-fashioned cocktail glass."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Vodka",
+  "keywords": "Vodka, Cocktail",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Bloody Mary",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON VODKA",
+      "value": "1-1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "TOMATO JUICE",
+      "value": 3,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "LEMON JUICE",
+      "value": 1,
+      "unitText": "dash"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "WORCESTERSHIRE SAUCE",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "3 DROPS TABASCO SAUCE",
+      "value": 2,
+      "unitText": "OR"
+    },
+    "PEPPER AND SALT"
+  ],
+  "recipeInstructions": [
+    "Shake with ice and strain into old-fashioned glass over ice cubes. A wedge of lime may be added."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Vodka",
+  "keywords": "Vodka, Cocktail",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Bolero",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON RUM",
+      "value": "1-1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON APPLE BRANDY",
+      "value": "3/4",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "SWEET VERMOUTH",
+      "value": "1/4",
+      "unitText": "teaspoon"
+    }
+  ],
+  "recipeInstructions": [
+    "Stir well with cracked ice and strain into cocktail glass."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Rum",
+  "keywords": "Rum, Cocktail",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Boston Sour",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "(JUICE ONLY)",
+      "value": "1/2",
+      "unitText": "LEMON"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "POWDERED SUGAR",
+      "value": 1,
+      "unitText": "teaspoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "OLD THOMPSON BLENDED WHISKEY",
+      "value": 2,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "WHITE",
+      "value": 1,
+      "unitText": "EGG"
+    }
+  ],
+  "recipeInstructions": [
+    "Shake with cracked ice and strain into sour glass. Add a slice of lemon and a cherry."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Whiskey",
+  "keywords": "Whiskey, Cocktail Sour",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Bull Shot",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "MR. BOSTON VODKA",
+      "value": "1-1/2",
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "CHILLED BEEF BOUILLON",
+      "value": 3,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "WORCESTERSHIRE SAUCE",
+      "value": 1,
+      "unitText": "dash"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "SALT AND PEPPER",
+      "value": 1,
+      "unitText": "dash"
+    }
+  ],
+  "recipeInstructions": [
+    "Shake with cracked ice and strain into old-fashioned glass."
+  ],
+  "recipeYield": "1 drink",
+  "recipeCategory": "Vodka",
+  "keywords": "Vodka, Cocktail",
+  "comment": "Imported from tests/samples/drinks.out",
+  "url": "file://tests/samples/drinks.out",
+  "description": "Recipe converted from Mr. Boston Bartending Guide format"
+}
+]
