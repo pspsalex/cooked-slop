@@ -12,6 +12,7 @@ from .accuchef import AccuChefParser
 from .rcp_exchange import RcpExchangeParser
 from .fromscratch import FromScratchParser
 from .infomac import InfoMacParser
+from .drinks_db import DrinksDbParser
 
 # Auto-discover and import all modules in parsers/ so @ParserRegistry.register fires
 _package_dir = str(Path(__file__).parent)
@@ -37,5 +38,6 @@ __all__ = [
     'RcpExchangeParser',
     'FromScratchParser',
     'InfoMacParser',
+    'DrinksDbParser',
 ]
 
