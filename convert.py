@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
 import argparse
+import concurrent.futures
 import json
 import logging
 import os
@@ -102,7 +103,18 @@ def parse_arguments(args: Optional[List[str]] = None) -> argparse.Namespace:
         help="Output directory or file (default: ./converted_recipes)",
     )
     parser.add_argument(
-        "-r", "--recursive", action="store_true", help="Scan directories recursively"
+        "-r",
+        "--recursive",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Scan directories recursively (default: True, use --no-recursive to disable)",
+    )
+    parser.add_argument(
+        "-w",
+        "--workers",
+        type=int,
+        default=None,
+        help="Number of concurrent worker processes for directory conversion (default: auto)",
     )
     parser.add_argument(
         "--multiple-per-file",
@@ -296,6 +308,91 @@ def convert_recipe_file(
         return 0
 
 
+_ORIGINAL_CONVERT_RECIPE_FILE = convert_recipe_file
+
+# Global worker state for ProcessPoolExecutor workers
+_worker_ingredient_parser: Optional[BaseIngredientParser] = None
+_worker_converter: Optional[SchemaOrgConverter] = None
+
+
+def _worker_process_init(use_nlp: bool) -> None:
+    """Initialize worker process with ingredient parser and schema converter once."""
+    global _worker_ingredient_parser, _worker_converter
+    _worker_ingredient_parser = get_ingredient_parser(use_nlp=use_nlp)
+    _worker_converter = SchemaOrgConverter()
+
+
+def _worker_convert_file(
+    target_file: Path,
+    output_dir: Path,
+    one_file_per_recipe: bool,
+    multiple_per_file: bool,
+    parse_ingredients: bool,
+    format_name: Optional[str],
+    debug_sql: bool,
+    shard: bool,
+    add_date: bool,
+    html_config: Optional[Path],
+    stream_output: bool,
+) -> tuple[str, list[dict], int, Optional[str]]:
+    """Parse a single recipe file in worker process.
+
+    Returns (filepath_str, list_of_schema_recipes, file_size_bytes, error_message).
+    """
+    global _worker_ingredient_parser, _worker_converter
+    try:
+        parser = ParserRegistry.get_parser(
+            target_file, _worker_ingredient_parser, format_name, debug=debug_sql
+        )
+        if parser is not None and hasattr(parser, "config_path") and html_config is not None:
+            parser.config_path = str(html_config)
+
+        if not parser:
+            return (str(target_file), [], 0, "Unsupported file format")
+
+        file_size = target_file.stat().st_size
+        collected: list[dict] = []
+
+        for recipe in parser.parse_file(str(target_file)):
+            schema_recipe = _worker_converter.convert(recipe, parse_ingredients, add_date)
+            if stream_output:
+                collected.append(schema_recipe)
+            elif one_file_per_recipe:
+                title = schema_recipe.get("name", "Untitled")
+                url = schema_recipe.get("url", "")
+                target_dir = (
+                    get_recipe_sharded_path(url, title, base_dir=output_dir)
+                    if shard
+                    else output_dir
+                )
+                target_dir.mkdir(parents=True, exist_ok=True)
+
+                safe_name = re.sub(r"[^\w\s-]", "", title).strip()
+                safe_name = re.sub(r"[-\s]+", "_", safe_name)[:120].strip("_")
+                if not safe_name:
+                    safe_name = "recipe"
+                out_file = target_dir / f"{safe_name}.json"
+                counter = 1
+                while out_file.exists():
+                    out_file = target_dir / f"{safe_name}_{counter}.json"
+                    counter += 1
+                with open(out_file, "w", encoding="utf-8") as f:
+                    json.dump(schema_recipe, f, indent=2, ensure_ascii=False)
+                collected.append(schema_recipe)
+            else:
+                collected.append(schema_recipe)
+
+        if not stream_output and not one_file_per_recipe and collected:
+            output_dir.mkdir(parents=True, exist_ok=True)
+            out_file = output_dir / f"{target_file.stem}.json"
+            with open(out_file, "w", encoding="utf-8") as f:
+                json.dump(collected, f, indent=2, ensure_ascii=False)
+
+        return (str(target_file), collected, file_size, None)
+    except Exception as e:
+        return (str(target_file), [], 0, str(e))
+
+
 def process_directory(
     input_dir: Path,
     output_dir: Path,
@@ -312,32 +409,45 @@ def process_directory(
     add_date: bool = False,
     html_config: Optional[Path] = None,
     cli_extensions: Optional[List[str]] = None,
+    workers: Optional[int] = None,
+    multiple_per_file: bool = False,
 ) -> None:
     if cli_extensions:
-        extensions = {ext.lower() if ext.startswith(".") else f".{ext.lower()}" for ext in cli_extensions}
+        extensions = {
+            ext.lower() if ext.startswith(".") else f".{ext.lower()}"
+            for ext in cli_extensions
+        }
     else:
         extensions = ParserRegistry.supported_extensions()
         if not extensions:
-            # Safe fallback if registry is empty
             extensions = {".txt", ".mmf", ".html", ".htm"}
 
     # Include uppercase variants
     extensions.update([e.upper() for e in extensions])
 
-    recipe_files = []
+    recipe_files: list[Path] = []
     if recursive:
-        for ext in extensions:
-            recipe_files.extend(input_dir.rglob(f"*{ext}"))
+        for root_p, _, fnames in os.walk(input_dir):
+            r_path = Path(root_p)
+            for fname in fnames:
+                if any(fname.endswith(ext) for ext in extensions):
+                    recipe_files.append(r_path / fname)
     else:
-        for ext in extensions:
-            recipe_files.extend(input_dir.glob(f"*{ext}"))
+        for p in input_dir.iterdir():
+            if p.is_file() and any(p.name.endswith(ext) for ext in extensions):
+                recipe_files.append(p)
         if not recipe_files:
-            for ext in extensions:
-                recipe_files.extend(input_dir.rglob(f"*{ext}"))
+            for root_p, _, fnames in os.walk(input_dir):
+                r_path = Path(root_p)
+                for fname in fnames:
+                    if any(fname.endswith(ext) for ext in extensions):
+                        recipe_files.append(r_path / fname)
             if recipe_files:
                 print(
                     f"{Colors.YELLOW}ℹ No recipe files found at root level of {input_dir}, but found {len(recipe_files)} file(s) in subdirectories (auto-enabling recursive scan).{Colors.ENDC}"
                 )
+
+    recipe_files.sort()
 
     if not recipe_files:
         print(f"{Colors.RED}No recipe files found in {input_dir}{Colors.ENDC}")
@@ -345,59 +455,124 @@ def process_directory(
 
     total_bytes = sum(f.stat().st_size for f in recipe_files)
     processed_bytes = 0
+    total_files = len(recipe_files)
+    total_recipes = 0
 
     print(f"\n{Colors.BOLD}{Colors.CYAN}🍳 Modular Recipe Converter{Colors.ENDC}")
     print(
-        f"{Colors.DIM}Found {len(recipe_files)} file(s) ({total_bytes:,} bytes){Colors.ENDC}\n"
+        f"{Colors.DIM}Found {total_files} file(s) ({total_bytes:,} bytes){Colors.ENDC}\n"
     )
 
-    for file_idx, recipe_file in enumerate(recipe_files, 1):
-        target_file = recipe_file
-        if target_file.is_absolute():
+    num_workers = workers if workers is not None else min(os.cpu_count() or 4, 8)
+    is_monkeypatched = convert_recipe_file != _ORIGINAL_CONVERT_RECIPE_FILE
+
+    if is_monkeypatched or llm_parser is not None or num_workers <= 1:
+        for file_idx, recipe_file in enumerate(recipe_files, 1):
+            target_file = recipe_file
+            if target_file.is_absolute():
+                try:
+                    cwd = Path.cwd()
+                    if target_file.is_relative_to(cwd):
+                        target_file = target_file.relative_to(cwd)
+                except (ValueError, TypeError):
+                    pass
+
             try:
-                cwd = Path.cwd()
-                if target_file.is_relative_to(cwd):
-                    target_file = target_file.relative_to(cwd)
-            except (ValueError, TypeError):
-                pass
+                rel_path = (
+                    recipe_file.relative_to(input_dir)
+                    if input_dir in recipe_file.parents
+                    else target_file
+                )
+            except ValueError:
+                rel_path = target_file
 
-        try:
-            rel_path = (
-                recipe_file.relative_to(input_dir)
-                if input_dir in recipe_file.parents
-                else target_file
+            bytes_processed = convert_recipe_file(
+                target_file,
+                output_dir,
+                one_file_per_recipe,
+                bool(verbose),
+                parse_ingredients,
+                ingredient_parser,
+                format_name,
+                stream_writer,
+                debug_sql=debug_sql,
+                llm_parser=llm_parser,
+                shard=shard,
+                add_date=add_date,
+                html_config=html_config,
+                file_prefix=f"[{file_idx}/{total_files}]",
+                display_path=str(rel_path),
             )
-        except ValueError:
-            rel_path = target_file
-
-        bytes_processed = convert_recipe_file(
-            target_file,
-            output_dir,
-            one_file_per_recipe,
-            bool(verbose),
-            parse_ingredients,
-            ingredient_parser,
-            format_name,
-            stream_writer,
-            debug_sql=debug_sql,
-            llm_parser=llm_parser,
-            shard=shard,
-            add_date=add_date,
-            html_config=html_config,
-            file_prefix=f"[{file_idx}/{len(recipe_files)}]",
-            display_path=str(rel_path),
-        )
-        processed_bytes += (
-            target_file.stat().st_size if bytes_processed == 0 else bytes_processed
-        )
-
-        if not verbose:
-            print_progress_bar(
-                processed_bytes,
-                total_bytes,
-                prefix="Converting",
-                suffix=target_file.name,
+            processed_bytes += (
+                target_file.stat().st_size if bytes_processed == 0 else bytes_processed
             )
+
+            if not verbose:
+                print_progress_bar(
+                    processed_bytes,
+                    total_bytes,
+                    prefix="Converting",
+                    suffix=target_file.name,
+                )
+    else:
+        stream_output = stream_writer is not None
+        use_nlp = ingredient_parser.__class__.__name__ != "RegexIngredientParser"
+
+        with concurrent.futures.ProcessPoolExecutor(
+            max_workers=num_workers,
+            initializer=_worker_process_init,
+            initargs=(use_nlp,),
+        ) as executor:
+            future_to_file = {
+                executor.submit(
+                    _worker_convert_file,
+                    rf,
+                    output_dir,
+                    one_file_per_recipe,
+                    multiple_per_file,
+                    parse_ingredients,
+                    format_name,
+                    debug_sql,
+                    shard,
+                    add_date,
+                    html_config,
+                    stream_output,
+                ): rf
+                for rf in recipe_files
+            }
+
+            completed = 0
+            for future in concurrent.futures.as_completed(future_to_file):
+                completed += 1
+                file_path_str, recipes, file_size, err = future.result()
+                processed_bytes += file_size
+
+                if stream_writer:
+                    for schema_recipe in recipes:
+                        stream_writer.write_recipe(schema_recipe)
+                total_recipes += len(recipes)
+
+                if verbose:
+                    status = (
+                        f"{len(recipes)} recipe(s)"
+                        if recipes
+                        else (
+                            "unsupported"
+                            if err == "Unsupported file format"
+                            else f"error: {err}"
+                        )
+                    )
+                    prefix_str = f"{Colors.BOLD}[{completed}/{total_files}]{Colors.ENDC} "
+                    print(
+                        f"{prefix_str}{Colors.CYAN}{Path(file_path_str).name}{Colors.ENDC}: {status}"
+                    )
+                else:
+                    print_progress_bar(
+                        processed_bytes,
+                        total_bytes,
+                        prefix="Converting",
+                        suffix=f"{total_recipes} recipes ({completed}/{total_files})",
+                    )
 
     if not verbose:
         print()
@@ -495,6 +670,8 @@ def main(argv: Optional[List[str]] = None):
                 add_date=args.add_date,
                 html_config=args.html_config,
                 cli_extensions=args.ext,
+                workers=args.workers,
+                multiple_per_file=args.multiple_per_file,
             )
         else:
             if not args.verbose:
