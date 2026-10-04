@@ -17,17 +17,45 @@ from .base import BaseIngredientParser, BaseRecipeParser, sanitize_recipe
 from .csv_config import CsvSchema, get_csv_schema_registry
 from .models import Ingredient, Recipe
 from .registry import ParserRegistry
-from .twentykrecipes import parse_ingredient_line
 
 logger = logging.getLogger(__name__)
 
 _SNIFF_BYTES = 8192
 _FALLBACK_ENCODINGS = ("utf-8", "cp1252", "latin-1")
 
-# Named per-line ingredient transforms selectable via ``transform:`` in YAML.
-LINE_TRANSFORMS: Dict[str, Callable[[str], str]] = {
-    "twentyk_decimal": parse_ingredient_line,
+_FRACTIONS = {
+    0.125: "1/8", 0.12: "1/8", 0.25: "1/4", 0.33: "1/3", 0.334: "1/3",
+    0.333: "1/3", 0.5: "1/2", 0.667: "2/3", 0.666: "2/3", 0.67: "2/3",
+    0.75: "3/4", 0.875: "7/8",
 }
+
+
+def _decimal_to_fraction(val: float) -> str:
+    """Render ``2.5`` as ``"2 1/2"`` (empty string if no nice form exists)."""
+    whole = int(val)
+    frac = _FRACTIONS.get(round(val - whole, 3), "")
+    return f"{whole} {frac}" if whole and frac else frac or (str(whole) if whole else "")
+
+
+def twentyk_decimal(line: str) -> str:
+    """Normalize a 20krecipes ingredient line (``0.75 c Water`` -> ``3/4 c Water``).
+
+    A quantity of ``0.00`` means "not relevant" and is dropped; two spaces after
+    the quantity mean "no unit". Unrecognised lines are returned unchanged.
+    """
+    line = line.strip()
+    m = re.match(r"^(\d+\.\d+)  (.+)$", line) or re.match(r"^(\d+\.\d+) (\S+ .+)$", line)
+    if not m:
+        return line
+    qty_str, rest = m.groups()
+    qty = float(qty_str)
+    if qty == 0.0:
+        return rest
+    return f"{_decimal_to_fraction(qty) or qty_str.rstrip('0').rstrip('.')} {rest}"
+
+
+# Named per-line ingredient transforms selectable via ``transform:`` in YAML.
+LINE_TRANSFORMS: Dict[str, Callable[[str], str]] = {"twentyk_decimal": twentyk_decimal}
 
 
 def decode_csv_bytes(data: bytes, preferred: Optional[str] = None) -> str:
@@ -56,7 +84,7 @@ class ConfigurableCsvParser(BaseRecipeParser):
 
     @classmethod
     def aliases(cls) -> list[str]:
-        return ["csv_config", "csv_cookware", "cookware", "csv_20krecipes", "20krecipes", "csv_chefs", "chefs"]
+        return ["csv_config"]
 
     @classmethod
     def priority(cls) -> int:

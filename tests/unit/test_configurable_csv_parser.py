@@ -21,7 +21,7 @@ def test_registered_with_priority_and_aliases():
     assert ConfigurableCsvParser in ParserRegistry._parsers
     assert ConfigurableCsvParser.priority() == 22
     names = ParserRegistry.all_format_names()
-    for alias in ("csv_cookware", "csv_20krecipes"):
+    for alias in ("csv", "csv_config"):
         assert alias in names
 
 

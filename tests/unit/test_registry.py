@@ -44,7 +44,7 @@ def test_format_alias_and_id_lookup(ingredient_parser):
     assert p_by_alias is not None
     assert p_by_alias.format_id() == "mastercook"
 
-    p_by_alias2 = ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="cookware")
+    p_by_alias2 = ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="csv_config")
     assert p_by_alias2 is not None
     assert p_by_alias2.format_id() == "csv"
 
@@ -57,8 +57,8 @@ def test_all_format_names_returns_sorted_list():
     names = ParserRegistry.all_format_names()
     assert "mastercook" in names
     assert "mxp" in names
-    assert "csv_cookware" in names
-    assert "cookware" in names
+    assert "csv" in names
+    assert "csv_config" in names
     assert names == sorted(names)
 
 
