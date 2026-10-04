@@ -164,6 +164,8 @@ failing4_output.json
 output/**
 converted_recipes/
 batch_output/
+all_recipes.json
+VJJE.out/
 
 # Duplicate AI instruction files (CLAUDE.md is the single source of truth)
 .cursorrules
