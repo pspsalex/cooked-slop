@@ -2,8 +2,8 @@
 """Extractor for VJJE e-cookbook PDF collection.
 
 Processes native text PDFs (using pdftotext) and scanned/image PDFs
-(using pdfimages + tesseract OCR), extracting recipes formatted for
-GenericMdParser in convert.py.
+(using Docling server or local tesseract OCR), extracting recipes formatted
+for GenericMdParser in convert.py.
 """
 
 from __future__ import annotations
@@ -18,7 +18,10 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from typing import Any, Dict, Iterator, List, Optional, Tuple
+
+import requests
 
 logger = logging.getLogger("vjje_extract")
 
@@ -82,6 +85,12 @@ YIELD_RE = re.compile(
 )
 
 
+def _extract_yield_text(match: re.Match[str]) -> str:
+    """Safely extract yield string from match groups."""
+    val = match.group(1) if match.group(1) is not None else match.group(2)
+    return val.strip() if val else ""
+
+
 def clean_line_text(text: str) -> str:
     """Normalize common unicode characters and OCR artifacts in text."""
     s = text.replace("\xa0", " ")
@@ -98,7 +107,7 @@ def is_non_recipe_page(lines: List[str]) -> bool:
     text_lower = " ".join(lines).lower()
 
     # Table of contents
-    if "table of contents" in text_lower:
+    if "table of contents" in text_lower or "table contents of" in text_lower:
         return True
 
     # Check for dot leaders (TOC index pages)
@@ -114,6 +123,7 @@ def is_non_recipe_page(lines: List[str]) -> bool:
         "welcome",
         "contents",
         "table of contents",
+        "table contents of",
         "copyright",
     }:
         return True
@@ -208,7 +218,7 @@ def strip_page_footer(lines: List[str], title: str) -> Tuple[List[str], Optional
         # Yield line at bottom (e.g. "Yield: about 2 dozen")
         m_yield = YIELD_RE.match(last)
         if m_yield:
-            extracted_yield = (m_yield.group(1) or m_yield.group(2)).strip()
+            extracted_yield = _extract_yield_text(m_yield)
             clean_lines.pop()
             continue
 
@@ -306,7 +316,7 @@ def parse_vjje_page(
         # Check for Yield line
         m_yield = YIELD_RE.match(line)
         if m_yield and not yield_amount:
-            yield_amount = (m_yield.group(1) or m_yield.group(2)).strip()
+            yield_amount = _extract_yield_text(m_yield)
             continue
 
         # Check for explicit instruction header
@@ -448,6 +458,213 @@ def _ocr_single_image(img_path: str) -> str:
         return ""
 
 
+def is_docling_available(docling_url: str) -> bool:
+    """Check if the Docling HTTP server is responsive."""
+    try:
+        r = requests.get(f"{docling_url.rstrip('/')}/health", timeout=3)
+        return r.status_code == 200
+    except Exception:
+        return False
+
+
+def convert_pdf_with_docling(
+    pdf_path: Path,
+    docling_url: str = "http://localhost:5001",
+    timeout: int = 600,
+    limit: Optional[int] = None,
+) -> Optional[str]:
+    """Convert a PDF document via Docling server async API.
+
+    Returns:
+        Extracted markdown string or None on failure.
+    """
+    base_url = docling_url.rstrip("/")
+    logger.info("Submitting %s to Docling server at %s...", pdf_path.name, base_url)
+
+    with tempfile.TemporaryDirectory() as td:
+        upload_path = pdf_path
+        if limit and limit > 0:
+            sliced_pdf = Path(td) / f"sliced_{pdf_path.name}"
+            try:
+                subprocess.run(
+                    [
+                        "gs",
+                        "-sDEVICE=pdfwrite",
+                        "-dNOPAUSE",
+                        "-dBATCH",
+                        "-dSAFER",
+                        "-dFirstPage=1",
+                        f"-dLastPage={limit}",
+                        f"-sOutputFile={sliced_pdf}",
+                        str(pdf_path),
+                    ],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=True,
+                )
+                upload_path = sliced_pdf
+            except Exception as e:
+                logger.warning("Failed to slice PDF with gs: %s", e)
+
+        try:
+            with open(upload_path, "rb") as f:
+                resp = requests.post(
+                    f"{base_url}/v1/convert/file/async",
+                    files={"files": (upload_path.name, f, "application/pdf")},
+                    timeout=30,
+                )
+            if resp.status_code != 200:
+                logger.warning("Docling async submit returned status %s: %s", resp.status_code, resp.text[:200])
+                return None
+
+            data = resp.json()
+            task_id = data.get("task_id")
+            if not task_id:
+                logger.warning("Docling response missing task_id: %s", data)
+                return None
+
+            logger.info("Docling task %s started; polling for completion...", task_id)
+            start_time = time.time()
+            while time.time() - start_time < timeout:
+                time.sleep(3)
+                poll_resp = requests.get(f"{base_url}/v1/status/poll/{task_id}", timeout=10)
+                if poll_resp.status_code != 200:
+                    continue
+                poll_data = poll_resp.json()
+                status = poll_data.get("task_status")
+                if status == "success":
+                    result_resp = requests.get(f"{base_url}/v1/result/{task_id}", timeout=30)
+                    if result_resp.status_code == 200:
+                        doc = result_resp.json().get("document", {})
+                        md = doc.get("md_content", "")
+                        logger.info("Docling successfully converted %s (%d chars)", pdf_path.name, len(md))
+                        return md
+                    logger.warning("Docling result retrieval failed: status %s", result_resp.status_code)
+                    return None
+                elif status == "failure":
+                    logger.warning("Docling task failed: %s", poll_data.get("error_message"))
+                    return None
+
+            logger.warning("Docling task %s timed out after %ds", task_id, timeout)
+            return None
+
+        except Exception as e:
+            logger.warning("Docling conversion request failed: %s", e)
+            return None
+
+
+def parse_docling_markdown(
+    md_content: str, book_title: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    """Parse Docling's layout-aware markdown output into structured recipe dicts."""
+    sections = re.split(r"^(?:#{1,3})\s+(.*)$", md_content, flags=re.MULTILINE)
+    recipes: List[Dict[str, Any]] = []
+    current_rec: Optional[Dict[str, Any]] = None
+
+    skip_titles = {
+        "the e-cookbooks library",
+        "introduction",
+        "table of contents",
+        "table contents of",
+        "contents",
+        "index",
+        "recipe index",
+        "copyright",
+        "personalized cooking aprons",
+    }
+
+    # Universally split run-together ingredient strings before numbers/fractions
+    ing_split_pat = (
+        r"(?<=\S)(?<!\bcut)(?<!\bto)(?<!\bor)(?<!\bby)(?<!\bx)(?<!\-)(?<!\d)\s+"
+        r"(?=(?:\d+(?:\s*/\s*\d+)?|[½¼¾⅓⅔⅛⅜⅝⅞]|\d+-\d+)(?:\s*\(|\s+[a-zA-Z])|(?:For the|The)\s+\w+:)"
+    )
+
+    for i in range(1, len(sections), 2):
+        raw_heading = sections[i].strip()
+        body = sections[i + 1].strip()
+
+        norm_h = re.sub(r"[^a-z0-9 ]", "", raw_heading.lower()).strip()
+        if norm_h in skip_titles or "cooking aprons" in norm_h:
+            continue
+        if book_title and norm_h == re.sub(r"[^a-z0-9 ]", "", book_title.lower()).strip():
+            continue
+
+        # Check if heading is an ingredient component subheading (e.g. "FILLING/FROSTING:")
+        if current_rec and (
+            raw_heading.endswith(":") or (raw_heading.isupper() and len(raw_heading.split()) <= 3)
+        ):
+            current_rec["ingredients"].append(
+                raw_heading if raw_heading.endswith(":") else f"{raw_heading}:"
+            )
+            for l in body.splitlines():
+                s = l.strip()
+                if not s:
+                    continue
+                if s.startswith("- "):
+                    current_rec["ingredients"].append(s[2:].strip())
+                elif is_ingredient_line(s):
+                    current_rec["ingredients"].append(s)
+                else:
+                    current_rec["instructions"].append(s)
+            continue
+
+        title = raw_heading.rstrip(".:")
+        recipe: Dict[str, Any] = {
+            "title": title,
+            "yield_amount": "",
+            "description": "",
+            "ingredients": [],
+            "instructions": [],
+        }
+
+        blocks = [b.strip() for b in re.split(r"\n\s*\n", body) if b.strip()]
+        for b in blocks:
+            # Check for yield
+            m_yield = YIELD_RE.search(b)
+            if m_yield and not recipe["yield_amount"]:
+                recipe["yield_amount"] = _extract_yield_text(m_yield)
+
+            clean_b = re.sub(r"^```[\w]*\n?|```$", "", b).strip()
+            lines = [l.strip() for l in clean_b.splitlines() if l.strip()]
+
+            # Check if this block is an ingredients block
+            is_pure_lines = len(lines) > 1 and all(
+                l.startswith(("- ", "* ", "• ")) or is_ingredient_line(l) for l in lines
+            )
+            qty_matches = len(
+                re.findall(
+                    r"\b(?:\d+(?:/\d+)?|[½¼¾⅓⅔⅛⅜⅝⅞]|\d+-\d+)(?:\s*\(|\s+[a-zA-Z])", clean_b
+                )
+            )
+            is_run_together_ing = (not recipe["ingredients"]) and (
+                qty_matches >= 2 or (len(lines) == 1 and is_ingredient_line(clean_b))
+            )
+
+            if is_pure_lines:
+                for l in lines:
+                    clean_l = re.sub(r"^[-*•]\s*", "", l).strip()
+                    recipe["ingredients"].append(clean_l)
+            elif is_run_together_ing:
+                sub_parts = [
+                    x.strip()
+                    for x in re.split(ing_split_pat, clean_b, flags=re.IGNORECASE)
+                    if x.strip()
+                ]
+                for sp in sub_parts:
+                    clean_sp = re.sub(r"^[-*•]\s*", "", sp).strip()
+                    recipe["ingredients"].append(clean_sp)
+            else:
+                clean_inst = re.sub(r"(?i)\b(?:yield|serves)\s*:\s*.*$", "", b).strip()
+                if clean_inst:
+                    recipe["instructions"].append(clean_inst)
+
+        if recipe["ingredients"] or recipe["instructions"]:
+            recipes.append(recipe)
+            current_rec = recipe
+
+    return recipes
+
+
 def extract_pdf_pages(
     pdf_path: Path, jobs: int = 4, no_ocr: bool = False, limit: Optional[int] = None
 ) -> List[str]:
@@ -536,6 +753,9 @@ def process_book(
     skip_existing: bool = False,
     no_ocr: bool = False,
     limit: Optional[int] = None,
+    ocr_engine: str = "auto",
+    docling_url: str = "http://localhost:5001",
+    docling_timeout: int = 600,
 ) -> int:
     """Process a single PDF book and write its extracted markdown file.
 
@@ -549,9 +769,51 @@ def process_book(
         logger.info("Skipping existing output: %s", out_file.name)
         return 0
 
-    pages = extract_pdf_pages(pdf_path, jobs=jobs, no_ocr=no_ocr, limit=limit)
+    # 1. Quick check if PDF has native selectable text (fast path)
+    try:
+        probe = subprocess.run(
+            ["pdftotext", "-layout", str(pdf_path), "-"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            check=True,
+            text=True,
+        )
+        probe_pages = probe.stdout.split("\x0c")
+        has_native_text = sum(len(p.strip()) for p in probe_pages) > 500
+    except Exception:
+        has_native_text = False
 
-    recipes = parse_book_pages(pages, book_title=pdf_path.stem)
+    recipes: List[Dict[str, Any]] = []
+
+    if has_native_text:
+        pages = probe_pages
+        if limit and limit > 0:
+            pages = pages[:limit]
+        recipes = parse_book_pages(pages, book_title=pdf_path.stem)
+
+    elif not no_ocr:
+        # Scanned/image PDF: check if docling should be used
+        use_docling = False
+        if ocr_engine in ("auto", "docling"):
+            if is_docling_available(docling_url):
+                use_docling = True
+            elif ocr_engine == "docling":
+                logger.error("Docling server requested at %s but is unreachable.", docling_url)
+
+        if use_docling:
+            docling_md = convert_pdf_with_docling(
+                pdf_path, docling_url=docling_url, timeout=docling_timeout, limit=limit
+            )
+            if docling_md:
+                recipes = parse_docling_markdown(docling_md, book_title=pdf_path.stem)
+            if not recipes:
+                logger.warning("Docling returned no recipes; falling back to tesseract OCR.")
+
+        # Fallback to Tesseract OCR if docling was not used or failed
+        if not recipes:
+            pages = extract_pdf_pages(pdf_path, jobs=jobs, no_ocr=no_ocr, limit=limit)
+            recipes = parse_book_pages(pages, book_title=pdf_path.stem)
+
     if not recipes:
         logger.warning("No recipes extracted from %s", pdf_path.name)
         return 0
@@ -566,6 +828,11 @@ def process_book(
 
 def main() -> None:
     """CLI entry point for VJJE recipe extraction."""
+    # Find sensible default input directory
+    default_input = Path("/home/alex/junk/Recipes/Converted/VJJE")
+    if not default_input.exists():
+        default_input = Path("/home/alex/junk/Recipes/Dedupe/VJJE")
+
     parser = argparse.ArgumentParser(
         description="Extract recipes from VJJE e-cookbook PDFs into Generic Markdown."
     )
@@ -573,8 +840,8 @@ def main() -> None:
         "-i",
         "--input",
         type=Path,
-        default=Path("/home/alex/junk/Recipes/Dedupe/VJJE"),
-        help="Input PDF file or directory containing VJJE PDFs (default: ~/junk/Recipes/Dedupe/VJJE).",
+        default=default_input,
+        help=f"Input PDF file or directory containing VJJE PDFs (default: {default_input}).",
     )
     parser.add_argument(
         "-o",
@@ -589,6 +856,24 @@ def main() -> None:
         type=int,
         default=min(8, os.cpu_count() or 1),
         help="Number of worker threads for parallel OCR (default: CPU cores).",
+    )
+    parser.add_argument(
+        "--ocr-engine",
+        choices=["auto", "docling", "tesseract"],
+        default="auto",
+        help="OCR engine for scanned image PDFs: 'auto' (Docling if available, else Tesseract), 'docling', or 'tesseract'.",
+    )
+    parser.add_argument(
+        "--docling-url",
+        type=str,
+        default="http://localhost:5001",
+        help="URL of the running Docling server (default: http://localhost:5001).",
+    )
+    parser.add_argument(
+        "--docling-timeout",
+        type=int,
+        default=600,
+        help="Timeout in seconds for Docling conversion per book (default: 600).",
     )
     parser.add_argument(
         "--skip-existing",
@@ -624,7 +909,7 @@ def main() -> None:
     # Check dependencies
     for tool in ("pdftotext", "pdfimages", "tesseract"):
         if not shutil.which(tool):
-            if tool == "tesseract" and args.no_ocr:
+            if tool == "tesseract" and (args.no_ocr or args.ocr_engine == "docling"):
                 continue
             logger.error("Required tool '%s' is not found in PATH.", tool)
             sys.exit(1)
@@ -645,7 +930,7 @@ def main() -> None:
 
     print(f"Found {len(pdf_files)} PDF file(s) to process.")
     print(f"Output directory: {args.output_dir.resolve()}")
-    print(f"Parallel OCR threads: {args.jobs}\n")
+    print(f"OCR engine: {args.ocr_engine} (Docling server: {args.docling_url})\n")
 
     total_recipes = 0
     total_books = 0
@@ -658,6 +943,9 @@ def main() -> None:
             skip_existing=args.skip_existing,
             no_ocr=args.no_ocr,
             limit=args.limit,
+            ocr_engine=args.ocr_engine,
+            docling_url=args.docling_url,
+            docling_timeout=args.docling_timeout,
         )
         if count > 0:
             total_recipes += count

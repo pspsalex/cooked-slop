@@ -165,3 +165,49 @@ Bienenstich (Bee Sting Cake)
     instructions_str = " ".join(rec["instructions"])
     assert "whites until stiff peaks form." in instructions_str
     assert "Spread with filling." in instructions_str
+
+
+def test_parse_docling_markdown() -> None:
+    from tools.extract.vjje import parse_docling_markdown
+
+    docling_sample = """## The Hog Wild Cookbook
+
+VJJE Publishing Co.
+
+## Table Contents of
+
+| Recipe 1 | 1 |
+| Recipe 2 | 2 |
+
+## 7-UP Pork Roast with Glaze
+
+1 (3–4 pound) boneless pork loin 1 (12 ounce) can 7–Up®, Sprite®, or ginger ale 1 red bell pepper, finely chopped 1 onion, finely chopped 1 tablesp oon minced garlic 2 tablesp oons soy sauce 1 tablesp oon flour
+
+In a plastic cooking bag place flour and shake it around to coat the inside of the bag. Place the pork loin in the bag.
+
+Preheat oven to 325 degrees F. Bake until pork is done.
+
+## Adobo
+
+Yield: 4 servings
+
+2 pounds pork, cut 2 x 1 1/2 inches 1 head garlic, pounded 1 teasp oon black pepper, ground 1/2 cup vinegar 1 teasp oon salt
+
+Place the pork in a saucepan. Add vinegar, garlic, pepper, salt and water. Simmer about 5 minutes. Serve hot.
+"""
+    recipes = parse_docling_markdown(docling_sample, book_title="The Hog Wild Cookbook")
+    assert len(recipes) == 2
+
+    r1 = recipes[0]
+    assert r1["title"] == "7-UP Pork Roast with Glaze"
+    assert len(r1["ingredients"]) == 7
+    assert r1["ingredients"][0] == "1 (3–4 pound) boneless pork loin"
+    assert r1["ingredients"][1] == "1 (12 ounce) can 7–Up®, Sprite®, or ginger ale"
+    assert len(r1["instructions"]) >= 2
+
+    r2 = recipes[1]
+    assert r2["title"] == "Adobo"
+    assert r2["yield_amount"] == "4 servings"
+    assert len(r2["ingredients"]) == 5
+    assert r2["ingredients"][0] == "2 pounds pork, cut 2 x 1 1/2 inches"
+
