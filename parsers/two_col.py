@@ -21,11 +21,7 @@ class TwoColParser(BaseRecipeParser):
 
     @classmethod
     def format_id(cls) -> str:
-        return "two-col"
-
-    @classmethod
-    def aliases(cls) -> list[str]:
-        return ["two_col", "twocolumn", "two_column"]
+        return "two_col"
 
     @classmethod
     def priority(cls) -> int:

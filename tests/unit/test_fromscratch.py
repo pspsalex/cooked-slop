@@ -17,17 +17,11 @@ def test_registry_registration():
     format_ids = [p.format_id() for p in ParserRegistry._parsers]
     assert "fromscratch" in format_ids
     assert FromScratchParser.format_id() == "fromscratch"
-    assert "fs" in FromScratchParser.aliases()
-    assert "fsx" in FromScratchParser.aliases()
     assert FromScratchParser.priority() == 10
     assert {".fs", ".fsx", ".txt"}.issubset(FromScratchParser.supported_extensions())
 
     p = ParserRegistry.get_parser(Path("dummy.fs"), RegexIngredientParser(), format_name="fromscratch")
     assert isinstance(p, FromScratchParser)
-    p_alias = ParserRegistry.get_parser(Path("dummy.fs"), RegexIngredientParser(), format_name="fs")
-    assert isinstance(p_alias, FromScratchParser)
-    p_alias2 = ParserRegistry.get_parser(Path("dummy.fsx"), RegexIngredientParser(), format_name="fsx")
-    assert isinstance(p_alias2, FromScratchParser)
 
 
 def test_detect_header():

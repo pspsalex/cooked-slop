@@ -31,11 +31,6 @@ class DrinksDbParser(BaseRecipeParser):
         return "drinks_db"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        """Alternate names accepted by the -f flag."""
-        return ["mrboston", "drinks_out"]
-
-    @classmethod
     def priority(cls) -> int:
         """Detection order priority (lower = tried earlier)."""
         return 8

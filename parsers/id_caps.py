@@ -29,10 +29,6 @@ class IdCapsParser(BaseRecipeParser):
         return "id_caps"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["idcaps", "id caps"]
-
-    @classmethod
     def priority(cls) -> int:
         return 6
 

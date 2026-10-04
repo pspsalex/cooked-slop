@@ -29,10 +29,6 @@ class SchemaOrgParser(BaseRecipeParser):
         return "schemaorg"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["schema", "jsonld"]
-
-    @classmethod
     def priority(cls) -> int:
         return 5
 

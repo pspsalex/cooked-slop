@@ -25,11 +25,6 @@ class AccuChefParser(BaseRecipeParser):
         return "accuchef"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        """Alternate names accepted by the -f flag."""
-        return ["accu_chef", "sivart"]
-
-    @classmethod
     def priority(cls) -> int:
         """Detection order priority."""
         return 15

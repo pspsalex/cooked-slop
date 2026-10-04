@@ -45,10 +45,6 @@ class BusterParser(BaseRecipeParser):
         return "buster"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["mc_buster", "mm_buster"]
-
-    @classmethod
     def priority(cls) -> int:
         return 20
 

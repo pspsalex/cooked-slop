@@ -19,18 +19,12 @@ def test_registry_registration():
     format_ids = [p.format_id() for p in ParserRegistry._parsers]
     assert "infomac" in format_ids
     assert InfoMacParser.format_id() == "infomac"
-    assert "info_mac" in InfoMacParser.aliases()
-    assert "bbs_inf" in InfoMacParser.aliases()
     assert InfoMacParser.priority() == 10
     assert ".inf" in InfoMacParser.supported_extensions()
     assert ".txt" in InfoMacParser.supported_extensions()
 
     p = ParserRegistry.get_parser(Path("dummy.inf"), RegexIngredientParser(), format_name="infomac")
     assert isinstance(p, InfoMacParser)
-    p_alias = ParserRegistry.get_parser(Path("dummy.inf"), RegexIngredientParser(), format_name="info_mac")
-    assert isinstance(p_alias, InfoMacParser)
-    p_alias2 = ParserRegistry.get_parser(Path("dummy.inf"), RegexIngredientParser(), format_name="bbs_inf")
-    assert isinstance(p_alias2, InfoMacParser)
 
 
 def test_detect_header_and_title():

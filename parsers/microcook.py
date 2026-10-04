@@ -42,10 +42,6 @@ class MicroCookParser(BaseRecipeParser):
         return "microcook"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["mca"]
-
-    @classmethod
     def priority(cls) -> int:
         return 3
 

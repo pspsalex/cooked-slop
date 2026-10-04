@@ -26,10 +26,6 @@ class InfoMacParser(BaseRecipeParser):
         return "infomac"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["info_mac", "bbs_inf", "inf"]
-
-    @classmethod
     def priority(cls) -> int:
         return 10
 

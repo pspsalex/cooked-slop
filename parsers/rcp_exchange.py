@@ -30,11 +30,6 @@ class RcpExchangeParser(BaseRecipeParser):
         return "rcp_exchange"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        """Alternate names accepted by the -f flag."""
-        return ["rcp", "exchange"]
-
-    @classmethod
     def priority(cls) -> int:
         """Detection order priority. Lower is tried earlier."""
         return 6

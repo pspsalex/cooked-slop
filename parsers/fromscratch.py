@@ -37,10 +37,6 @@ class FromScratchParser(BaseRecipeParser):
         return "fromscratch"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["fs", "fsx"]
-
-    @classmethod
     def priority(cls) -> int:
         return 10
 

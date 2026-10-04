@@ -18,17 +18,11 @@ def test_registry_registration():
     format_ids = [p.format_id() for p in ParserRegistry._parsers]
     assert "drinks_db" in format_ids
     assert DrinksDbParser.format_id() == "drinks_db"
-    assert "mrboston" in DrinksDbParser.aliases()
-    assert "drinks_out" in DrinksDbParser.aliases()
     assert DrinksDbParser.priority() == 8
     assert {".out", ".lst", ".txt"}.issubset(DrinksDbParser.supported_extensions())
 
     p = ParserRegistry.get_parser(Path("dummy.out"), RegexIngredientParser(), format_name="drinks_db")
     assert isinstance(p, DrinksDbParser)
-    p_alias1 = ParserRegistry.get_parser(Path("dummy.out"), RegexIngredientParser(), format_name="mrboston")
-    assert isinstance(p_alias1, DrinksDbParser)
-    p_alias2 = ParserRegistry.get_parser(Path("dummy.out"), RegexIngredientParser(), format_name="drinks_out")
-    assert isinstance(p_alias2, DrinksDbParser)
 
 
 def test_detection():

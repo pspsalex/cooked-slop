@@ -32,33 +32,27 @@ def test_parsers_sorted_by_priority():
     assert priorities == sorted(priorities)
 
 
-def test_format_alias_and_id_lookup(ingredient_parser):
-    """Parsers can be resolved by format_id or any registered alias."""
-    # Lookup by primary format_id
+def test_format_id_lookup(ingredient_parser):
+    """Parsers are resolved by their unique format_id."""
     p_by_id = ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="mastercook")
     assert p_by_id is not None
     assert p_by_id.format_id() == "mastercook"
 
-    # Lookup by aliases
-    p_by_alias = ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="mxp")
-    assert p_by_alias is not None
-    assert p_by_alias.format_id() == "mastercook"
+    p_csv = ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="csv")
+    assert p_csv is not None
+    assert p_csv.format_id() == "csv"
 
-    p_by_alias2 = ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="csv_config")
-    assert p_by_alias2 is not None
-    assert p_by_alias2.format_id() == "csv"
-
-    # Non-existent format name
+    # Former aliases are no longer accepted
+    assert ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="mxp") is None
     assert ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="nonexistent_format") is None
 
 
 def test_all_format_names_returns_sorted_list():
-    """all_format_names() returns a sorted list of format_ids and aliases."""
+    """all_format_names() returns a sorted list of format_ids."""
     names = ParserRegistry.all_format_names()
     assert "mastercook" in names
-    assert "mxp" in names
     assert "csv" in names
-    assert "csv_config" in names
+    assert "mxp" not in names
     assert names == sorted(names)
 
 

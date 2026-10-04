@@ -19,17 +19,11 @@ def test_registry_registration():
     format_ids = [p.format_id() for p in ParserRegistry._parsers]
     assert "rcp_exchange" in format_ids
     assert RcpExchangeParser.format_id() == "rcp_exchange"
-    assert "rcp" in RcpExchangeParser.aliases()
-    assert "exchange" in RcpExchangeParser.aliases()
     assert RcpExchangeParser.priority() == 6
     assert ".rcp" in RcpExchangeParser.supported_extensions()
 
     p = ParserRegistry.get_parser(Path("dummy.rcp"), RegexIngredientParser(), format_name="rcp_exchange")
     assert isinstance(p, RcpExchangeParser)
-    p_rcp = ParserRegistry.get_parser(Path("dummy.rcp"), RegexIngredientParser(), format_name="rcp")
-    assert isinstance(p_rcp, RcpExchangeParser)
-    p_exch = ParserRegistry.get_parser(Path("dummy.rcp"), RegexIngredientParser(), format_name="exchange")
-    assert isinstance(p_exch, RcpExchangeParser)
 
 
 def test_detection_rcp_extension():

@@ -167,11 +167,6 @@ class BaseRecipeParser:
         return "unknown"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        """List of alternate names for this format."""
-        return []
-
-    @classmethod
     def priority(cls) -> int:
         """Detection priority. Lower is higher priority."""
         return 100

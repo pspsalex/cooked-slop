@@ -36,10 +36,6 @@ class GenericMdParser(BaseRecipeParser):
         return "generic_md"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["generic-md", "genericmd", "md_generic"]
-
-    @classmethod
     def priority(cls) -> int:
         return 25
 

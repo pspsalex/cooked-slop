@@ -338,10 +338,6 @@ class LLMRecipeParser(BaseRecipeParser):
         return "llm"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return []
-
-    @classmethod
     def priority(cls) -> int:
         return 99  # will not win auto-detection even if somehow registered
 

@@ -32,10 +32,6 @@ class MasterCookParser(BaseRecipeParser):
         return "mastercook"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["mxp", "mc"]
-
-    @classmethod
     def priority(cls) -> int:
         return 10
 

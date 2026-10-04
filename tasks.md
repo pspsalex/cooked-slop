@@ -22,7 +22,6 @@ _No active tasks._
 - [x] Implement `parsers/csv_config.py` (`CsvSchema` dataclass and `CsvConfigRegistry` with auto-discovery from `configs/`)
 - [x] Implement `parsers/csv_parser.py` (`ConfigurableCsvParser` registered with `@ParserRegistry.register`, priority 22)
 - [x] Create YAML configuration files `configs/cookware.csv.yaml`, `configs/twentyk.csv.yaml`, and `configs/chefs.csv.yaml`
-- [x] Ensure backward compatibility with existing CLI aliases (`csv_cookware`, `csv_20krecipes`)
 - [x] Add sample fixture `tests/samples/chefs.csv` and generate expected output with `--no-nlp`
 - [x] Create unit tests in `tests/unit/test_csv_config.py` and `tests/unit/test_configurable_csv_parser.py`
 - [x] Run full test suite and verify deterministic passes

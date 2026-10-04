@@ -38,11 +38,10 @@ class ParserRegistry:
 
     @classmethod
     def all_format_names(cls) -> list[str]:
-        """Return sorted list of all format_ids and aliases across registered parsers."""
+        """Return sorted list of all registered format_ids."""
         names: set[str] = set()
         for p in cls._parsers:
             names.add(p.format_id())
-            names.update(p.aliases())
         return sorted(names)
 
     @classmethod
@@ -67,7 +66,7 @@ class ParserRegistry:
         if format_name:
             fmt_lower = format_name.lower()
             for p in cls._parsers:
-                if p.format_id() == fmt_lower or fmt_lower in p.aliases():
+                if p.format_id() == fmt_lower:
                     # Check which arguments the constructor expects
                     init_args = p.__init__.__code__.co_varnames
                     kwargs = {}

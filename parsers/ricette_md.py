@@ -17,10 +17,6 @@ class RicetteMdParser(BaseRecipeParser):
         return "ricette_md"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["md"]
-
-    @classmethod
     def priority(cls) -> int:
         return 10
 

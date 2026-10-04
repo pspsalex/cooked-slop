@@ -17,15 +17,11 @@ def test_registry_registration():
     format_ids = [p.format_id() for p in ParserRegistry._parsers]
     assert "accuchef" in format_ids
     assert AccuChefParser.format_id() == "accuchef"
-    assert "accu_chef" in AccuChefParser.aliases()
-    assert "sivart" in AccuChefParser.aliases()
     assert AccuChefParser.priority() == 15
     assert ".out" in AccuChefParser.supported_extensions()
 
     p = ParserRegistry.get_parser(Path("dummy.out"), RegexIngredientParser(), format_name="accuchef")
     assert isinstance(p, AccuChefParser)
-    p_alias = ParserRegistry.get_parser(Path("dummy.out"), RegexIngredientParser(), format_name="sivart")
-    assert isinstance(p_alias, AccuChefParser)
 
 
 

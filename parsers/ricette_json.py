@@ -94,10 +94,6 @@ class RicetteJsonParser(BaseRecipeParser):
         return "ricette_json"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["json"]
-
-    @classmethod
     def priority(cls) -> int:
         return 11
 

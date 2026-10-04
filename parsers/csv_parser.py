@@ -83,10 +83,6 @@ class ConfigurableCsvParser(BaseRecipeParser):
         return "csv"
 
     @classmethod
-    def aliases(cls) -> list[str]:
-        return ["csv_config"]
-
-    @classmethod
     def priority(cls) -> int:
         return 22
 

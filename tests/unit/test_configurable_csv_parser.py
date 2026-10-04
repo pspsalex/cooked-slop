@@ -17,12 +17,10 @@ def parser() -> ConfigurableCsvParser:
     return ConfigurableCsvParser(RegexIngredientParser())
 
 
-def test_registered_with_priority_and_aliases():
+def test_registered_with_priority():
     assert ConfigurableCsvParser in ParserRegistry._parsers
     assert ConfigurableCsvParser.priority() == 22
-    names = ParserRegistry.all_format_names()
-    for alias in ("csv", "csv_config"):
-        assert alias in names
+    assert "csv" in ParserRegistry.all_format_names()
 
 
 def test_detect_contract():

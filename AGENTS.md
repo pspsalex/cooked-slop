@@ -94,18 +94,14 @@ All parsers use the Registry Pattern via `ParserRegistry` in `parsers/registry.p
 - **Decorator**: `@ParserRegistry.register` on the class definition
   - Parser modules in `parsers/` are auto-discovered dynamically via `pkgutil.iter_modules`. Decorating your parser class with `@ParserRegistry.register` is all that's required.
 - **Base class**: `parsers/base.py` — `BaseRecipeParser(ingredient_parser: BaseIngredientParser)`
-- **Dynamic format list**: `ParserRegistry.all_format_names()` returns all `format_id` + `aliases` across registered parsers. The `-f` CLI flag uses this dynamically — no hardcoded choices.
+- **Dynamic format list**: `ParserRegistry.all_format_names()` returns every registered `format_id`. The `-f` CLI flag uses this dynamically — no hardcoded choices.
 
 ### Required methods on every parser
 
 ```python
 @classmethod
 def format_id(cls) -> str:
-    """Unique lowercase identifier (e.g. 'mealmaster', 'csv_cookware')."""
-
-@classmethod
-def aliases(cls) -> list[str]:
-    """Alternate names accepted by the -f flag. Return [] if none."""
+    """Unique lowercase identifier (e.g. 'mealmaster', 'csv')."""
 
 @classmethod
 def priority(cls) -> int:
