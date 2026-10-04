@@ -4,7 +4,7 @@ title: "Centralized Title Sanitization and Recipe Metadata Cleanup"
 tier: 2
 type: parser
 priority: P1
-status: active
+status: done
 impact: "Cleans malformed titles across 13,824 recipes (~35.6% of dataset) and fixes instruction divider artifacts"
 deliverables:
   - parsers/base.py
@@ -55,10 +55,10 @@ Filter instruction steps so that pure separator lines (e.g. `^[-=~*_]{3,}$` or `
 Unescape escaped hyphens and periods (e.g. `\-` -> `-`, `\.` -> `.`) produced by pandoc docx-to-markdown conversion.
 
 ## Acceptance Criteria
-- [ ] Centralized title sanitization helper integrated into `Recipe` post-processing or `BaseRecipeParser`
-- [ ] TwoColParser and GenericTextParser strip `QTitle:`, `Recipe Name :`, and trailing yields
-- [ ] MasterCookParser rejects empty author lines and nutrition summary lines as title candidates
-- [ ] Instruction step parser excludes raw delimiter lines like `---- RECIPE ----`
-- [ ] Sample test fixture `tests/samples/title_cleanup_sample.txt` added with expected output
-- [ ] Unit tests in `tests/unit/test_title_sanitization.py` validating all edge cases
-- [ ] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Centralized title sanitization helper integrated into `Recipe` post-processing or `BaseRecipeParser`
+- [x] TwoColParser and GenericTextParser strip `QTitle:`, `Recipe Name :`, and trailing yields
+- [x] MasterCookParser rejects empty author lines and nutrition summary lines as title candidates
+- [x] Instruction step parser excludes raw delimiter lines like `---- RECIPE ----`
+- [x] Sample test fixture `tests/samples/title_cleanup_sample.txt` added with expected output
+- [x] Unit tests in `tests/unit/test_title_sanitization.py` validating all edge cases
+- [x] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`

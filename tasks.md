@@ -5,22 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-031: Centralized Title Sanitization and Recipe Metadata Cleanup
-- **Spec:** [SPEC-031-title-sanitization-and-metadata-cleanup.md](specs/SPEC-031-title-sanitization-and-metadata-cleanup.md)
-- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** Cleans malformed titles across 13,824 recipes (~35.6% of dataset)
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-031-title-sanitization`
-- [ ] Implement centralized `clean_recipe_title()` helper stripping `QTitle:`, `Recipe Name :`, `Title:`, etc.
-- [ ] Strip trailing `Yield:\s*...` from titles and populate `Recipe.yield_amount`
-- [ ] Strip Pandoc Markdown attributes `\[(.*?)\]\{.*?\}` from titles
-- [ ] Reject empty author lines (`Recipe By :`) and nutrition lines (`calories from fat...`) as titles in `MasterCookParser`
-- [ ] Strip divider lines (`---- RECIPE ----`, `====...`) from instruction steps
-- [ ] Unescape Markdown backslashes (`\-`, `\.`) in ingredient names
-- [ ] Add sample fixture `tests/samples/title_cleanup_sample.txt` and generate expected output with `--no-nlp`
-- [ ] Create unit tests in `tests/unit/test_title_sanitization.py`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and update spec/task
-
 ### SPEC-032: Multi-Recipe Boundary Splitting in Text and Two-Column Parsers
 - **Spec:** [SPEC-032-multi-recipe-text-splitting.md](specs/SPEC-032-multi-recipe-text-splitting.md)
 - **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Splits 218+ monolithic multi-recipe files (up to 6,196 ingredients) into clean individual recipes
@@ -53,7 +37,23 @@
 ## Archive
 
 <details>
-<summary>Completed specs (30 items)</summary>
+<summary>Completed specs (31 items)</summary>
+
+### SPEC-031: Centralized Title Sanitization and Recipe Metadata Cleanup ✅
+- **Spec:** [SPEC-031-title-sanitization-and-metadata-cleanup.md](specs/done/SPEC-031-title-sanitization-and-metadata-cleanup.md)
+- **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** Cleans malformed titles across 13,824 recipes (~35.6% of dataset)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-031-title-sanitization`
+- [x] Implement centralized `clean_recipe_title()` helper stripping `QTitle:`, `Recipe Name :`, `Title:`, etc.
+- [x] Strip trailing `Yield:\s*...` from titles and populate `Recipe.yield_amount`
+- [x] Strip Pandoc Markdown attributes `\[(.*?)\]\{.*?\}` from titles
+- [x] Reject empty author lines (`Recipe By :`) and nutrition lines (`calories from fat...`) as titles in `MasterCookParser`
+- [x] Strip divider lines (`---- RECIPE ----`, `====...`) from instruction steps
+- [x] Unescape Markdown backslashes (`\-`, `\.`) in ingredient names
+- [x] Add sample fixture `tests/samples/title_cleanup_sample.txt` and generate expected output with `--no-nlp`
+- [x] Create unit tests in `tests/unit/test_title_sanitization.py`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and update spec/task
 
 ### SPEC-030: HTML XPath Schema Refinements and Blank Recipe Guard ✅
 - **Spec:** [SPEC-030-html-xpath-and-blank-recipe-guard.md](specs/done/SPEC-030-html-xpath-and-blank-recipe-guard.md)
