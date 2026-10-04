@@ -346,3 +346,37 @@ When adding new parsers, HTML configurations, or major components:
 1. **Create the spec**: Copy `specs/_template.md` to `specs/SPEC-NNN-<slug>.md` (use next available 3-digit ID).
 2. **Define frontmatter & requirements**: Provide YAML frontmatter, raw input samples, field mapping rules, edge cases, and concrete acceptance criteria.
 3. **Add task to `tasks.md`**: Under `## Active Tasks`, add a new entry referencing the spec, with priority, impact, verification command, and atomic checkboxes derived from acceptance criteria.
+
+## Release & Versioning Management
+
+Release management, version bumping, and changelog generation are **fully automated** via Google [Release Please](https://github.com/googleapis/release-please) running in GitHub Actions (`.github/workflows/release.yml`).
+
+### Rules for Agents
+
+1. **NEVER manually edit version numbers**: Do not modify `version` in `pyproject.toml` or `.github/release-please/manifest.json`.
+2. **NEVER manually create Git tags or update `CHANGELOG.md`**: Release Please generates `CHANGELOG.md` and cuts version tags automatically when the Release PR is merged.
+3. **Always use Spec-Aware Conventional Commits**:
+   Commit messages must follow the Conventional Commits specification. When implementing or modifying code backed by a specification, reference the spec identifier directly in the commit subject:
+   ```bash
+   git commit -m "feat(csv): add YAML-configurable unified CSV parser (SPEC-035)"
+   git commit -m "fix(mealmaster): handle missing yields without crashing (SPEC-028)"
+   git commit -m "refactor(core): streamline MinHash sharding pipeline"
+   ```
+
+### Commit Types & SemVer Impact
+
+| Commit Type | SemVer Bump | Changelog Visibility | Description |
+|-------------|-------------|----------------------|-------------|
+| `feat(...)` | Minor | **Features** | New feature or new parser/format support |
+| `fix(...)` | Patch | **Bug Fixes** | Bug fix or error handling patch |
+| `perf(...)` | Patch | **Performance Improvements** | Performance optimization |
+| `refactor(...)` | None | **Refactoring** | Code refactoring without behavior change |
+| `docs(...)` | None | Hidden | Documentation updates or task archiving |
+| `test(...)` | None | Hidden | Test additions or modifications |
+| `chore(...)` | None | Hidden | Build, dependencies, or maintenance work |
+| `feat!: ...` or `BREAKING CHANGE:` | Major | **Breaking Changes** | Incompatible API or CLI changes |
+
+Configuration files are located in `.github/release-please/` to keep the root directory clean:
+- `.github/release-please/config.json`: Release Please configuration & changelog sections
+- `.github/release-please/manifest.json`: Single source of truth for the released version package mapping
+
