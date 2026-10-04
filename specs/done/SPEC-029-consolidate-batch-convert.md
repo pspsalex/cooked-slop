@@ -4,7 +4,7 @@ title: "Consolidate Directory Batch Conversion into convert.py and Remove batch_
 tier: 1
 type: refactor
 priority: P0
-status: active
+status: done
 impact: "Core CLI and pipeline consolidation"
 deliverables:
   - convert.py
