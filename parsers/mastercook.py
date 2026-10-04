@@ -3,7 +3,7 @@ import logging
 import re
 from typing import Iterator, Optional
 from .models import Recipe, Ingredient
-from .base import BaseRecipeParser, BaseIngredientParser
+from .base import BaseRecipeParser, BaseIngredientParser, clean_recipe_title, sanitize_recipe
 from .registry import ParserRegistry
 
 logger = logging.getLogger(__name__)
@@ -155,16 +155,32 @@ class MasterCookParser(BaseRecipeParser):
         # Basic state machine for MasterCook format
         current_section = None # None, 'header', 'ingredients', 'instructions', 'notes', 'categories'
 
-        # Skip leading empty lines to find title
+        # Skip leading empty lines, empty author headers, nutrition lines, dividers, or email headers
         start_idx = 0
-        while start_idx < len(lines) and not lines[start_idx].strip():
-            start_idx += 1
+        while start_idx < len(lines):
+            cand = lines[start_idx].strip()
+            if not cand:
+                start_idx += 1
+                continue
+            author_match = self.author_re.match(cand)
+            if author_match:
+                author = author_match.group(1).strip()
+                if author:
+                    recipe.description = f"Recipe By: {author}"
+                start_idx += 1
+                continue
+            clean_cand, ext_yield = clean_recipe_title(cand)
+            if not clean_cand:
+                start_idx += 1
+                continue
+            recipe.title = clean_cand
+            if ext_yield and not recipe.yield_amount:
+                recipe.yield_amount = ext_yield
+            break
 
         if start_idx >= len(lines):
             return None
 
-        # First non-empty line after header is the title
-        recipe.title = lines[start_idx].strip()
         current_section = 'header'
         instruction_block: list[str] = []
 
@@ -252,4 +268,4 @@ class MasterCookParser(BaseRecipeParser):
                 if stripped:
                     recipe.instructions.append(stripped)
 
-        return recipe
+        return sanitize_recipe(recipe)

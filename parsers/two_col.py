@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 from typing import Iterator, List
 
-from .base import BaseRecipeParser, BaseIngredientParser
+from .base import BaseRecipeParser, BaseIngredientParser, clean_recipe_title, sanitize_recipe
 from .models import Recipe, Ingredient
 from .registry import ParserRegistry
 
@@ -104,7 +104,11 @@ class TwoColParser(BaseRecipeParser):
                 title_parts.append(line_str)
             idx += 1
 
-        recipe.title = " ".join(title_parts).strip() if title_parts else "Untitled Recipe"
+        raw_title = " ".join(title_parts).strip() if title_parts else "Untitled Recipe"
+        c_title, ext_y = clean_recipe_title(raw_title)
+        recipe.title = c_title if c_title else raw_title
+        if ext_y and not recipe.yield_amount:
+            recipe.yield_amount = ext_y
 
         # Step 2: Skip empty lines between Title and Ingredients
         while idx < len(lines) and not lines[idx].strip():
@@ -191,6 +195,7 @@ class TwoColParser(BaseRecipeParser):
 
             flush_step()
 
+        sanitize_recipe(recipe)
         if recipe.title or recipe.ingredients or recipe.instructions:
             yield recipe
 

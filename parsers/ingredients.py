@@ -31,7 +31,7 @@ def __getattr__(name: str):
 
 class RegexIngredientParser(BaseIngredientParser):
     def parse(self, raw_line: str) -> Ingredient:
-        stripped = raw_line.strip()
+        stripped = re.sub(r'\\([.-])', r'\1', raw_line.strip())
         if not stripped or not any(c.isalnum() for c in stripped):
             return Ingredient(raw=stripped)
 
@@ -59,7 +59,7 @@ class NLPIngredientParser(BaseIngredientParser):
         self._fallback = RegexIngredientParser()
 
     def parse(self, raw_line: str) -> Ingredient:
-        stripped = raw_line.strip()
+        stripped = re.sub(r'\\([.-])', r'\1', raw_line.strip())
         if not is_nlp_available() or _parse_ingredient is None:
             return self._fallback.parse(raw_line)
         try:

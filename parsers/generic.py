@@ -2,7 +2,7 @@
 from pathlib import Path
 from typing import Iterator, List
 
-from .base import BaseRecipeParser, BaseIngredientParser
+from .base import BaseRecipeParser, BaseIngredientParser, clean_recipe_title, sanitize_recipe
 from .models import Recipe
 from .registry import ParserRegistry
 
@@ -84,13 +84,18 @@ class GenericTextParser(BaseRecipeParser):
 
                 if is_description:
                     if not title_found:
-                        if line_str.istitle():
-                            recipe.title = line_str
-                            title_found = True
-                            continue
-
-                        if title_re.search(line_str):
-                            recipe.title = line_str.title()
+                        cand_title, cand_yield = clean_recipe_title(line_str)
+                        if cand_title and (
+                            line_str.istitle()
+                            or title_re.search(line_str)
+                            or re.match(r'^(?:QTitle|Recipe\s*Name|Title|Name)\s*:\s*', line_str, re.IGNORECASE)
+                        ):
+                            if title_re.search(line_str):
+                                recipe.title = cand_title.title()
+                            else:
+                                recipe.title = cand_title
+                            if cand_yield and not recipe.yield_amount:
+                                recipe.yield_amount = cand_yield
                             title_found = True
                             continue
 
@@ -116,6 +121,7 @@ class GenericTextParser(BaseRecipeParser):
                 if block.strip():
                     recipe.instructions.append(block.strip())
 
+        sanitize_recipe(recipe)
         if recipe.ingredients or recipe.instructions:
             yield recipe
         else:

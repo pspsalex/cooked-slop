@@ -1,0 +1,55 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Rice Pilaf",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "long-grain rice",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "butter",
+      "value": 1,
+      "unitText": "tablespoon"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "black pepper - ground",
+      "value": 1,
+      "unitText": "pinch"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "chicken broth",
+      "value": 2,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "salt",
+      "value": "1/2",
+      "unitText": "teaspoon"
+    }
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "text": "In a saucepan, melt the butter over medium heat."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "text": "Add the rice and cook until lightly toasted, about 3 minutes. Pour in the chicken broth, salt, and black pepper, bring to a boil. Cover, reduce heat to low, and simmer for 18 minutes."
+    }
+  ],
+  "recipeYield": "2 servings",
+  "comment": "Imported from tests/samples/title_cleanup_sample.txt",
+  "url": "file://tests/samples/title_cleanup_sample.txt#1",
+  "description": "Recipe converted from Two-Column Text format"
+}
+]
