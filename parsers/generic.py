@@ -47,6 +47,41 @@ class GenericTextParser(BaseRecipeParser):
         return 0.01 if content.strip() else 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
+        """Parse plain text into Recipe objects using block heuristics.
+
+        If divider lines (e.g. 4+ dashes, equals, asterisks, tildes) separate
+        multiple recipes with ingredients, splits and yields each recipe.
+        Otherwise parses the content as a single recipe.
+        """
+        chunks = re.split(r'(?m)^\s*(?:[-=*~]\s*){4,}\s*$', content)
+        if len(chunks) > 1:
+            recipe_chunks = [c for c in chunks if c.strip() and self._chunk_has_ingredients(c)]
+            if len(recipe_chunks) >= 2:
+                for chunk in chunks:
+                    if not chunk.strip() or not self._chunk_has_ingredients(chunk):
+                        continue
+                    recipe = self._parse_single_recipe(chunk, filepath)
+                    if recipe:
+                        yield recipe
+                return
+
+        recipe = self._parse_single_recipe(content, filepath)
+        if recipe:
+            yield recipe
+
+    def _chunk_has_ingredients(self, chunk: str) -> bool:
+        """Check if chunk contains at least one ingredient-like line."""
+        for line in chunk.splitlines():
+            line_str = line.strip()
+            if not line_str:
+                continue
+            first_word = line_str.split()[0]
+            looks_like = any(c.isdigit() for c in first_word) or first_word.lower() in ['a', 'an', 'some', 'few', 'dash', 'pinch']
+            if looks_like and len(line_str) < 80:
+                return True
+        return False
+
+    def _parse_single_recipe(self, content: str, filepath: str) -> Recipe | None:
         """Parse plain text into a single Recipe using block heuristics.
 
         Splits the text on blank lines and classifies blocks as:
@@ -56,7 +91,6 @@ class GenericTextParser(BaseRecipeParser):
         """
         recipe = Recipe(source_file=filepath, source_format=self.source_format)
         recipe.title = Path(filepath).stem
-
 
         blocks = re.split(r'\n\s*\n', content)
 
@@ -123,6 +157,7 @@ class GenericTextParser(BaseRecipeParser):
 
         sanitize_recipe(recipe)
         if recipe.ingredients or recipe.instructions:
-            yield recipe
+            return recipe
         else:
             logger.error(f"Can't find any ingredients or instructions in {filepath}")
+            return None

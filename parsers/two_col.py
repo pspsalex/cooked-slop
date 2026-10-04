@@ -46,13 +46,13 @@ class TwoColParser(BaseRecipeParser):
 
         # Exclude files that belong to known structured formats
         if re.search(
-            r'Exported from MasterCook|MMMMM|Recipe Via Compu-Chef|Amount\s+Measure\s+Ingredient|Now You\'re Cooking!|Recipe via',
+            r'Exported from MasterCook|\bMMMMM\b|Recipe Via Compu-Chef|Amount\s+Measure\s+Ingredient|Now You\'re Cooking!|Recipe via',
             content_sample,
             re.IGNORECASE,
         ):
             return 0.0
 
-        lines = content_sample.splitlines()[:15]
+        lines = [l for l in content_sample.splitlines() if l.strip()][:25]
         # Check for exact "Servings:" header on title line
         for line in lines:
             if re.search(r'\bServings:\s*\d*', line):
@@ -75,42 +75,164 @@ class TwoColParser(BaseRecipeParser):
         return 0.0
 
     def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
-        recipe = Recipe(source_file=filepath, source_format=self.source_format)
-        lines = content.splitlines()
-
-        # Step 1: Parse Title & Servings (Header)
-        idx = 0
-        while idx < len(lines) and not lines[idx].strip():
-            idx += 1
-
-        if idx >= len(lines):
+        chunks = re.split(r'(?m)^[-=~*]{4,}\s*$', content)
+        if len(chunks) <= 1:
+            recipe = self._parse_single_chunk(content, filepath)
+            if recipe and (recipe.ingredients or recipe.instructions):
+                sanitize_recipe(recipe)
+                yield recipe
             return
 
-        title_parts = []
-        while idx < len(lines) and lines[idx].strip():
-            line_raw = lines[idx]
-            line_str = line_raw.strip()
+        recipes: List[Recipe] = []
+        for chunk in chunks:
+            if not chunk.strip():
+                continue
+            lines = chunk.splitlines()
+            if self._chunk_has_ingredients(lines):
+                rec = self._parse_single_chunk(chunk, filepath)
+                if rec and rec.ingredients:
+                    recipes.append(rec)
+            elif recipes:
+                # Continuation chunk: instructions or trailing metadata for previous recipe
+                self._append_continuation_chunk(recipes[-1], chunk)
 
-            if self._is_group_header(line_raw) or self._looks_like_ingredient_line(line_raw):
-                break
+        for rec in recipes:
+            sanitize_recipe(rec)
+            yield rec
 
-            if re.search(r'\bServings:', line_str, re.IGNORECASE):
-                parts = re.split(r'\bServings:', line_str, flags=re.IGNORECASE, maxsplit=1)
-                if parts[0].strip():
-                    title_parts.append(parts[0].strip())
-                if parts[1].strip():
-                    recipe.yield_amount = parts[1].strip()
+    def _chunk_has_ingredients(self, lines: list[str]) -> bool:
+        """Check if chunk contains at least one ingredient-like line or group header."""
+        for line in lines:
+            if self._is_group_header(line) or self._looks_like_ingredient_line(line):
+                return True
+        return False
+
+    def _append_continuation_chunk(self, recipe: Recipe, chunk: str) -> None:
+        """Append instructions or trailing metadata from a divider-separated continuation chunk."""
+        lines = chunk.splitlines()
+        current_step: List[str] = []
+        in_keywords = False
+        keywords_lines: List[str] = []
+
+        def flush():
+            if current_step:
+                recipe.instructions.append(" ".join(current_step).strip())
+                current_step.clear()
+
+        idx = 0
+        while idx < len(lines):
+            line = lines[idx]
+            stripped = line.strip()
+            if not stripped:
+                flush()
+                if in_keywords:
+                    in_keywords = False
+                idx += 1
+                continue
+
+            if in_keywords:
+                keywords_lines.append(stripped)
+                idx += 1
+                continue
+
+            kw_match = re.match(r'^KEY\s*WORDS\s*:\s*(.*)$', stripped, re.IGNORECASE)
+            if kw_match:
+                flush()
+                in_keywords = True
+                kw_content = kw_match.group(1).strip()
+                if kw_content:
+                    keywords_lines.append(kw_content)
+                idx += 1
+                continue
+
+            makes_match = re.match(r'^(?:Makes|Serves|Servings|Yield)\s*:?\s*(.+)$', stripped, re.IGNORECASE)
+            if makes_match:
+                flush()
+                if not recipe.yield_amount:
+                    recipe.yield_amount = makes_match.group(1).strip()
+                idx += 1
+                continue
+
+            if line.startswith('\t') or not current_step:
+                flush()
+                current_step.append(stripped)
             else:
-                title_parts.append(line_str)
+                current_step.append(stripped)
             idx += 1
 
-        raw_title = " ".join(title_parts).strip() if title_parts else "Untitled Recipe"
+        flush()
+        if keywords_lines:
+            raw_kw = " ".join(keywords_lines)
+            for cat in [w.strip() for w in re.split(r'[,;]+', raw_kw) if w.strip()]:
+                if cat not in recipe.categories:
+                    recipe.categories.append(cat)
+
+    def _parse_single_chunk(self, chunk: str, filepath: str) -> Recipe | None:
+        if not chunk or not chunk.strip():
+            return None
+
+        lines = chunk.splitlines()
+        recipe = Recipe(source_file=filepath, source_format=self.source_format)
+
+        # Step 1: Parse Title, Servings, and Intro/Description
+        idx = 0
+        header_lines: List[str] = []
+        while idx < len(lines):
+            line = lines[idx]
+            stripped = line.strip()
+            if not stripped:
+                if header_lines:
+                    next_idx = idx + 1
+                    while next_idx < len(lines) and not lines[next_idx].strip():
+                        next_idx += 1
+                    if next_idx < len(lines):
+                        next_line = lines[next_idx]
+                        if self._is_group_header(next_line) or self._looks_like_ingredient_line(next_line):
+                            idx = next_idx
+                            break
+                idx += 1
+                continue
+
+            if self._is_group_header(line) or self._looks_like_ingredient_line(line):
+                break
+
+            if re.search(r'\bServings:', stripped, re.IGNORECASE):
+                parts = re.split(r'\bServings:', stripped, flags=re.IGNORECASE, maxsplit=1)
+                if parts[0].strip():
+                    header_lines.append(parts[0].strip())
+                if parts[1].strip() and not recipe.yield_amount:
+                    recipe.yield_amount = parts[1].strip()
+            elif re.search(r'\bMakes:', stripped, re.IGNORECASE):
+                parts = re.split(r'\bMakes:', stripped, flags=re.IGNORECASE, maxsplit=1)
+                if parts[0].strip():
+                    header_lines.append(parts[0].strip())
+                if parts[1].strip() and not recipe.yield_amount:
+                    recipe.yield_amount = parts[1].strip()
+            else:
+                header_lines.append(line)
+            idx += 1
+
+        if not header_lines and idx >= len(lines):
+            return None
+
+        indented_lines = [l for l in header_lines if l.startswith('\t') or len(l) - len(l.lstrip(' ')) >= 3]
+        unindented_lines = [l for l in header_lines if not (l.startswith('\t') or len(l) - len(l.lstrip(' ')) >= 3)]
+
+        if indented_lines:
+            raw_title = " ".join(l.strip() for l in indented_lines)
+            if unindented_lines:
+                recipe.description = "\n".join(l.strip() for l in unindented_lines)
+        elif header_lines:
+            raw_title = " ".join(l.strip() for l in header_lines)
+        else:
+            raw_title = "Untitled Recipe"
+
         c_title, ext_y = clean_recipe_title(raw_title)
         recipe.title = c_title if c_title else raw_title
         if ext_y and not recipe.yield_amount:
             recipe.yield_amount = ext_y
 
-        # Step 2: Skip empty lines between Title and Ingredients
+        # Step 2: Skip empty lines between Title/Header and Ingredients
         while idx < len(lines) and not lines[idx].strip():
             idx += 1
 
@@ -163,9 +285,11 @@ class TwoColParser(BaseRecipeParser):
 
         flush_current_group()
 
-        # Step 4: Parse Instructions
+        # Step 4: Parse Instructions and Trailing Metadata
         if in_instructions or idx < len(lines):
-            current_step_lines = []
+            current_step_lines: List[str] = []
+            in_keywords = False
+            keywords_lines: List[str] = []
 
             def flush_step():
                 if current_step_lines:
@@ -178,12 +302,37 @@ class TwoColParser(BaseRecipeParser):
 
                 if not stripped:
                     flush_step()
+                    if in_keywords:
+                        in_keywords = False
                     idx += 1
                     continue
 
                 if re.match(r'^(Date Entered:|By:|Source:)', stripped, re.IGNORECASE):
                     flush_step()
                     break
+
+                if in_keywords:
+                    keywords_lines.append(stripped)
+                    idx += 1
+                    continue
+
+                kw_match = re.match(r'^KEY\s*WORDS\s*:\s*(.*)$', stripped, re.IGNORECASE)
+                if kw_match:
+                    flush_step()
+                    in_keywords = True
+                    kw_content = kw_match.group(1).strip()
+                    if kw_content:
+                        keywords_lines.append(kw_content)
+                    idx += 1
+                    continue
+
+                makes_match = re.match(r'^(?:Makes|Serves|Servings|Yield)\s*:?\s*(.+)$', stripped, re.IGNORECASE)
+                if makes_match:
+                    flush_step()
+                    if not recipe.yield_amount:
+                        recipe.yield_amount = makes_match.group(1).strip()
+                    idx += 1
+                    continue
 
                 if line.startswith('\t') or not current_step_lines:
                     flush_step()
@@ -195,18 +344,34 @@ class TwoColParser(BaseRecipeParser):
 
             flush_step()
 
+            if keywords_lines:
+                raw_kw = " ".join(keywords_lines)
+                for cat in [w.strip() for w in re.split(r'[,;]+', raw_kw) if w.strip()]:
+                    if cat not in recipe.categories:
+                        recipe.categories.append(cat)
+
         sanitize_recipe(recipe)
         if recipe.title or recipe.ingredients or recipe.instructions:
-            yield recipe
+            return recipe
+        return None
 
     def _is_group_header(self, line: str) -> bool:
         """Return True if line is an unindented group header like 'Sauce:', 'Salmon:', 'Step 1:'."""
         stripped = line.strip()
         if not stripped.endswith(':'):
             return False
+        if re.match(r'^(?:KEY\s*WORDS|DATE\s*ENTERED|BY|SOURCE)\b', stripped, re.IGNORECASE):
+            return False
         if not line.startswith((' ', '\t')) and len(stripped) < 30 and not re.search(r'^\d+\s+(?:c|tsp|tbsp|lb|oz)\b', stripped, re.IGNORECASE):
             return True
         return False
+
+    _UNIT_WORDS = {
+        'pinch', 'dash', 'can', 'clove', 'package', 'pkg', 'bunch', 'slice',
+        'sprig', 'cup', 'tsp', 'tbsp', 't', 'tb', 'c', 'bottle', 'stick',
+        'piece', 'head', 'stalk', 'strip', 'jar', 'envelope', 'handful',
+        'drop', 'box', 'pt', 'qt', 'gal', 'oz', 'lb'
+    }
 
     def _looks_like_ingredient_line(self, line: str) -> bool:
         """Check if line looks like an ingredient line."""
@@ -215,8 +380,17 @@ class TwoColParser(BaseRecipeParser):
             return False
         if '\t' in line and not line.startswith('\t'):
             return True
-        first_word = stripped.split()[0] if stripped.split() else ""
-        return any(c.isdigit() for c in first_word) or first_word.lower() in ['a', 'an', 'some', 'few', 'dash', 'pinch']
+        words = stripped.split()
+        first_word = words[0]
+        if any(c.isdigit() for c in first_word):
+            return True
+        if first_word.lower() in ['dash', 'pinch', 'few', 'some']:
+            return True
+        if first_word.lower() in ['a', 'an'] and len(words) > 1:
+            second = words[1].lower().rstrip('s.').strip()
+            if second in self._UNIT_WORDS:
+                return True
+        return False
 
     def _is_instruction_start(self, line: str) -> bool:
         """Check if a line after a blank line starts the instructions section."""

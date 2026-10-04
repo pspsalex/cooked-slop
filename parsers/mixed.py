@@ -63,17 +63,21 @@ class MixedFormatParser(BaseRecipeParser):
 
         has_separators = bool(SEPARATOR_RE.search(content_sample))
 
+        matching_parsers = 0
         score = 0.0
         for parser in (MasterCookParser, MealMasterParser, CompuChefParser, NYCParser, TwoColParser):
             try:
-                score += parser.detect(filepath, content_sample)
+                s = parser.detect(filepath, content_sample)
+                if s > 0.5:
+                    matching_parsers += 1
+                score += s
             except Exception:
                 pass
 
-        if score > 1.0 or (score > 0.5 and has_separators):
+        if matching_parsers >= 2 and (score > 1.0 or has_separators):
             return 1.0
 
-        if score > 0.5:
+        if matching_parsers >= 2:
             if Path(filepath).suffix.lower() in ('.txt', '.recipe', '.recipes'):
                 return 1.0
             return score - 0.25
