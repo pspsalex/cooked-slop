@@ -96,6 +96,19 @@ class MasterCookParser(BaseRecipeParser):
                     recipe.source_file = filepath
                     yield recipe
         elif content.strip():
+            # Check for multi-recipe printer dump without header_sig (e.g. holiday.prn)
+            try:
+                from tools.extract.prn_normalizer import detect_prn_format, normalize_mastercook_dump
+                if detect_prn_format(content) == "mastercook":
+                    from parsers.generic_md import GenericMdParser
+                    md = normalize_mastercook_dump(content)
+                    for r in GenericMdParser(self.ingredient_parser).parse_content(md, filepath):
+                        r.source_format = self.source_format
+                        yield r
+                    return
+            except Exception as e:
+                logger.debug("MasterCook printer dump fallback error: %s", e)
+
             recipe = self._parse_single_mastercook(content)
             if recipe:
                 recipe.source_format = self.source_format

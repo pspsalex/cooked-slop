@@ -14,6 +14,20 @@ _No active tasks._
 <details>
 <summary>Completed specs (34 items)</summary>
 
+### SPEC-037: Batch Conversion Hang, CPU Load, Error Reporting, and Text/PRN Parsing Fixes ✅
+- **Priority:** P0 | **Tier:** 1 | **Type:** bugfix | **Impact:** Resolves catastrophic backtracking hang (100% CPU), false TwoCol detections, single-block recipe failures, error: None status, and unhandled PRN print dumps
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/batch-conversion-fixes`
+- [x] Fix catastrophic regex backtracking in `is_divider_step` in `parsers/base.py`
+- [x] Fix CLI completion status displaying `error: None` in `convert.py`
+- [x] Tighten `TwoColParser.detect` in `parsers/two_col.py` to prevent false positive matching on single-column or tabular text
+- [x] Enhance `GenericTextParser` in `parsers/generic.py` with line-by-line fallback, bullet stripping, continuation chunk handling, and PRN normalizer delegation
+- [x] Support MasterCook multi-recipe printer dumps (`holiday.prn`) in `parsers/mastercook.py`
+- [x] Downgrade `recipe-scrapers` missing schema exception in `parsers/html_parser.py` from warning to debug
+- [x] Add comprehensive unit tests in `tests/unit/test_batch_fixes.py`
+- [x] Verify full test suite and batch execution on `nux/Test`
+- [x] Commit, merge to `main`, remove worktree, and update backlog
+
 ### SPEC-035: YAML-Configurable Unified CSV Recipe Parser ✅
 - **Spec:** [SPEC-035-yaml-configurable-csv-parser.md](specs/done/SPEC-035-yaml-configurable-csv-parser.md)
 - **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Unifies cookware, twentykrecipes, and custom CSVs (e.g. chefs.csv) into a single YAML-driven parser

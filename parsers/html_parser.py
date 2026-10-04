@@ -163,5 +163,8 @@ class HtmlParser(BaseRecipeParser):
                     filepath,
                 )
         except Exception as e:
-            logger.warning("HTML parsing error for %s: %s", filepath, e)
+            if "No Recipe Schema found" in str(e) or "No schema found" in str(e):
+                logger.debug("No recipe schema found in HTML for %s: %s", filepath, e)
+            else:
+                logger.warning("HTML parsing error for %s: %s", filepath, e)
             return

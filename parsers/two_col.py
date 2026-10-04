@@ -49,24 +49,16 @@ class TwoColParser(BaseRecipeParser):
             return 0.0
 
         lines = [l for l in content_sample.splitlines() if l.strip()][:25]
-        # Check for exact "Servings:" header on title line
-        for line in lines:
-            if re.search(r'\bServings:\s*\d*', line):
-                return 0.85
 
-        # Check for 2-column ingredients (tabs or 3+ spaces after col 30)
-        tab_cols = 0
-        space_cols = 0
+        # Check for 2-column ingredients (both sides must look like ingredients)
+        two_col_lines = 0
         for line in lines:
-            if '\t' in line and not line.startswith('\t'):
-                tab_cols += 1
-            else:
-                expanded = line.expandtabs(8)
-                if len(expanded) > 30 and re.search(r' {3,}', expanded[30:]):
-                    space_cols += 1
+            c1, c2 = cls._split_two_columns(line)
+            if c1 and c2 and cls._looks_like_ingredient_line(c1) and cls._looks_like_ingredient_line(c2):
+                two_col_lines += 1
 
-        if tab_cols >= 2 or space_cols >= 2:
-            return 0.80
+        if two_col_lines >= 2:
+            return 0.85
 
         return 0.0
 
@@ -369,22 +361,21 @@ class TwoColParser(BaseRecipeParser):
         'drop', 'box', 'pt', 'qt', 'gal', 'oz', 'lb'
     }
 
-    def _looks_like_ingredient_line(self, line: str) -> bool:
+    @classmethod
+    def _looks_like_ingredient_line(cls, line: str) -> bool:
         """Check if line looks like an ingredient line."""
         stripped = line.strip()
         if not stripped:
             return False
-        if '\t' in line and not line.startswith('\t'):
-            return True
         words = stripped.split()
         first_word = words[0]
-        if any(c.isdigit() for c in first_word):
+        if any(c.isdigit() or c in '¼½¾⅓⅔⅛⅜⅝⅞' for c in first_word):
             return True
         if first_word.lower() in ['dash', 'pinch', 'few', 'some']:
             return True
         if first_word.lower() in ['a', 'an'] and len(words) > 1:
             second = words[1].lower().rstrip('s.').strip()
-            if second in self._UNIT_WORDS:
+            if second in cls._UNIT_WORDS:
                 return True
         return False
 
@@ -395,7 +386,8 @@ class TwoColParser(BaseRecipeParser):
             return False
         return line.startswith('\t') or ((len(line) - len(line.lstrip(' '))) >= 2) or (':' not in line)
 
-    def _split_two_columns(self, line: str) -> tuple[str, str]:
+    @classmethod
+    def _split_two_columns(cls, line: str) -> tuple[str, str]:
         """Split a line into two column strings (col1, col2)."""
         if '\t' in line:
             if line.startswith('\t'):

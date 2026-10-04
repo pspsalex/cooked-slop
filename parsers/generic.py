@@ -53,21 +53,67 @@ class GenericTextParser(BaseRecipeParser):
         multiple recipes with ingredients, splits and yields each recipe.
         Otherwise parses the content as a single recipe.
         """
+        # Delegate supported PRN files to PRN normalizer if detected
+        if filepath.lower().endswith(('.prn', '.prn.txt')):
+            try:
+                from tools.extract.prn_normalizer import detect_prn_format, normalize_prn
+                if detect_prn_format(content) != "unknown":
+                    from parsers.generic_md import GenericMdParser
+                    md_content = normalize_prn(content)
+                    yield from GenericMdParser(self.ingredient_parser).parse_content(md_content, filepath)
+                    return
+            except Exception as e:
+                logger.debug("PRN normalization error for %s: %s", filepath, e)
+
         chunks = re.split(r'(?m)^\s*(?:[-=*~]\s*){4,}\s*$', content)
         if len(chunks) > 1:
-            recipe_chunks = [c for c in chunks if c.strip() and self._chunk_has_ingredients(c)]
-            if len(recipe_chunks) >= 2:
-                for chunk in chunks:
-                    if not chunk.strip() or not self._chunk_has_ingredients(chunk):
-                        continue
-                    recipe = self._parse_single_recipe(chunk, filepath)
-                    if recipe:
-                        yield recipe
+            recipes: list[Recipe] = []
+            for chunk in chunks:
+                if not chunk.strip():
+                    continue
+                if self._chunk_has_ingredients(chunk):
+                    rec = self._parse_single_recipe(chunk, filepath)
+                    if rec and (rec.ingredients or rec.instructions):
+                        recipes.append(rec)
+                elif recipes:
+                    # Continuation chunk: instructions or notes for the previous recipe
+                    step = chunk.strip()
+                    if step:
+                        recipes[-1].instructions.append(step)
+            if recipes:
+                for rec in recipes:
+                    sanitize_recipe(rec)
+                    yield rec
                 return
 
         recipe = self._parse_single_recipe(content, filepath)
         if recipe:
             yield recipe
+
+    def _looks_like_ingredient_line(self, line: str) -> bool:
+        """Check if line looks like an ingredient line."""
+        s = self._clean_bullet(line)
+        if not s:
+            return False
+        words = s.split()
+        if not words:
+            return False
+        first = words[0]
+        if any(c.isdigit() or c in '¼½¾⅓⅔⅛⅜⅝⅞' for c in first):
+            if len(words) > 1 and words[1].lower().rstrip('s.,') in {
+                'hour', 'hours', 'minute', 'minutes', 'second', 'seconds',
+                'day', 'days', 'month', 'months', 'year', 'years', 'degree', 'degrees', 'percent'
+            }:
+                return False
+            return True
+        if first.lower().strip(':') in ['dash', 'pinch', 'few', 'some', 'a', 'an']:
+            return True
+        return False
+
+    def _clean_bullet(self, line: str) -> str:
+        """Strip leading bullets, list markers, and optional prefixes."""
+        s = line.lstrip("•\x95-* \t").strip()
+        return re.sub(r'^(?:"Optionals?"|Optionals?:?)\s*', '', s, flags=re.IGNORECASE).strip()
 
     def _chunk_has_ingredients(self, chunk: str) -> bool:
         """Check if chunk contains at least one ingredient-like line."""
@@ -75,9 +121,7 @@ class GenericTextParser(BaseRecipeParser):
             line_str = line.strip()
             if not line_str:
                 continue
-            first_word = line_str.split()[0]
-            looks_like = any(c.isdigit() for c in first_word) or first_word.lower() in ['a', 'an', 'some', 'few', 'dash', 'pinch']
-            if looks_like and len(line_str) < 80:
+            if self._looks_like_ingredient_line(line_str) and len(line_str) < 80:
                 return True
         return False
 
@@ -88,14 +132,18 @@ class GenericTextParser(BaseRecipeParser):
         - First block: title and description
         - Blocks where most lines start with a quantity: ingredients
         - Remaining blocks: instruction steps
+
+        Falls back to line-by-line parsing if single block or no ingredients found.
         """
+        blocks = [b for b in re.split(r'\n\s*\n', content) if b.strip()]
+        if len(blocks) <= 1:
+            return self._parse_line_by_line(content, filepath)
+
         recipe = Recipe(source_file=filepath, source_format=self.source_format)
         recipe.title = Path(filepath).stem
 
-        blocks = re.split(r'\n\s*\n', content)
-
         title_re = re.compile(r'^[A-Z ]{5,}')
-        yield_re = re.compile(r'(?:Serves|Yield|Serving).*(\d+\s*\w+)', flags = re.IGNORECASE)
+        yield_re = re.compile(r'(?:Serves|Yield|Serving).*(\d+\s*\w+)', flags=re.IGNORECASE)
         title_found = False
 
         is_description = True
@@ -108,12 +156,10 @@ class GenericTextParser(BaseRecipeParser):
             ingredient_lines = 0
             for line in lines:
                 line_str = line.strip()
-                if not line_str: continue
+                if not line_str:
+                    continue
 
-                first_word = line_str.split()[0] if line_str.split() else ""
-                looks_like_ingredient = any(c.isdigit() for c in first_word) or first_word.lower() in ['a', 'an', 'some', 'few', 'dash', 'pinch']
-
-                if looks_like_ingredient and len(line_str) < 80:
+                if self._looks_like_ingredient_line(line_str) and len(line_str) < 80:
                     ingredient_lines += 1
 
                 if is_description:
@@ -140,7 +186,7 @@ class GenericTextParser(BaseRecipeParser):
 
                     description.append(line_str)
 
-            if ingredient_lines > len(lines)/2:
+            if ingredient_lines > len(lines) / 2:
                 is_ingredient = True
 
             if is_description:
@@ -149,15 +195,100 @@ class GenericTextParser(BaseRecipeParser):
             elif is_ingredient:
                 for line in lines:
                     line_str = line.strip()
-                    if not line_str: continue
-                    recipe.ingredients.append(self.ingredient_parser.parse(line_str))
+                    if not line_str:
+                        continue
+                    if re.match(r'^(?:Notes?|Comments?|Source)\s*:\s*', line_str, re.IGNORECASE):
+                        continue
+                    if re.match(r'^(?:[A-Za-z0-9\s\-_]+\s+)?Ingredients?\s*:?$', line_str, re.IGNORECASE):
+                        continue
+                    cleaned_ing = self._clean_bullet(line_str)
+                    if cleaned_ing:
+                        recipe.ingredients.append(self.ingredient_parser.parse(cleaned_ing))
             else:
                 if block.strip():
                     recipe.instructions.append(block.strip())
 
         sanitize_recipe(recipe)
+        if recipe.ingredients:
+            return recipe
+
+        # Fallback to line-by-line parsing if block parser found no ingredients
+        line_recipe = self._parse_line_by_line(content, filepath)
+        if line_recipe and (line_recipe.ingredients or line_recipe.instructions):
+            return line_recipe
+
+        if recipe.instructions:
+            return recipe
+
+        logger.error(f"Can't find any ingredients or instructions in {filepath}")
+        return None
+
+    def _parse_line_by_line(self, content: str, filepath: str) -> Recipe | None:
+        """Fallback line-by-line recipe extraction for unstructured text."""
+        recipe = Recipe(source_file=filepath, source_format=self.source_format)
+        recipe.title = Path(filepath).stem
+
+        lines = [l.strip() for l in content.splitlines() if l.strip()]
+        if not lines:
+            return None
+
+        ING_HEADER_RE = re.compile(
+            r'^(?:[A-Za-z0-9\s\-_]+\s+)?Ingredients?\s*:?$', re.IGNORECASE
+        )
+        INST_HEADER_RE = re.compile(
+            r'^(?:[A-Za-z0-9\s\-_]+\s+)?(?:Instructions?|Directions?|Method|Preparation|Preparation Instructions?)\s*:?$',
+            re.IGNORECASE,
+        )
+        YIELD_RE = re.compile(r'(?:Serves|Yield|Serving).*?(\d+[\s\w]*)', re.IGNORECASE)
+
+        state = 'DESC'
+        desc_lines: list[str] = []
+        title_found = False
+
+        for line in lines:
+            if state == 'DESC' and not title_found:
+                cand_title, cand_yield = clean_recipe_title(line)
+                if cand_title and not ING_HEADER_RE.match(line) and not self._looks_like_ingredient_line(line):
+                    if line.isupper() or line.istitle() or len(line) < 60:
+                        recipe.title = cand_title
+                        if cand_yield:
+                            recipe.yield_amount = cand_yield
+                        title_found = True
+                        continue
+
+            ym = YIELD_RE.search(line)
+            if ym and not recipe.yield_amount:
+                recipe.yield_amount = ym.group(1).strip()
+
+            if ING_HEADER_RE.match(line):
+                state = 'ING'
+                continue
+
+            if INST_HEADER_RE.match(line):
+                state = 'INST'
+                continue
+
+            if state == 'DESC':
+                if self._looks_like_ingredient_line(line):
+                    state = 'ING'
+                    recipe.ingredients.append(self.ingredient_parser.parse(self._clean_bullet(line)))
+                else:
+                    desc_lines.append(line)
+            elif state == 'ING':
+                if self._looks_like_ingredient_line(line):
+                    recipe.ingredients.append(self.ingredient_parser.parse(self._clean_bullet(line)))
+                else:
+                    state = 'INST'
+                    recipe.instructions.append(line)
+            elif state == 'INST':
+                recipe.instructions.append(line)
+
+        if desc_lines:
+            recipe.description = ' '.join(desc_lines)
+
+        sanitize_recipe(recipe)
         if recipe.ingredients or recipe.instructions:
             return recipe
-        else:
-            logger.error(f"Can't find any ingredients or instructions in {filepath}")
-            return None
+
+        logger.error(f"Can't find any ingredients or instructions in {filepath}")
+        return None

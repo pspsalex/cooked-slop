@@ -553,15 +553,14 @@ def process_directory(
                 total_recipes += len(recipes)
 
                 if verbose:
-                    status = (
-                        f"{len(recipes)} recipe(s)"
-                        if recipes
-                        else (
-                            "unsupported"
-                            if err == "Unsupported file format"
-                            else f"error: {err}"
-                        )
-                    )
+                    if recipes:
+                        status = f"{len(recipes)} recipe(s)"
+                    elif err == "Unsupported file format":
+                        status = "unsupported"
+                    elif err:
+                        status = f"error: {err}"
+                    else:
+                        status = "0 recipes"
                     prefix_str = f"{Colors.BOLD}[{completed}/{total_files}]{Colors.ENDC} "
                     print(
                         f"{prefix_str}{Colors.CYAN}{Path(file_path_str).name}{Colors.ENDC}: {status}"

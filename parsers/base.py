@@ -102,7 +102,7 @@ def is_divider_step(step: str) -> bool:
         return True
     if _DIVIDER_LINE_RE.match(s):
         return True
-    if re.match(r"^[-=~*_+]{4,}(?:\s*[-=~*_+]{4,})*$", s):
+    if re.match(r"^[-=~*_+# ]{4,}$", s) and sum(1 for c in s if c in "-=~*_+#") >= 3:
         return True
     return False
 
