@@ -5,19 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-030: HTML XPath Schema Refinements and Blank Recipe Guard
-- **Spec:** [SPEC-030-html-xpath-and-blank-recipe-guard.md](specs/SPEC-030-html-xpath-and-blank-recipe-guard.md)
-- **Priority:** P0 | **Tier:** 1 | **Type:** html-config | **Impact:** Fixes 293 empty recipes and ~1,926 zero-ingredient HTML recipes in Ingest/ToDo/HTML
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-030-html-guard`
-- [ ] Update `parsers/html_parser.py` with guard rejecting recipes with 0 ingredients and 0 instructions
-- [ ] Update `configs/bbq.yaml` to extract ingredients and instructions from `<blockquote>` and tableless layouts
-- [ ] Check and refine `configs/cscmu.yaml` and related HTML configs for similar missing container issues
-- [ ] Add sample test fixture `tests/samples/bbq_netrelief_sample.shtml` and generate expected output with `--no-nlp`
-- [ ] Create unit tests in `tests/unit/test_html_guard.py`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and update spec/task
-
 ### SPEC-031: Centralized Title Sanitization and Recipe Metadata Cleanup
 - **Spec:** [SPEC-031-title-sanitization-and-metadata-cleanup.md](specs/SPEC-031-title-sanitization-and-metadata-cleanup.md)
 - **Priority:** P1 | **Tier:** 2 | **Type:** parser | **Impact:** Cleans malformed titles across 13,824 recipes (~35.6% of dataset)
@@ -66,7 +53,20 @@
 ## Archive
 
 <details>
-<summary>Completed specs (29 items)</summary>
+<summary>Completed specs (30 items)</summary>
+
+### SPEC-030: HTML XPath Schema Refinements and Blank Recipe Guard ✅
+- **Spec:** [SPEC-030-html-xpath-and-blank-recipe-guard.md](specs/done/SPEC-030-html-xpath-and-blank-recipe-guard.md)
+- **Priority:** P0 | **Tier:** 1 | **Type:** html-config | **Impact:** Fixes 293 empty recipes and ~1,926 zero-ingredient HTML recipes in Ingest/ToDo/HTML
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-030-html-guard`
+- [x] Update `parsers/html_parser.py` with guard rejecting recipes with 0 ingredients and 0 instructions
+- [x] Update `configs/bbq.yaml` to extract ingredients and instructions from `<blockquote>` and tableless layouts
+- [x] Check and refine `configs/cscmu.yaml` and related HTML configs for similar missing container issues
+- [x] Add sample test fixture `tests/samples/bbq_netrelief_sample.shtml` and generate expected output with `--no-nlp`
+- [x] Create unit tests in `tests/unit/test_html_guard.py`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and update spec/task
 
 ### SPEC-029: Consolidate Directory Batch Conversion into convert.py and Remove batch_convert ✅
 - **Spec:** [SPEC-029-consolidate-batch-convert.md](specs/done/SPEC-029-consolidate-batch-convert.md)

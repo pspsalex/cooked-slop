@@ -4,7 +4,7 @@ title: "HTML XPath Schema Refinements and Blank Recipe Guard"
 tier: 1
 type: html-config
 priority: P0
-status: active
+status: done
 impact: "Fixes 293 empty recipes (0 ing, 0 inst) and ~1,926 zero-ingredient HTML recipes in Ingest/ToDo/HTML"
 deliverables:
   - parsers/html_parser.py
@@ -75,8 +75,8 @@ Investigation revealed two root causes:
 | HTML file with only title and no ingredients/instructions | Yields 0 recipes (skips or falls back) | Blank recipe guard |
 
 ## Acceptance Criteria
-- [ ] `configs/bbq.yaml` updated to extract ingredients and instructions from `<blockquote>` and tableless layouts
-- [ ] `parsers/html_parser.py` updated with a guard rejecting recipes that have 0 ingredients and 0 instructions
-- [ ] Sample test fixture `tests/samples/bbq_netrelief_sample.shtml` added with expected JSON output
-- [ ] Unit tests in `tests/unit/test_html_guard.py` verifying empty title-only HTML pages do not yield blank recipes
-- [ ] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
+- [x] `configs/bbq.yaml` updated to extract ingredients and instructions from `<blockquote>` and tableless layouts
+- [x] `parsers/html_parser.py` updated with a guard rejecting recipes that have 0 ingredients and 0 instructions
+- [x] Sample test fixture `tests/samples/bbq_netrelief_sample.shtml` added with expected JSON output
+- [x] Unit tests in `tests/unit/test_html_guard.py` verifying empty title-only HTML pages do not yield blank recipes
+- [x] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
