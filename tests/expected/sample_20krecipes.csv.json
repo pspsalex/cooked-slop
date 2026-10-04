@@ -39,7 +39,7 @@
   "recipeCategory": "Bread",
   "keywords": "Bread",
   "comment": "Imported from tests/samples/sample_20krecipes.csv",
-  "url": "file://tests/samples/sample_20krecipes.csv",
+  "url": "file://tests/samples/sample_20krecipes.csv#1",
   "description": "Recipe converted from 20krecipes CSV format"
 }
 ]

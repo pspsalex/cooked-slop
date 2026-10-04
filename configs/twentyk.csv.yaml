@@ -1,0 +1,60 @@
+name: twentyk
+description: "20krecipes CSV export"
+type: csv
+version: "1.0"
+source_format: "20krecipes CSV"
+
+csv_options:
+  delimiter: ","
+  has_header: true
+
+null_values: ["NULL"]
+
+detection:
+  min_columns: 8
+  header_columns:
+    - "TITLE_NO"
+    - "TITLE"
+    - "KEYWORD"
+    - "INSTRUCT"
+    - "ORIGIN"
+    - "SERVES"
+    - "SUBDIR"
+    - "INGRED"
+
+fields:
+  title:
+    column_name: "TITLE"
+    default: "Untitled Recipe"
+  categories:
+    columns:
+      - {column_name: "KEYWORD"}
+      - column_name: "SUBDIR"
+        value_map:
+          app: Appetizers
+          bev: Beverages
+          bre: Bread
+          cak: Cake
+          cas: Casserole
+          che: Cheese
+          coo: Cookies
+          des: Desserts
+          kid: "Kid's Meals"
+          mea: Main Courses
+          pas: Pasta
+          pou: Poultry
+          sal: Salads
+          sau: Sauces
+          sea: Fish
+          sou: Soups
+          veg: Vegetarian
+  yield_amount:
+    column_name: "SERVES"
+    ignore_values: ["0"]
+  ingredients:
+    column_name: "INGRED"
+    split_delimiter: "\n"
+    transform: twentyk_decimal
+  instructions:
+    column_name: "INSTRUCT"
+    split_delimiter: "\n"

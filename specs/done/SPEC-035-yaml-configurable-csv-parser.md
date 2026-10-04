@@ -4,14 +4,14 @@ title: "YAML-Configurable Unified CSV Recipe Parser"
 tier: 1
 type: parser
 priority: P1
-status: active
+status: done
 impact: "Unifies existing CSV parsers (cookware, twentykrecipes) and enables YAML configuration for future CSV layouts (e.g. chefs.csv)"
 deliverables:
   - parsers/csv_config.py
   - parsers/csv_parser.py
-  - configs/csv_cookware.yaml
-  - configs/csv_twentyk.yaml
-  - configs/csv_chefs.yaml
+  - configs/cookware.csv.yaml
+  - configs/twentyk.csv.yaml
+  - configs/chefs.csv.yaml
   - tests/samples/chefs.csv
   - tests/expected/chefs.csv.json
   - tests/unit/test_csv_config.py
@@ -141,10 +141,10 @@ Recipe,Course,Servings,Prep Time,Cook Time,Ingredients,Instructions,Source
 | Path has `.csv` without recipe indicators or non-CSV extension | `== 0.0` | Negative assertion |
 
 ## Acceptance Criteria
-- [ ] `parsers/csv_config.py` implements `CsvSchema` and `CsvConfigRegistry` with auto-discovery from `configs/`
-- [ ] `parsers/csv_parser.py` implements `ConfigurableCsvParser` registered in `ParserRegistry`
-- [ ] Create YAML configuration files `configs/csv_cookware.yaml`, `configs/csv_twentyk.yaml`, and `configs/csv_chefs.yaml`
-- [ ] Existing Cookware and 20krecipes CSV tests pass without regressions
-- [ ] Sample fixture `tests/samples/chefs.csv` added and converts cleanly with `--no-nlp`
-- [ ] Unit tests in `tests/unit/test_csv_config.py` and `tests/unit/test_configurable_csv_parser.py`
-- [ ] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
+- [x] `parsers/csv_config.py` implements `CsvSchema` and `CsvConfigRegistry` with auto-discovery from `configs/`
+- [x] `parsers/csv_parser.py` implements `ConfigurableCsvParser` registered in `ParserRegistry`
+- [x] Create YAML configuration files `configs/cookware.csv.yaml`, `configs/twentyk.csv.yaml`, and `configs/chefs.csv.yaml` (dual-identification naming)
+- [x] Existing Cookware and 20krecipes CSV tests pass without regressions
+- [x] Sample fixture `tests/samples/chefs.csv` added and converts cleanly with `--no-nlp`
+- [x] Unit tests in `tests/unit/test_csv_config.py` and `tests/unit/test_configurable_csv_parser.py`
+- [x] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`

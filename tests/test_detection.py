@@ -318,12 +318,14 @@ def test_parser_display_names(ingredient_parser):
     from parsers.html_parser import HtmlParser
     from parsers.sqlite.sqlite_parser import SqliteRecipeParser
     from parsers.mealmaster import MealMasterParser
-    from parsers.cookware import CookwareCSVParser
+    from parsers.csv_parser import ConfigurableCsvParser
 
     mm = MealMasterParser(ingredient_parser)
     assert mm.get_display_name() == "MealMaster Parser"
 
-    cw = CookwareCSVParser(ingredient_parser)
+    cw = ConfigurableCsvParser(ingredient_parser)
+    assert cw.get_display_name() == "CSV Parser"
+    list(cw.parse_file("tests/samples/cookware.csv"))
     assert cw.get_display_name() == "Cookware CSV Parser"
 
     html_p = HtmlParser(ingredient_parser)

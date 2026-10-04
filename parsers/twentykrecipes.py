@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: MIT
 """
-20krecipes CSV parser - converts CSV recipe format to internal Recipe model
+20krecipes ingredient-line helpers.
+
+The CSV layout itself is described in ``configs/twentyk.csv.yaml`` and parsed by
+``ConfigurableCsvParser``; this module only provides the ``twentyk_decimal``
+line transform used by that config.
 
 CSV columns: TITLE_NO, TITLE, KEYWORD, INSTRUCT, ORIGIN, SERVES, SUBDIR, INGRED
 
@@ -9,15 +13,9 @@ Ingredient format per line:
   <quantity> <unit> <ingredient>   (with unit, one space between each)
 """
 
-import csv
 import logging
 import re
-import io
-from typing import Iterator, List
-from pathlib import Path
-
-from .base import BaseRecipeParser, BaseIngredientParser
-from .models import Recipe, Ingredient
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -113,95 +111,3 @@ def parse_ingredients(ingred_field: str) -> List[str]:
     return result
 
 
-from .registry import ParserRegistry
-
-@ParserRegistry.register
-class TwentyKRecipesParser(BaseRecipeParser):
-    """Parser for 20krecipes CSV format."""
-
-    def __init__(self, ingredient_parser: BaseIngredientParser):
-        super().__init__(ingredient_parser)
-        self.source_format = "20krecipes CSV"
-
-    @classmethod
-    def format_id(cls) -> str:
-        return "csv_20krecipes"
-
-    @classmethod
-    def aliases(cls) -> list[str]:
-        return ["20krecipes"]
-
-    @classmethod
-    def priority(cls) -> int:
-        return 20
-
-    @classmethod
-    def detect(cls, filepath: str, content_sample: str) -> float:
-        if not content_sample:
-            return 0.0
-        try:
-            reader = csv.reader(io.StringIO(content_sample))
-            headers = next(reader)
-            expected = ["TITLE_NO", "TITLE", "KEYWORD", "INSTRUCT", "ORIGIN", "SERVES", "SUBDIR", "INGRED"]
-            if len(headers) >= 8 and headers[:8] == expected:
-                return 0.95
-        except Exception:
-            pass
-        return 0.0
-
-    def parse_content(self, content: str, filepath: str) -> Iterator[Recipe]:
-        """Parse CSV content and yield Recipe objects."""
-        if not content.strip():
-            return
-
-        # Parse as CSV
-        try:
-            csv_reader = csv.DictReader(io.StringIO(content))
-            row_number = 2  # Start at 2 (after header)
-            for row in csv_reader:
-                recipe = self._parse_csv_row(row, filepath, row_number)
-                if recipe.title:
-                    yield recipe
-                row_number += 1
-        except Exception as e:
-            logger.warning("Error parsing CSV: %s", e)
-            return
-
-    def _parse_csv_row(self, row: dict, filepath: str, row_number: int) -> Recipe:
-        """Convert a CSV row to a Recipe object."""
-        recipe = Recipe(source_file=filepath, source_format=self.source_format)
-
-        # Title
-        recipe.title = row.get("TITLE", "").strip() or "Untitled Recipe"
-
-        # Keywords / Categories
-        keyword = row.get("KEYWORD", "").strip()
-        if keyword and keyword.upper() != "NULL":
-            recipe.categories = [keyword]
-
-        # Category mapping
-        subdir = row.get("SUBDIR", "").strip()
-        if subdir and subdir.upper() != "NULL":
-            category = CATEGORY_MAP.get(subdir, subdir)
-            if category and category not in recipe.categories:
-                recipe.categories.append(category)
-
-        # Instructions
-        instructions_text = row.get("INSTRUCT", "").strip()
-        if instructions_text and instructions_text.upper() != "NULL":
-            steps = [s.strip() for s in instructions_text.split('\n') if s.strip()]
-            recipe.instructions = steps
-
-        # Yield/Servings
-        serves = row.get("SERVES", "").strip()
-        if serves and serves not in ("", "0", "NULL"):
-            recipe.yield_amount = serves
-
-        # Ingredients
-        ingred_field = row.get("INGRED", "")
-        ingredients_raw = parse_ingredients(ingred_field)
-        for ing_raw in ingredients_raw:
-            ing = self.ingredient_parser.parse(ing_raw) if self.ingredient_parser else Ingredient(raw=ing_raw)
-            recipe.ingredients.append(ing)
-
-        return recipe

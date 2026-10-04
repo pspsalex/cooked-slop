@@ -23,7 +23,7 @@ def test_autodiscovery_loads_registered_parsers():
     format_ids = [p.format_id() for p in ParserRegistry._parsers]
     assert "mealmaster" in format_ids
     assert "mastercook" in format_ids
-    assert "csv_cookware" in format_ids
+    assert "csv" in format_ids
 
 
 def test_parsers_sorted_by_priority():
@@ -46,7 +46,7 @@ def test_format_alias_and_id_lookup(ingredient_parser):
 
     p_by_alias2 = ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="cookware")
     assert p_by_alias2 is not None
-    assert p_by_alias2.format_id() == "csv_cookware"
+    assert p_by_alias2.format_id() == "csv"
 
     # Non-existent format name
     assert ParserRegistry.get_parser(Path("dummy.txt"), ingredient_parser, format_name="nonexistent_format") is None

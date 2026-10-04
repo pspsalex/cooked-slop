@@ -5,26 +5,28 @@
 
 ## Active Tasks
 
-### SPEC-035: YAML-Configurable Unified CSV Recipe Parser
-- **Spec:** [SPEC-035-yaml-configurable-csv-parser.md](specs/SPEC-035-yaml-configurable-csv-parser.md)
-- **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Unifies cookware, twentykrecipes, and custom CSVs (e.g. chefs.csv) into a single YAML-driven parser
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-035-csv-config`
-- [ ] Implement `parsers/csv_config.py` (`CsvSchema` dataclass and `CsvConfigRegistry` with auto-discovery from `configs/`)
-- [ ] Implement `parsers/csv_parser.py` (`ConfigurableCsvParser` registered with `@ParserRegistry.register`, priority 22)
-- [ ] Create YAML configuration files `configs/csv_cookware.yaml`, `configs/csv_twentyk.yaml`, and `configs/csv_chefs.yaml`
-- [ ] Ensure backward compatibility with existing CLI aliases (`csv_cookware`, `csv_20krecipes`)
-- [ ] Add sample fixture `tests/samples/chefs.csv` and generate expected output with `--no-nlp`
-- [ ] Create unit tests in `tests/unit/test_csv_config.py` and `tests/unit/test_configurable_csv_parser.py`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and update spec/task
+_No active tasks._
 
 ---
 
 ## Archive
 
 <details>
-<summary>Completed specs (33 items)</summary>
+<summary>Completed specs (34 items)</summary>
+
+### SPEC-035: YAML-Configurable Unified CSV Recipe Parser ✅
+- **Spec:** [SPEC-035-yaml-configurable-csv-parser.md](specs/done/SPEC-035-yaml-configurable-csv-parser.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Unifies cookware, twentykrecipes, and custom CSVs (e.g. chefs.csv) into a single YAML-driven parser
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-035-csv-config`
+- [x] Implement `parsers/csv_config.py` (`CsvSchema` dataclass and `CsvConfigRegistry` with auto-discovery from `configs/`)
+- [x] Implement `parsers/csv_parser.py` (`ConfigurableCsvParser` registered with `@ParserRegistry.register`, priority 22)
+- [x] Create YAML configuration files `configs/cookware.csv.yaml`, `configs/twentyk.csv.yaml`, and `configs/chefs.csv.yaml`
+- [x] Ensure backward compatibility with existing CLI aliases (`csv_cookware`, `csv_20krecipes`)
+- [x] Add sample fixture `tests/samples/chefs.csv` and generate expected output with `--no-nlp`
+- [x] Create unit tests in `tests/unit/test_csv_config.py` and `tests/unit/test_configurable_csv_parser.py`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and update spec/task
 
 ### SPEC-036: Root Directory Cleanup and Configs Subsystem Organization ✅
 - **Spec:** [SPEC-036-root-cleanup-and-configs-organization.md](specs/done/SPEC-036-root-cleanup-and-configs-organization.md)

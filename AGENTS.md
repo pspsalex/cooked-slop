@@ -56,7 +56,8 @@ scripts/
 │   ├── registry.py            # ParserRegistry (register decorator, get_parser, all_format_names)
 │   ├── ingredients.py         # NLP + Regex ingredient parsers, get_ingredient_parser()
 │   ├── units.py               # UNIT_MAP dict + normalize_unit() (~160 entries)
-│   ├── cookware.py            # CookwareCSVParser — clean reference implementation
+│   ├── csv_config.py          # CsvSchema, CsvConfigRegistry (YAML-driven CSV layouts)
+│   ├── csv_parser.py          # ConfigurableCsvParser (cookware, 20krecipes, chefs via configs/*.csv.yaml)
 │   ├── mealmaster.py          # MealMasterParser (.mmf, .mm)
 │   ├── mastercook.py          # MasterCookParser (.mxp, .mx2)
 │   ├── compuchef.py           # CompuChefParser (.ccf)
@@ -67,7 +68,7 @@ scripts/
 │   ├── nyc.py                 # NYCParser (Now You're Cooking! exports)
 │   ├── recipeml.py            # RecipeMLParser (XML-based RecipeML)
 │   ├── microcook.py           # MicroCookParser
-│   ├── twentykrecipes.py      # TwentyKRecipesParser
+│   ├── twentykrecipes.py      # 20krecipes ingredient-line helpers (used by csv_parser)
 │   ├── vitt.py                # VittRecipesParser
 │   ├── two_col.py             # TwoColParser (two-column layouts)
 │   ├── generic.py             # GenericTextParser (fallback for .txt)
@@ -127,7 +128,7 @@ def __init__(self, ingredient_parser: BaseIngredientParser):
     self.source_format = "Format Name"
 ```
 
-Reference implementation to copy from: `parsers/cookware.py`
+Reference implementation to copy from: `parsers/accuchef.py` (or add a `configs/<name>.csv.yaml` for CSV layouts)
 
 ## Models (`parsers/models.py`)
 

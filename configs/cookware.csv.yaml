@@ -1,0 +1,43 @@
+name: cookware
+description: "Cookware Recipe Manager CSV export"
+type: csv
+version: "1.0"
+source_format: "Cookware CSV"
+
+csv_options:
+  delimiter: ","
+  has_header: true
+
+detection:
+  min_columns: 8
+  header_columns:
+    - "Recipe Title"
+    - "Main Ingredient"
+    - "Course"
+    - "Region"
+    - "Ingredients (col.1)"
+    - "Ingredients (col.2)"
+    - "Ingredients (col.3)"
+    - "Directions"
+
+fields:
+  title:
+    column_name: "Recipe Title"
+    default: "Untitled Recipe"
+  categories:
+    columns:
+      - {column_name: "Course", strip_chars: "."}
+      - {column_name: "Region", strip_chars: "."}
+      - {column_name: "Main Ingredient", strip_chars: "."}
+  yield_amount:
+    column_name: "Servings?"
+    ignore_values: ["0", "?"]
+  ingredients:
+    column_names:
+      - "Ingredients (col.1)"
+      - "Ingredients (col.2)"
+      - "Ingredients (col.3)"
+    split_delimiter: "\n"
+  instructions:
+    column_name: "Directions"
+    split_delimiter: "\n"
