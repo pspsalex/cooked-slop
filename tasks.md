@@ -5,19 +5,6 @@
 
 ## Active Tasks
 
-### SPEC-032: Multi-Recipe Boundary Splitting in Text and Two-Column Parsers
-- **Spec:** [SPEC-032-multi-recipe-text-splitting.md](specs/SPEC-032-multi-recipe-text-splitting.md)
-- **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Splits 218+ monolithic multi-recipe files (up to 6,196 ingredients) into clean individual recipes
-- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
-- [ ] Create feature worktree `feat/spec-032-multi-recipe-split`
-- [ ] Update `TwoColParser.parse_content()` to split multi-recipe files on `^[-=~*]{4,}$` boundary lines
-- [ ] Support centered titles preceded by intro blurbs in TwoColParser
-- [ ] Add boundary detection in `GenericTextParser` for compilations with repeated recipe markers
-- [ ] Add sample test fixture `tests/samples/two_col_multi.txt` and generate expected output with `--no-nlp`
-- [ ] Create unit tests in `tests/unit/test_multi_recipe_splitting.py`
-- [ ] Run full test suite and verify deterministic passes
-- [ ] Commit, merge to `main`, remove worktree, and update spec/task
-
 ### SPEC-035: YAML-Configurable Unified CSV Recipe Parser
 - **Spec:** [SPEC-035-yaml-configurable-csv-parser.md](specs/SPEC-035-yaml-configurable-csv-parser.md)
 - **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Unifies cookware, twentykrecipes, and custom CSVs (e.g. chefs.csv) into a single YAML-driven parser
@@ -37,7 +24,20 @@
 ## Archive
 
 <details>
-<summary>Completed specs (31 items)</summary>
+<summary>Completed specs (32 items)</summary>
+
+### SPEC-032: Multi-Recipe Boundary Splitting in Text and Two-Column Parsers ✅
+- **Spec:** [SPEC-032-multi-recipe-text-splitting.md](specs/done/SPEC-032-multi-recipe-text-splitting.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** parser | **Impact:** Splits 218+ monolithic multi-recipe files (up to 6,196 ingredients) into clean individual recipes
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/spec-032-multi-recipe-split`
+- [x] Update `TwoColParser.parse_content()` to split multi-recipe files on `^[-=~*]{4,}$` boundary lines
+- [x] Support centered titles preceded by intro blurbs in TwoColParser
+- [x] Add boundary detection in `GenericTextParser` for compilations with repeated recipe markers
+- [x] Add sample test fixture `tests/samples/two_col_multi.txt` and generate expected output with `--no-nlp`
+- [x] Create unit tests in `tests/unit/test_multi_recipe_splitting.py`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and update spec/task
 
 ### SPEC-031: Centralized Title Sanitization and Recipe Metadata Cleanup ✅
 - **Spec:** [SPEC-031-title-sanitization-and-metadata-cleanup.md](specs/done/SPEC-031-title-sanitization-and-metadata-cleanup.md)

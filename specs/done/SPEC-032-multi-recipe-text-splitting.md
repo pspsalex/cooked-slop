@@ -4,7 +4,7 @@ title: "Multi-Recipe Boundary Splitting in Text and Two-Column Parsers"
 tier: 1
 type: parser
 priority: P1
-status: active
+status: done
 impact: "Splits 218+ monolithic multi-recipe files (up to 6,196 ingredients per file) into thousands of clean individual recipes"
 deliverables:
   - parsers/two_col.py
@@ -87,8 +87,8 @@ Makes 16
 In `GenericTextParser`, detect repeated recipe header boundaries (such as lines preceded by double blank lines with title capitalization followed by ingredient lines) or explicit divider lines, splitting into chunks before generating recipes.
 
 ## Acceptance Criteria
-- [ ] `TwoColParser` splits multi-recipe files on `^[-=~*]{4,}$` delimiters and yields multiple recipes
-- [ ] Intro text preceding centered titles in two-column recipes does not become the title
-- [ ] Multi-recipe test fixture `tests/samples/two_col_multi.txt` added with expected output verifying multiple yielded recipes
-- [ ] Unit tests in `tests/unit/test_multi_recipe_splitting.py`
-- [ ] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
+- [x] `TwoColParser` splits multi-recipe files on `^[-=~*]{4,}$` delimiters and yields multiple recipes
+- [x] Intro text preceding centered titles in two-column recipes does not become the title
+- [x] Multi-recipe test fixture `tests/samples/two_col_multi.txt` added with expected output verifying multiple yielded recipes
+- [x] Unit tests in `tests/unit/test_multi_recipe_splitting.py`
+- [x] Full test suite passes: `./venv/bin/python3 -m pytest tests/ -v`
