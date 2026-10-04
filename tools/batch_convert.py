@@ -8,8 +8,10 @@ import csv
 import json
 import logging
 import os
+import re
 import subprocess
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 
@@ -39,6 +41,65 @@ def get_parser_format_id(file_path: Path) -> str:
     return ext if ext else "unknown"
 
 
+STD_RECIPE_EXTENSIONS = {
+    ".txt",
+    ".htm",
+    ".html",
+    ".shtml",
+    ".md",
+    ".xml",
+    ".csv",
+    ".mmf",
+    ".mxp",
+    ".ccf",
+    ".prn",
+    ".rcp",
+    ".rec",
+    ".inf",
+    ".fs",
+    ".fsx",
+    ".out",
+    ".lst",
+}
+
+
+def get_default_output_json_path(output_root: Path, rel_path: Path) -> Path:
+    """Determine output JSON path for a given relative input file path.
+
+    Replaces standard recipe extension with .json unless the extension is
+    numeric (volume/part like .1, .2) or the filename contains split markers
+    (-split-NNN), in which case .json is appended to preserve file identity.
+    """
+    suffix = rel_path.suffix.lower()
+    if (
+        suffix in STD_RECIPE_EXTENSIONS
+        and not re.search(r"^\.\d+$", suffix)
+        and "-split-" not in rel_path.name
+    ):
+        return output_root / rel_path.with_suffix(".json")
+    return output_root / rel_path.parent / f"{rel_path.name}.json"
+
+
+def compute_output_json_paths(
+    to_process: List[Path], output_root: Path
+) -> Dict[Path, Path]:
+    """Compute collision-free output JSON paths for all files to be processed."""
+    dest_counts: Counter[Path] = Counter()
+    temp_map = {}
+    for rp in to_process:
+        cand = get_default_output_json_path(output_root, rp)
+        dest_counts[cand] += 1
+        temp_map[rp] = cand
+
+    final_map = {}
+    for rp in to_process:
+        cand = temp_map[rp]
+        if dest_counts[cand] > 1:
+            cand = output_root / rp.parent / f"{rp.name}.json"
+        final_map[rp] = cand
+    return final_map
+
+
 def convert_file_job(
     input_root: Path,
     rel_path: Path,
@@ -46,6 +107,7 @@ def convert_file_job(
     convert_script: Path,
     resume: bool = False,
     timeout: int = 30,
+    output_json_override: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """Process a single file using convert.py via subprocess.
 
@@ -53,7 +115,9 @@ def convert_file_job(
     """
     file_rel_str = rel_path.as_posix()
     input_file = input_root / rel_path
-    output_json = output_root / rel_path.with_suffix(".json")
+    output_json = output_json_override or get_default_output_json_path(
+        output_root, rel_path
+    )
 
     detected_parser = get_parser_format_id(input_file)
 
@@ -229,6 +293,7 @@ def run_batch_conversion(
         csv_path.parent.mkdir(parents=True, exist_ok=True)
 
     results: List[Dict[str, Any]] = []
+    output_json_map = compute_output_json_paths(to_process, output_dir)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         future_to_rel = {
@@ -240,6 +305,7 @@ def run_batch_conversion(
                 convert_script,
                 resume=resume,
                 timeout=timeout,
+                output_json_override=output_json_map.get(rel_path),
             ): rel_path
             for rel_path in to_process
         }
