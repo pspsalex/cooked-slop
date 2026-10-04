@@ -127,3 +127,40 @@ def test_timeout_cli(tmp_path: Path):
     assert ret == 0
     assert csv_path.exists()
 
+
+def test_compute_output_json_paths_collision_handling(tmp_path: Path):
+    """Verify compute_output_json_paths prevents filename collisions."""
+    from tools.batch_convert import compute_output_json_paths
+
+    out_root = tmp_path / "batch_out"
+    to_process = [
+        Path("v096n001.txt-split-000"),
+        Path("v096n001.txt-split-001"),
+        Path("RECIPES.1"),
+        Path("RECIPES.2"),
+        Path("BONUSREC.FS"),
+        Path("BONUSREC.FSX"),
+        Path("normal.txt"),
+    ]
+
+    path_map = compute_output_json_paths(to_process, out_root)
+
+    # Standard .txt maps to .json
+    assert path_map[Path("normal.txt")] == out_root / "normal.json"
+
+    # Split files retain full name with .json
+    assert path_map[Path("v096n001.txt-split-000")] == out_root / "v096n001.txt-split-000.json"
+    assert path_map[Path("v096n001.txt-split-001")] == out_root / "v096n001.txt-split-001.json"
+
+    # Numeric extension files retain full name with .json
+    assert path_map[Path("RECIPES.1")] == out_root / "RECIPES.1.json"
+    assert path_map[Path("RECIPES.2")] == out_root / "RECIPES.2.json"
+
+    # Colliding stems (.FS and .FSX) are disambiguated
+    assert path_map[Path("BONUSREC.FS")] == out_root / "BONUSREC.FS.json"
+    assert path_map[Path("BONUSREC.FSX")] == out_root / "BONUSREC.FSX.json"
+
+    # All targets are distinct
+    assert len(set(path_map.values())) == len(to_process)
+
+
