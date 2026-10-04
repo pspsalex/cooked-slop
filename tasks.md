@@ -5,7 +5,19 @@
 
 ## Active Tasks
 
-*No active tasks.*
+### SPEC-029: Consolidate Directory Batch Conversion into convert.py and Remove batch_convert
+- **Spec:** [SPEC-029-consolidate-batch-convert.md](specs/SPEC-029-consolidate-batch-convert.md)
+- **Priority:** P0 | **Tier:** 1 | **Type:** refactor | **Impact:** Entire Ingest collection (21,271+ files)
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [ ] Create feature worktree `feat/spec-029-consolidate-batch`
+- [ ] Add native multiprocessing directory worker pool (`ProcessPoolExecutor`) to `convert.py`
+- [ ] Default directory scanning to recursive (`recursive=True`) with minimal CLI options
+- [ ] Streamline output writing for both single JSON file and output directory modes
+- [ ] Delete `tools/batch_convert.py` and root `batch_convert.py`
+- [ ] Replace `tests/test_batch_convert.py` with `tests/test_directory_convert.py`
+- [ ] Remove `recipe-batch` from `pyproject.toml` and update `AGENTS.md`
+- [ ] Run full test suite and verify deterministic passes
+- [ ] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ---
 
