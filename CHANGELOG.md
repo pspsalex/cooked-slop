@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/pspsalex/cooked-slop/compare/cooked-slop-v0.3.0...cooked-slop-v0.3.1) (2026-10-04)
+
+
+### Bug Fixes
+
+* **core:** resolve batch conversion hang, false two-col detections, and text/PRN parsing (SPEC-037) ([1d65d6a](https://github.com/pspsalex/cooked-slop/commit/1d65d6a535e50dc4994a13bbedbe8e311d16dd7c))
+
 ## [0.3.0](https://github.com/pspsalex/cooked-slop/compare/cooked-slop-v0.2.0...cooked-slop-v0.3.0) (2026-10-04)
 
 
