@@ -99,7 +99,7 @@ class HtmlParser(BaseRecipeParser):
                     for recipe in parse_html_recipes_with_schema(
                         content, schema, self.ingredient_parser, filepath
                     ):
-                        if recipe.title or recipe.ingredients:
+                        if (recipe.ingredients or recipe.instructions) and (recipe.title or recipe.ingredients):
                             self.active_schema = schema
                             yield recipe
                             yielded = True
@@ -153,7 +153,15 @@ class HtmlParser(BaseRecipeParser):
                 recipe.categories = scraper.category().split(',') if scraper.category() else []
             except Exception as e:
                 logger.debug("Could not extract categories from %s: %s", filepath, e)
-            yield recipe
+
+            # Blank recipe guard: reject recipes with 0 ingredients and 0 instructions
+            if recipe.ingredients or recipe.instructions:
+                yield recipe
+            else:
+                logger.debug(
+                    "Skipping blank recipe (no ingredients and no instructions) for %s",
+                    filepath,
+                )
         except Exception as e:
             logger.warning("HTML parsing error for %s: %s", filepath, e)
             return

@@ -715,13 +715,21 @@ def parse_html_recipes_with_schema(
             recipe = _parse_single_chunk_with_schema(
                 chunk, schema, ingredient_parser, filepath
             )
-            if recipe and (recipe.title or recipe.ingredients):
+            if (
+                recipe
+                and (recipe.ingredients or recipe.instructions)
+                and (recipe.title or recipe.ingredients)
+            ):
                 yield recipe
     else:
         recipe = _parse_single_chunk_with_schema(
             content, schema, ingredient_parser, filepath
         )
-        if recipe and (recipe.title or recipe.ingredients):
+        if (
+            recipe
+            and (recipe.ingredients or recipe.instructions)
+            and (recipe.title or recipe.ingredients)
+        ):
             yield recipe
 
 

@@ -1,0 +1,58 @@
+[
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Artichoke Dip Appetizer",
+  "recipeIngredient": [
+    {
+      "@type": "PropertyValue",
+      "name": "cream cheese",
+      "value": 8,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "mozzarella cheese -- shredded",
+      "value": 12,
+      "unitText": "ounce"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "mayonnaise",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "grated parmesan cheese",
+      "value": 1,
+      "unitText": "cup"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "(6 oz. each) artichoke hearts -- drained and chopped",
+      "value": 2,
+      "unitText": "jar"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "(4 oz.) chopped green chilies -- drained",
+      "value": 1,
+      "unitText": "can"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "garlic powder",
+      "value": 1,
+      "unitText": "dash"
+    }
+  ],
+  "recipeInstructions": [
+    "Preheat oven to 350. Mix all ingredients together. Bake for 30 minutes in a 9 x 13 baking dish."
+  ],
+  "recipeYield": "10",
+  "comment": "Imported from tests/samples/bbq_netrelief_sample.shtml",
+  "url": "file://tests/samples/bbq_netrelief_sample.shtml",
+  "description": "Recipe converted from HTML (bbq_recipes) format"
+}
+]

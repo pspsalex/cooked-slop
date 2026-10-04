@@ -10,13 +10,13 @@ detection:
 
 fields:
   title:
-    xpath: "//table//font[@size='5']/b/text() | //title/text()"
+    xpath: "//font[@size='5']/b/text() | //p[@align='center']/font[@size='5']/b/text() | //title/text()"
   description:
-    xpath: "//table//p[b[contains(., 'Recipe By')]]/text()"
+    xpath: "//p/b[contains(., 'Recipe By')]/following-sibling::text()[1] | //p[b[contains(., 'Recipe By')]]/text()"
   yield_amount:
-    xpath: "//table//p[contains(., 'Makes')]/text()"
+    xpath: "//p/b[contains(., 'Serving Size')]/following-sibling::text()[1] | //p[contains(., 'Makes')]/text()"
   ingredients:
-    xpath: "//table//p[b and not(contains(b, 'Recipe By'))]/b//text()"
+    xpath: "(//table | //blockquote)//p[b and not(contains(b, 'Recipe By')) and not(contains(b, 'Serving Size'))]/b//text() | //p[b and not(contains(b, 'Recipe By')) and not(contains(b, 'Serving Size')) and not(font)]/b//text()"
     split_delimiter: "\n"
   instructions:
-    xpath: "//table//p[not(b) and not(contains(., 'Makes'))]/text()"
+    xpath: "(//table | //blockquote)//p[preceding-sibling::p[b and not(contains(b, 'Recipe By')) and not(contains(b, 'Serving Size'))] and not(b) and not(contains(., 'Makes'))]/text() | //p[preceding-sibling::p[b and not(contains(b, 'Recipe By')) and not(contains(b, 'Serving Size'))] and not(b) and not(font) and not(contains(., 'Makes'))]/text()"
