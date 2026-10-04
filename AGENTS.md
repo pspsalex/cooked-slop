@@ -246,13 +246,12 @@ The YAML config specifies: API endpoint, model name, prompt template, temperatur
 Standalone scripts are organized under the `tools/` package with console script entry points and root forwarding shims:
  
 - **`tools/dedup.py`** (`recipe-dedup`): Recipe deduplication using MinHash LSH and union-find clustering. Reads JSON-LD output, groups near-duplicates, writes deduplicated output.
-- **`tools/batch_convert.py`** (`recipe-batch`): Batch conversion runner across directory trees with multiprocessing and failure logging.
 - **`tools/import_to_mealie.py`**: Imports JSON-LD recipes into a Mealie instance via REST API.
 - **`tools/import_to_tandoor.py`**: Imports JSON-LD recipes into Tandoor Recipes via REST API.
 - **`tools/update_expected.py`**: Convenience script — regenerates all `tests/expected/*.json` files using `--no-nlp`.
 - **`tools/extract/`**: Extraction scripts for raw archives (e.g. `breadbakers.py`, `fareshare.py`, `garvick1.py`).
- 
-Backward-compatible root shims exist for all moved tools so existing scripts and workflows continue to work.
+
+Directory batch conversion is handled natively by `convert.py` (`cook` / `recipe-convert`) with parallel worker pool support (`-w` / `--workers`). Root forwarding shims exist for remaining tools.
 
 ## Coding Standards
 

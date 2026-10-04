@@ -29,7 +29,6 @@ dev = [
 [project.scripts]
 cook = "convert:main"
 recipe-convert = "convert:main"
-recipe-batch = "tools.batch_convert:main"
 recipe-dedup = "tools.dedup:main"
 
 [tool.setuptools.packages.find]
@@ -44,7 +43,6 @@ py-modules = [
     "writer",
     "shard",
     "ui",
-    "batch_convert",
     "dedup",
     "import_to_mealie",
     "import_to_tandoor",
