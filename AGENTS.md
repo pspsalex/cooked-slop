@@ -67,7 +67,6 @@ scripts/
 │   ├── nyc.py                 # NYCParser (Now You're Cooking! exports)
 │   ├── recipeml.py            # RecipeMLParser (XML-based RecipeML)
 │   ├── microcook.py           # MicroCookParser
-│   ├── vitt.py                # VittRecipesParser
 │   ├── two_col.py             # TwoColParser (two-column layouts)
 │   ├── generic.py             # GenericTextParser (fallback for .txt)
 │   ├── generic_md.py          # GenericMdParser (Markdown recipe files)
@@ -261,7 +260,7 @@ Standalone scripts are organized under the `tools/` package with console script 
 - **`tools/import_to_mealie.py`**: Imports JSON-LD recipes into a Mealie instance via REST API.
 - **`tools/import_to_tandoor.py`**: Imports JSON-LD recipes into Tandoor Recipes via REST API.
 - **`tools/update_expected.py`**: Convenience script — regenerates all `tests/expected/*.json` files using `--no-nlp`.
-- **`tools/extract/`**: Extraction scripts for raw archives (e.g. `vjje.py`, `breadbakers.py`, `prn_normalizer.py`, `fareshare.py`, `garvick1.py`).
+- **`tools/extract/`**: Extraction scripts for raw archives (e.g. `vjje.py`, `breadbakers.py`, `prn_normalizer.py`, `vitt.py`, `fareshare.py`, `garvick1.py`).
 
 Directory batch conversion is handled natively by `convert.py` (`cook` / `recipe-convert`) with parallel worker pool support (`-w` / `--workers`).
 
