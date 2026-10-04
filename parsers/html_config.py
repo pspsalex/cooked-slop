@@ -122,13 +122,17 @@ class HtmlConfigRegistry:
         if not config_dir.exists():
             return
         for yaml_file in config_dir.glob("*.y[am]*l"):
+            if any(yaml_file.name.endswith(ext) for ext in [".sqlite.yaml", ".sqlite.yml", ".llm.yaml", ".llm.yml", ".csv.yaml", ".csv.yml"]):
+                continue
             try:
                 with open(yaml_file, "r", encoding="utf-8") as f:
-                    data = yaml.safe_load(f)
-                    if data and isinstance(data, dict) and "fields" in data:
-                        schema = HtmlRecipeSchema.from_dict(data)
-                        schema.config_file = yaml_file.name
-                        self._schemas[schema.name] = schema
+                    for data in yaml.safe_load_all(f):
+                        if data and isinstance(data, dict):
+                            is_html = data.get("type") == "html" or ("type" not in data and "fields" in data)
+                            if is_html and "fields" in data:
+                                schema = HtmlRecipeSchema.from_dict(data)
+                                schema.config_file = yaml_file.name
+                                self._schemas[schema.name] = schema
             except Exception as e:
                 logger.warning("Failed to load HTML schema from %s: %s", yaml_file, e)
 

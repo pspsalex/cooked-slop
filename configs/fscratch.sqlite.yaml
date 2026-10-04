@@ -1,4 +1,5 @@
 name: fscratch
+type: sqlite
 recipes_table: recipe
 description: "Config for fscratch database"
 version: "1.0"

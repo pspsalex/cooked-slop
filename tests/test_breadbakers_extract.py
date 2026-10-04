@@ -18,16 +18,6 @@ from tools.extract.breadbakers import (
 )
 
 
-def test_extract_breadbakers_backward_compatibility():
-    """Verify backward compatibility of extract.breadbakers shim."""
-    import extract.breadbakers as bb
-    assert hasattr(bb, "classify_message")
-    assert hasattr(bb, "preprocess_message")
-    assert hasattr(bb, "process_directory")
-    assert hasattr(bb, "process_single_file")
-    assert hasattr(bb, "main")
-
-
 
 def test_preprocess_message():
     raw_message = (

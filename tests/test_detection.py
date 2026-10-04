@@ -327,14 +327,14 @@ def test_parser_display_names(ingredient_parser):
     assert cw.get_display_name() == "Cookware CSV Parser"
 
     html_p = HtmlParser(ingredient_parser)
-    assert html_p.get_display_name("tests/samples/garvick_sample.html") == "HTML Parser, config garvick.yaml"
+    assert html_p.get_display_name("tests/samples/garvick_sample.html") == "HTML Parser, config garvick.html.yaml"
     assert html_p.get_display_name("tests/samples/sample_recipe.html") == "HTML Parser"
 
-    html_cfg = HtmlParser(ingredient_parser, config_path="configs/garvick.yaml")
-    assert html_cfg.get_display_name() == "HTML Parser, config garvick.yaml"
+    html_cfg = HtmlParser(ingredient_parser, config_path="configs/garvick.html.yaml")
+    assert html_cfg.get_display_name() == "HTML Parser, config garvick.html.yaml"
 
     sql_p = SqliteRecipeParser(ingredient_parser)
-    assert sql_p.get_display_name("tests/samples/test_recipes.db") == "SQLite Parser, config cc-rec.yaml"
+    assert sql_p.get_display_name("tests/samples/test_recipes.db") == "SQLite Parser, config cc-rec.sqlite.yaml"
 
 
 def test_verbose_conversion_output(capsys, tmp_path):
@@ -350,7 +350,7 @@ def test_verbose_conversion_output(capsys, tmp_path):
     assert ret == 0
     captured = capsys.readouterr().out
     assert "garvick_sample.html" in captured
-    assert "HTML Parser, config garvick.yaml" in captured
+    assert "HTML Parser, config garvick.html.yaml" in captured
 
 
 def test_two_col_excludes_markdown_and_tables():

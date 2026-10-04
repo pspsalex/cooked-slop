@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 import pytest
-from writer import JSONStreamWriter
+from core.writer import JSONStreamWriter
 
 
 def test_writer_empty_flush_creates_valid_empty_json(tmp_path: Path):

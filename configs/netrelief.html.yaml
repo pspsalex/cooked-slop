@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 name: netrelief_recipes
+type: html
 description: "XPath configuration for netRelief Home Cookin' archives"
 version: "1.0"
 

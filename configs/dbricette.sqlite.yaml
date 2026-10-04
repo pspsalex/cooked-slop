@@ -1,4 +1,5 @@
 name: dbricette
+type: sqlite
 recipes_table: datiRicetta
 description: "Config for Italian DbRicette SQLite database with Italian recipe system"
 version: "1.0"

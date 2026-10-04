@@ -24,7 +24,23 @@
 ## Archive
 
 <details>
-<summary>Completed specs (32 items)</summary>
+<summary>Completed specs (33 items)</summary>
+
+### SPEC-036: Root Directory Cleanup and Configs Subsystem Organization ✅
+- **Spec:** [SPEC-036-root-cleanup-and-configs-organization.md](specs/done/SPEC-036-root-cleanup-and-configs-organization.md)
+- **Priority:** P1 | **Tier:** 1 | **Type:** refactor | **Impact:** Cleans up root directory, creates core/ package, adopts dual-identification for configs
+- **Verify:** `./venv/bin/python3 -m pytest tests/ -v`
+- [x] Create feature worktree `feat/clean-root-and-configs`
+- [x] Move pipeline modules `converter.py`, `writer.py`, `shard.py`, `ui.py` into new `core/` package
+- [x] Create `core/__init__.py` re-exporting key classes and helpers
+- [x] Update `convert.py` to import from `core` while maintaining `__all__` backward compatibility
+- [x] Delete obsolete root shims (`dedup.py`, `import_to_mealie.py`, `import_to_tandoor.py`, `update_expected.py`, `vjje.py`, `extract/`)
+- [x] Adopt `<name>.<type>.yaml` pre-extension convention and top-level `type:` property across all configs
+- [x] Move `sqlite_schema_examples.yaml` to `configs/sqlite_schema_examples.sqlite.yaml`
+- [x] Update `HtmlConfigRegistry` and `SqliteSchemaRegistry` to skip mismatched configs and support `safe_load_all`
+- [x] Update packaging in `pyproject.toml`, test imports, and `AGENTS.md`
+- [x] Run full test suite and verify deterministic passes
+- [x] Commit, merge to `main`, remove worktree, and archive spec/task
 
 ### SPEC-032: Multi-Recipe Boundary Splitting in Text and Two-Column Parsers ✅
 - **Spec:** [SPEC-032-multi-recipe-text-splitting.md](specs/done/SPEC-032-multi-recipe-text-splitting.md)

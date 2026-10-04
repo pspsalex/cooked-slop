@@ -33,20 +33,12 @@ recipe-dedup = "tools.dedup:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["parsers*", "tools*", "extract*"]
+include = ["parsers*", "tools*", "core*"]
 exclude = ["specs*", "configs*", "tests*"]
 
 [tool.setuptools]
 py-modules = [
     "convert",
-    "converter",
-    "writer",
-    "shard",
-    "ui",
-    "dedup",
-    "import_to_mealie",
-    "import_to_tandoor",
-    "update_expected",
 ]
 
 [tool.pytest.ini_options]

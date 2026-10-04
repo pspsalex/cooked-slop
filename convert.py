@@ -10,10 +10,10 @@ import sys
 from pathlib import Path
 from typing import Any, Iterator, List, Optional, Union
 
-# Modular architecture imports (SPEC-015)
-from converter import SchemaOrgConverter
-from writer import JSONStreamWriter
-from shard import (
+# Modular architecture imports (SPEC-015, SPEC-036)
+from core.converter import SchemaOrgConverter
+from core.writer import JSONStreamWriter
+from core.shard import (
     get_tokens,
     minhash_bucket,
     get_recipe_sharded_path,
@@ -21,7 +21,7 @@ from shard import (
     _minhash_bucket,
     _get_recipe_sharded_path,
 )
-from ui import Colors, print_progress_bar
+from core.ui import Colors, print_progress_bar
 
 # Import parsers
 from parsers import Recipe, BaseIngredientParser, ParserRegistry, get_ingredient_parser

@@ -1,4 +1,5 @@
 name: wensoftware
+type: sqlite
 recipes_table: Recipe
 description: "Config for wensoftware database"
 version: "1.0"

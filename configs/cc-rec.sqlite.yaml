@@ -1,4 +1,5 @@
 name: cc_req
+type: sqlite
 recipes_table: RECIPE
 description: "Config for cc-rec database"
 version: "1.0"

@@ -6,6 +6,7 @@
 ---
 # Example 1: Single table with newline-separated ingredients
 name: myfavapp_single_table
+type: sqlite
 recipes_table: recipes
 description: "MyFavApp format - recipes with ingredients in a text field"
 version: "1.0"
@@ -27,6 +28,7 @@ instructions:
 ---
 # Example 2: Recipes + separate ingredients table
 name: cooklist_separate_tables
+type: sqlite
 recipes_table: recipes
 description: "CookList format - recipes linked to ingredient table"
 version: "1.0"
@@ -53,6 +55,7 @@ instructions:
 ---
 # Example 3: Junction table pattern (most flexible)
 name: chefmate_junction
+type: sqlite
 recipes_table: recipes
 description: "ChefMate format - recipes linked to ingredients via junction table"
 version: "1.0"

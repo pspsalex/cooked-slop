@@ -3,7 +3,7 @@
 from datetime import datetime
 from pathlib import Path
 import pytest
-from converter import SchemaOrgConverter
+from core.converter import SchemaOrgConverter
 from parsers.models import Recipe, Ingredient
 
 

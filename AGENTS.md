@@ -18,25 +18,37 @@ Always use the project virtualenv. Never use bare `python3` or `python`.
 scripts/
 ├── pyproject.toml             # PEP 517/621 packaging (cook, recipe-convert, ...)
 ├── tasks.md                   # Single actionable backlog (all active & archived tasks)
-├── convert.py                 # CLI entry point + SchemaOrgConverter + JSONStreamWriter
+├── convert.py                 # Primary CLI entry point & orchestrator (cook, recipe-convert)
 ├── requirements.txt           # All dependencies (including optional dedup deps)
+├── core/                      # Core conversion pipeline package
+│   ├── __init__.py            # Re-exports SchemaOrgConverter, JSONStreamWriter, ui, shard
+│   ├── converter.py           # SchemaOrgConverter (JSON-LD transformation)
+│   ├── writer.py              # JSONStreamWriter (streaming & chunking output writer)
+│   ├── shard.py               # MinHash path bucketing and sharding
+│   └── ui.py                  # Colors, progress bar, terminal UI
 ├── specs/                     # Feature specifications & technical design documents
 │   ├── README.md              # Spec guide & frontmatter schema
 │   ├── _template.md           # Template for authoring new specs
 │   └── done/                  # Completed specs archive
-├── configs/                   # YAML configs (SQLite schemas, LLM, HTML layouts)
-│   ├── *.yaml                 # SQLite schema configs (auto-discovered)
-│   └── llm_example.yaml       # LLM provider config template
+├── configs/                   # YAML configs (<name>.<type>.yaml, with type: property)
+│   ├── *.sqlite.yaml          # SQLite schema configs (auto-discovered)
+│   ├── *.html.yaml            # HTML XPath layout configs (auto-discovered)
+│   ├── *.llm.yaml             # LLM provider configs (llm_example.llm.yaml)
+│   └── *.csv.yaml             # CSV layout configs
 ├── tools/                     # Standalone tools and utilities package
 │   ├── __init__.py
-│   ├── batch_convert.py       # Batch conversion runner (CLI: recipe-batch)
+│   ├── audit_recipes.py       # Recipe JSON audit & quality inspection
 │   ├── dedup.py               # Recipe deduplication (CLI: recipe-dedup)
 │   ├── import_to_mealie.py    # Mealie REST importer
 │   ├── import_to_tandoor.py   # Tandoor REST importer
 │   ├── update_expected.py     # Regenerate expected test outputs
-│   └── extract/               # Standalone extraction scripts (breadbakers, etc.)
+│   └── extract/               # Standalone extraction scripts (vjje, breadbakers, etc.)
 │       ├── __init__.py
-│       └── breadbakers.py
+│       ├── breadbakers.py
+│       ├── chefs_csv.py
+│       ├── prn_normalizer.py
+│       ├── vjje.py
+│       └── ...
 ├── parsers/
 │   ├── __init__.py            # Imports all parsers (triggers @register); defines __all__
 │   ├── base.py                # BaseRecipeParser, BaseIngredientParser, get_context_window()
@@ -217,19 +229,23 @@ If you change a parser's output, regenerate its expected file with the same comm
 
 ### YAML Schema Configs (`configs/`)
 
-Each YAML file defines: database filename pattern, table names, column mappings, optional junction tables (for categories, ingredients), and ingredient quantity lookup tables.
+All YAML configuration files in `configs/` adhere to a **dual identification system**:
+1. **Pre-extension naming convention**: `<name>.<type>.yaml` (e.g. `cc-rec.sqlite.yaml`, `bbc.html.yaml`, `llm_example.llm.yaml`, `chefs.csv.yaml`).
+2. **Top-level generic `type:` property**: `type: sqlite`, `type: html`, `type: llm`, `type: csv`.
+
+Each SQLite schema file defines: `type: sqlite`, database filename pattern, table names, column mappings, optional junction tables (for categories, ingredients), and ingredient quantity lookup tables.
 
 When adding a new SQLite database layout:
-1. Create `configs/yourdatabase.yaml` following the existing examples
-2. The parser auto-discovers YAML files in `configs/` — no code changes needed
+1. Create `configs/yourdatabase.sqlite.yaml` following the existing examples
+2. The parser auto-discovers SQLite YAML files in `configs/` — no code changes needed
 
 ## HTML Parser Subsystem
 
-`parsers/html_parser.py` + `parsers/html_config.py` handle HTML recipe pages via YAML-driven XPath extraction configs.
+`parsers/html_parser.py` + `parsers/html_config.py` handle HTML recipe pages via YAML-driven XPath extraction configs (`type: html`, named `*.html.yaml`).
 
 - **`html_config.py`**: `HtmlConfigRegistry` and `HtmlRecipeSchema` — YAML loader for HTML layout definitions specifying XPath selectors for title, ingredients, instructions, etc.
 - **`html_parser.py`**: `HtmlParser` — uses the loaded config to extract recipes from HTML files.
-- Activated via `--html-config path/to/config.yaml`.
+- Activated via `--html-config configs/path_to_config.html.yaml`.
 
 ## LLM Parser
 
@@ -237,21 +253,22 @@ When adding a new SQLite database layout:
 
 Sends recipe text to an LLM (Ollama or OpenAI-compatible API) and parses the structured response. Includes a built-in hallucination sanity checker.
 
-**Not used in auto-detection.** Must be explicitly activated via `--llm-config configs/llm_example.yaml`.
+**Not used in auto-detection.** Must be explicitly activated via `--llm-config configs/llm_example.llm.yaml`.
 
-The YAML config specifies: API endpoint, model name, prompt template, temperature, and max tokens.
+The YAML config specifies: `type: llm`, API endpoint, model name, prompt template, temperature, and max tokens.
 
 ## Standalone Tools (`tools/`)
  
-Standalone scripts are organized under the `tools/` package with console script entry points and root forwarding shims:
+Standalone scripts are organized under the `tools/` package with console script entry points:
  
 - **`tools/dedup.py`** (`recipe-dedup`): Recipe deduplication using MinHash LSH and union-find clustering. Reads JSON-LD output, groups near-duplicates, writes deduplicated output.
+- **`tools/audit_recipes.py`**: Recipe JSON inspection and anomaly detection utility.
 - **`tools/import_to_mealie.py`**: Imports JSON-LD recipes into a Mealie instance via REST API.
 - **`tools/import_to_tandoor.py`**: Imports JSON-LD recipes into Tandoor Recipes via REST API.
 - **`tools/update_expected.py`**: Convenience script — regenerates all `tests/expected/*.json` files using `--no-nlp`.
-- **`tools/extract/`**: Extraction scripts for raw archives (e.g. `breadbakers.py`, `fareshare.py`, `garvick1.py`).
+- **`tools/extract/`**: Extraction scripts for raw archives (e.g. `vjje.py`, `breadbakers.py`, `chefs_csv.py`, `prn_normalizer.py`, `fareshare.py`, `garvick1.py`).
 
-Directory batch conversion is handled natively by `convert.py` (`cook` / `recipe-convert`) with parallel worker pool support (`-w` / `--workers`). Root forwarding shims exist for remaining tools.
+Directory batch conversion is handled natively by `convert.py` (`cook` / `recipe-convert`) with parallel worker pool support (`-w` / `--workers`).
 
 ## Coding Standards
 
