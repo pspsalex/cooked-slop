@@ -872,8 +872,8 @@ def main() -> None:
     parser.add_argument(
         "--docling-timeout",
         type=int,
-        default=600,
-        help="Timeout in seconds for Docling conversion per book (default: 600).",
+        default=600000,
+        help="Timeout in seconds for Docling conversion per book (default: 600000).",
     )
     parser.add_argument(
         "--skip-existing",

@@ -37,7 +37,7 @@ class TwoColParser(BaseRecipeParser):
             return 0.0
 
         ext = Path(filepath).suffix.lower()
-        if ext in {".md", ".markdown"}:
+        if ext in {".md", ".markdown", ".csv"}:
             return 0.0
 
         # Exclude files that have table borders or start with pipe/table markers
